@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>همه‌ی پرونده‌ها — DarkFile</title>
+<meta name="description" content="همه‌ی پرونده‌های جنایی DarkFile در یک صفحه — وضعیت حل‌شده، امتیاز و رتبه‌ی هر پرونده رو ببین. پرونده‌های جدید «رازِ ساعتِ موقوفه» و «کوچه‌ی سیزده» و «ماجرای قتل در کتابخانه».">
+<meta property="og:title" content="همه‌ی پرونده‌ها — DarkFile">
+<meta property="og:description" content="کل پرونده‌های جنایی تعاملی DarkFile، همراه با وضعیت پیشرفت شما. پرونده‌های جدید با معمای ریاضی-جنایی.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0f1a; --bg2:#161a2b; --panel:#1c2036; --panel2:#232847;
+  --paper:#efe6cf; --paper-dim:#d9cdaa; --paper-shadow:#a99a6f;
+  --blood:#8a1f2b; --blood-light:#b83e42;
+  --gold:#d1a13a; --gold-light:#e9c67a;
+  --text:#ece6d6; --text-dim:#9391a3; --text-faint:#5c5a72;
+  --ok:#5f9e6f; --line:rgba(255,255,255,0.07);
+  --shadow:0 24px 70px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg); color:var(--text); font-family:'Vazirmatn',sans-serif; line-height:1.8; overflow-x:hidden;}
+.wrap{max-width:1160px; margin:0 auto; padding:0 28px;}
+a{color:inherit; text-decoration:none;}
+button{font-family:inherit;}
+body::before{content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:radial-gradient(circle at 14% 8%, rgba(138,31,43,.10), transparent 42%),
+             radial-gradient(circle at 88% 78%, rgba(209,161,58,.07), transparent 46%);}
+.grain{position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.045; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+::-webkit-scrollbar{width:8px; height:8px;}
+::-webkit-scrollbar-track{background:var(--bg); border-left:1px solid var(--line);}
+::-webkit-scrollbar-thumb{background:var(--gold); border-radius:999px; border:2px solid var(--bg);}
+::-webkit-scrollbar-thumb:hover{background:var(--gold-light);}
+*{scrollbar-width:thin; scrollbar-color:var(--gold) var(--bg);}
+
+.num{font-family:'JetBrains Mono',monospace; font-variant-numeric:tabular-nums; direction:ltr; unicode-bidi:isolate; letter-spacing:.3px;}
+
+.logo{display:flex; align-items:center; gap:10px;}
+.logo svg{width:30px; height:30px; flex-shrink:0;}
+.logo .word{font-weight:900; letter-spacing:.5px; font-size:17px; font-family:'Vazirmatn', sans-serif;}
+.logo .word b{color:var(--blood-light);}
+
+.nav{position:sticky; top:0; z-index:80; background:rgba(13,15,26,.9); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+.nav .wrap{display:flex; align-items:center; justify-content:space-between; height:70px; gap:20px;}
+.nav-links{display:flex; align-items:center; gap:28px; font-size:13.5px; font-weight:500; color:var(--text-dim);}
+.nav-links a:hover{color:var(--gold-light);}
+.nav-links a.active{color:var(--gold-light);}
+.nav-auth{display:flex; align-items:center; gap:12px;}
+.detective-chip{display:none; align-items:center; gap:10px; background:var(--panel); border:1px solid var(--line); border-radius:999px; padding:6px 8px 6px 16px; font-size:12.5px; cursor:pointer; transition:border-color .2s;}
+.detective-chip:hover{border-color:var(--gold);}
+.detective-chip .dot{width:22px; height:22px; border-radius:50%; background:linear-gradient(160deg,#2e3350,#181a2c); display:flex; align-items:center; justify-content:center; font-size:11px;}
+.detective-chip b{color:var(--gold-light);}
+.logout-btn{background:none; border:1px solid var(--line); color:var(--text-dim); border-radius:999px; padding:5px 12px; font-size:11.5px; cursor:pointer;}
+.logout-btn:hover{border-color:var(--blood-light); color:var(--blood-light);}
+
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 26px; border-radius:6px; font-size:13.5px; font-weight:700; cursor:pointer; border:1px solid transparent; transition:transform .15s,background .2s; font-family:inherit;}
+.btn:hover{transform:translateY(-1px);}
+.btn-gold{background:var(--gold); color:#241d09;}
+.btn-gold:hover{background:var(--gold-light);}
+.btn-ghost{background:transparent; border:1px solid var(--line); color:var(--text);}
+.btn-ghost:hover{border-color:var(--gold);}
+.btn-blood{background:var(--blood); color:#fbe9e7;}
+.btn-blood:hover{background:var(--blood-light);}
+.btn-sm{padding:9px 18px; font-size:12.5px;}
+
+.page-head{position:relative; padding:64px 0 20px; overflow:hidden;}
+.page-eyebrow{display:inline-flex; align-items:center; gap:10px; font-size:12px; font-weight:600; letter-spacing:0.5px; color:var(--blood-light); border:1px solid rgba(138,31,43,.5); border-radius:999px; padding:6px 16px; margin-bottom:22px;}
+.blink{width:6px; height:6px; border-radius:50%; background:var(--blood-light); animation:blink 1.6s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+h1.page-title{font-family:'Vazirmatn', sans-serif; font-size:38px; font-weight:900; line-height:1.4; margin-bottom:14px; letter-spacing:-0.5px;}
+.page-sub{font-size:14.5px; color:var(--text-dim); max-width:600px; margin-bottom:8px;}
+
+.stats-bar{display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin:34px 0 10px;}
+.stat-card{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:18px 20px;}
+.stat-card b{display:block; font-size:24px; font-weight:800; color:var(--paper); font-variant-numeric:tabular-nums; font-family:'JetBrains Mono',monospace;}
+.stat-card span{font-size:11.5px; color:var(--text-faint);}
+.stats-login-hint{background:var(--panel); border:1px dashed rgba(209,161,58,.3); border-radius:10px; padding:16px 20px; font-size:12.5px; color:var(--text-dim); margin:34px 0 10px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+
+section{position:relative; z-index:1; padding:40px 0 70px;}
+
+.case-grid{display:flex; flex-direction:column; gap:16px;}
+.case-card{background:linear-gradient(180deg,var(--panel2),var(--panel)); border:1px solid rgba(209,161,58,.18); border-radius:12px; padding:30px 34px 26px; position:relative; overflow:hidden; cursor:pointer; transition:transform .2s; isolation:isolate; display:flex; flex-direction:row; align-items:center; gap:30px;}
+.case-card:hover{transform:translateX(-4px);}
+.case-ribbon{position:absolute; top:16px; left:16px; background:var(--blood); color:#fbe9e7; font-size:10.5px; font-weight:700; padding:5px 12px; border-radius:999px; z-index:5;}
+.case-ribbon.premium{background:var(--gold); color:#241d09;}
+.case-main{flex:1; min-width:0;}
+.case-card h3{font-family:'Vazirmatn', sans-serif; font-size:19px; font-weight:800; margin:0 0 8px;}
+.case-card p{font-size:12.5px; color:var(--text-dim); margin-bottom:0;}
+.case-side{width:230px; flex-shrink:0; display:flex; flex-direction:column; gap:10px;}
+.case-meta{display:flex; gap:14px; flex-wrap:wrap; font-size:11.5px; color:var(--text-faint); margin-bottom:0;}
+.case-locked{background:var(--panel); border:1px dashed var(--line); border-radius:12px; padding:24px 34px; display:flex; flex-direction:row; align-items:center; gap:18px; color:var(--text-faint); opacity:.75;}
+.case-locked .lock{font-size:24px; margin-bottom:0;}
+
+.case-filter-bar{display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin:0 0 22px;}
+.case-filter-btn{background:var(--panel); border:1px solid var(--line); color:var(--text-dim); border-radius:999px; padding:9px 20px; font-size:12.5px; font-weight:600; cursor:pointer; transition:border-color .2s,color .2s,background .2s; font-family:inherit;}
+.case-filter-btn:hover{border-color:var(--gold); color:var(--text);}
+.case-filter-btn.active{background:var(--gold); border-color:var(--gold); color:#241d09;}
+.case-filter-count{font-size:11px; color:var(--text-faint); margin-inline-start:6px;}
+.case-card.filtered-out{display:none !important;}
+.case-filter-empty{display:none; text-align:center; padding:40px 20px; color:var(--text-faint); font-size:13px; border:1px dashed var(--line); border-radius:12px;}
+.case-filter-empty.show{display:block;}
+
+.case-card.solved{border-color:rgba(95,158,111,.35);}
+.case-card.solved::before{content:''; position:absolute; inset:0; background:rgba(6,7,12,.42); z-index:4; pointer-events:none; border-radius:12px;}
+.case-solved-badge{display:none; position:absolute; top:16px; right:16px; z-index:6; background:rgba(95,158,111,.14); border:1px solid rgba(95,158,111,.5); color:var(--ok); font-size:10.5px; font-weight:700; padding:5px 12px; border-radius:999px; align-items:center; gap:6px;}
+.case-solved-badge.show{display:inline-flex;}
+.solved-stamp{display:none; position:absolute; top:52%; left:50%; z-index:6; transform:translate(-50%,-50%) rotate(-14deg); pointer-events:none;}
+.solved-stamp.show{display:block; animation:stampIn .45s cubic-bezier(.2,1.4,.4,1);}
+.solved-stamp .ring{border:3px solid var(--blood-light); border-radius:10px; padding:8px 22px; box-shadow:0 0 0 3px rgba(138,31,43,.15), 0 10px 30px rgba(0,0,0,.5); background:rgba(13,15,26,.35);}
+.solved-stamp .t1{font-family:'Vazirmatn',sans-serif; font-weight:900; font-size:19px; letter-spacing:1.5px; color:var(--blood-light); text-align:center; text-transform:uppercase;}
+.solved-stamp .t2{font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:2px; color:var(--blood-light); text-align:center; opacity:.85; margin-top:2px;}
+@keyframes stampIn{0%{transform:translate(-50%,-50%) rotate(-14deg) scale(1.9); opacity:0;}60%{opacity:1;}100%{transform:translate(-50%,-50%) rotate(-14deg) scale(1); opacity:.95;}}
+.case-score-chip{display:none; align-items:center; justify-content:space-between; gap:10px; background:rgba(209,161,58,.08); border:1px solid rgba(209,161,58,.3); border-radius:8px; padding:9px 13px; font-size:12px; color:var(--gold-light); margin-bottom:14px; position:relative; z-index:5;}
+.case-score-chip.show{display:flex;}
+.case-score-chip b{font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--paper); font-variant-numeric:tabular-nums;}
+
+footer{border-top:1px solid var(--line); padding:40px 0; text-align:center; font-size:12px; color:var(--text-faint); position:relative; z-index:1;}
+footer .logo{justify-content:center; margin-bottom:10px;}
+
+.modal-overlay{position:fixed; inset:0; background:rgba(5,6,10,.82); z-index:200; display:none; align-items:center; justify-content:center; padding:24px; backdrop-filter:blur(3px);}
+.modal-overlay.open{display:flex;}
+.auth-box{width:400px; max-width:92vw; background:linear-gradient(180deg, var(--panel2), var(--panel)); border:1px solid rgba(209,161,58,.25); border-radius:14px; padding:34px 32px; box-shadow:0 30px 80px rgba(0,0,0,.6); position:relative; max-height:85vh; overflow-y:auto;}
+.auth-box::-webkit-scrollbar{width:4px;}
+.auth-box::-webkit-scrollbar-track{background:transparent;}
+.auth-box::-webkit-scrollbar-thumb{background:var(--gold); border-radius:999px;}
+.auth-close{position:absolute; top:16px; left:16px; width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,.06); border:none; color:var(--text); cursor:pointer; font-size:15px;}
+.auth-badge-icon{width:54px; height:54px; margin:0 auto 16px; border-radius:50%; background:radial-gradient(circle at 35% 30%, var(--blood-light), var(--blood) 70%, #3f1116 100%); display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px rgba(138,31,43,.4);}
+.auth-box h2{font-family:'Vazirmatn', sans-serif; font-size:22px; font-weight:800; text-align:center; margin-bottom:6px; color:var(--paper);}
+.auth-box .sub{font-size:12.5px; color:var(--text-dim); text-align:center; margin-bottom:24px;}
+.auth-grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+.auth-field{margin-bottom:15px;}
+.auth-field label{display:block; font-size:11.5px; color:var(--gold-light); margin-bottom:7px;}
+.auth-field input{width:100%; background:var(--bg2); border:1px solid var(--line); border-radius:7px; padding:12px 14px; color:var(--text); font-family:'Vazirmatn'; font-size:13.5px;}
+.auth-field input:focus{outline:none; border-color:var(--gold); box-shadow:0 0 0 3px rgba(209,161,58,.15);}
+.gender-row{display:flex; gap:10px;}
+.gender-opt{flex:1; text-align:center; padding:11px 8px; border:1px solid var(--line); border-radius:7px; font-size:13px; cursor:pointer; background:var(--bg2);}
+.gender-opt.sel{border-color:var(--gold); background:rgba(209,161,58,.1); color:var(--gold-light);}
+.auth-err{font-size:12px; color:var(--blood-light); margin-bottom:12px; display:none; background:rgba(138,31,43,.1); border-radius:6px; padding:9px 12px;}
+.auth-err.show{display:block;}
+.auth-switch{text-align:center; font-size:12.5px; color:var(--text-faint); margin-top:18px; cursor:pointer;}
+.auth-switch b{color:var(--gold-light);}
+.auth-extra{display:none;}
+.auth-extra.show{display:block;}
+
+.id-card-modal .auth-box{max-height:none; overflow:visible; padding:0; background:transparent; box-shadow:none; border:none; width:auto;}
+.id-card-modal .auth-box .id-card{width:580px; max-width:92vw; border-radius:20px; padding:0; position:relative; overflow:hidden; background:linear-gradient(160deg, #1c2036, #11131f); border:2px solid rgba(209,161,58,0.4); box-shadow:0 30px 90px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.05); margin:0 auto;}
+.id-card-modal .id-card-top{background:linear-gradient(120deg, var(--blood), #5c141c); padding:20px 28px; display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid rgba(209,161,58,.2);}
+.id-card-modal .id-card-top .idc-brand{font-weight:900; font-size:16px; color:#fbe9e7; letter-spacing:.8px;}
+.id-card-modal .id-card-top .idc-brand b{color:var(--gold-light);}
+.id-card-modal .id-card-top .idc-label{font-size:11px; color:#f3c9c9; letter-spacing:1.5px; background:rgba(0,0,0,.2); padding:4px 14px; border-radius:999px;}
+.id-card-modal .id-card-body{padding:28px 28px 20px; display:flex; gap:28px; align-items:center; justify-content:center;}
+.id-card-modal .id-card-photo{width:140px; height:190px; border-radius:12px 0 0 12px; border:2px solid var(--gold); flex-shrink:0; overflow:hidden; box-shadow:0 0 0 6px rgba(209,161,58,0.1), 0 15px 35px rgba(0,0,0,.6); position:relative; background:#0a0b14;}
+.id-card-modal .id-card-photo img{width:100%; height:100%; object-fit:cover; display:block; filter:brightness(0.95) contrast(1.05);}
+.id-card-modal .id-card-photo::after{content:''; position:absolute; inset:0; background:linear-gradient(135deg, rgba(209,161,58,0.15) 0%, transparent 60%); pointer-events:none;}
+.id-card-modal .id-card-photo-actions{position:absolute; inset-inline:0; bottom:0; z-index:3; display:flex;}
+.id-card-modal .id-card-photo-btn{flex:1; background:rgba(10,11,20,.78); color:var(--gold-light); font-size:10px; font-weight:700; text-align:center; padding:8px 3px; cursor:pointer; border:none; font-family:'Vazirmatn',sans-serif; display:flex; align-items:center; justify-content:center; gap:4px; transition:background .2s;}
+.id-card-modal .id-card-photo-btn:hover{background:rgba(209,161,58,.25); color:#fff;}
+.id-card-modal .id-card-photo-btn.danger:hover{background:rgba(138,31,43,.5); color:#fff;}
+.id-card-modal .id-card-photo-btn:disabled{opacity:.6; cursor:wait;}
+.id-card-modal .id-card-photo-btn + .id-card-photo-btn{border-inline-start:1px solid rgba(255,255,255,.1);}
+.id-card-modal .id-card-photo.uploading .id-card-photo-btn{background:rgba(209,161,58,.3);}
+.id-card-modal .id-card-info{flex:1; text-align:right;}
+.id-card-modal .id-card-name{font-family:'Vazirmatn', sans-serif; font-size:24px; font-weight:700; color:var(--paper); margin-bottom:4px; letter-spacing:.5px; text-align:right;}
+.id-card-modal .id-card-rank{font-size:13px; color:var(--gold-light); margin-bottom:14px; font-weight:500; background:rgba(209,161,58,.08); display:inline-block; padding:2px 14px; border-radius:999px;}
+.id-card-modal .id-card-row{display:flex; justify-content:space-between; font-size:12px; color:var(--text-dim); padding:6px 0; border-bottom:1px dashed rgba(255,255,255,.06);}
+.id-card-modal .id-card-row b{color:var(--text); font-family:'Vazirmatn'; font-weight:700;}
+.id-card-modal .id-card-row .score-value{color:var(--gold-light); font-weight:800; font-size:14px;}
+.id-card-modal .id-card-badgeno{text-align:center; padding:14px 28px 18px; border-top:1px solid rgba(209,161,58,.15); background:rgba(0,0,0,.2);}
+.id-card-modal .id-card-badgeno .lbl{font-size:10px; color:var(--text-faint); letter-spacing:1.5px; margin-bottom:4px;}
+.id-card-modal .id-card-badgeno .num{font-family:'JetBrains Mono',monospace; font-weight:800; font-size:22px; color:var(--gold-light); letter-spacing:2px; font-variant-numeric:tabular-nums;}
+.id-card-modal .id-card-strip{height:6px; background:repeating-linear-gradient(45deg, var(--gold) 0 10px, #2a2410 10px 20px); opacity:.6;}
+.id-card-modal .id-card-shine{position:absolute; inset:0; background:linear-gradient(120deg, transparent 25%, rgba(255,255,255,.05) 40%, transparent 55%); pointer-events:none;}
+.idc-modal-actions{display:flex; justify-content:center; gap:14px; padding:16px 28px 24px; border-top:1px solid rgba(209,161,58,.1); background:rgba(0,0,0,.15); flex-wrap:wrap;}
+
+@media (max-width:920px){
+  h1.page-title{font-size:30px;}
+  .case-card{flex-direction:column; align-items:stretch; padding:26px 22px;}
+  .case-side{width:100%;}
+  .stats-bar{grid-template-columns:repeat(2,1fr);}
+  .nav-links{display:none;}
+  .id-card-modal .auth-box .id-card{width:95vw;}
+  .id-card-modal .id-card-body{flex-direction:column; align-items:center; padding:20px 16px 16px;}
+  .id-card-modal .id-card-photo{width:120px; height:160px; border-radius:12px;}
+  .id-card-modal .id-card-info{text-align:center; width:100%;}
+  .id-card-modal .id-card-name{text-align:center;}
+  .id-card-modal .id-card-rank{display:block; text-align:center;}
+  .idc-modal-actions{padding:12px 16px 18px;}
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="logo" href="index.html">
+      <svg viewBox="0 0 40 40" fill="none">
+        <defs><radialGradient id="darkSpace" cx="50%" cy="45%" r="65%"><stop offset="0%" stop-color="#2b2f4a"/><stop offset="100%" stop-color="#0a0b14"/></radialGradient></defs>
+        <mask id="keyhole"><rect width="40" height="40" fill="white"/><circle cx="20" cy="15" r="7" fill="black"/><path d="M15 21 L25 21 L29 34 L11 34 Z" fill="black"/></mask>
+        <rect width="40" height="40" rx="8" fill="url(#darkSpace)" mask="url(#keyhole)"/>
+        <circle cx="12" cy="10" r=".7" fill="#e9c67a"/><circle cx="28" cy="8" r=".5" fill="#e9c67a"/><circle cx="30" cy="16" r=".6" fill="#e9c67a"/>
+        <circle cx="20" cy="15" r="6.3" fill="none" stroke="#8a1f2b" stroke-width="1.1"/>
+      </svg>
+      <span class="word">Dark<b>File</b></span>
+    </a>
+    <div class="nav-links">
+      <a href="darkfile-all-cases.html" class="active">همه‌ی پرونده‌ها</a>
+      <a href="index.html#why">چرا DarkFile</a>
+      <a href="index.html#ranks">رتبه‌بندی کارآگاهی</a>
+      <a href="darkfile-donate.html">حمایت از ما</a>
+    </div>
+    <div class="nav-auth">
+      <div class="detective-chip" id="detectiveChip"><div class="dot">🕵️</div><span id="detectiveChipText"></span></div>
+      <button class="logout-btn" id="logoutBtn" style="display:none;">خروج</button>
+      <button class="btn btn-gold btn-sm" id="loginNavBtn">ورود / ثبت‌نام</button>
+    </div>
+  </div>
+</nav>
+
+<section class="page-head">
+  <div class="wrap">
+    <div class="page-eyebrow"><span class="blink"></span> بایگانی کامل پرونده‌ها</div>
+    <h1 class="page-title">همه‌ی پرونده‌های DarkFile</h1>
+    <p class="page-sub">هر پرونده که ببندید، به رتبه‌ی کارآگاهی‌تون اضافه می‌شه. وضعیت هر پرونده و امتیازی که ازش گرفتید همین‌جا مشخصه. پرونده‌های جدید با معمای ریاضی-جنایی منتظر شما هستند.</p>
+
+    <div class="stats-bar" id="statsBar" style="display:none;">
+      <div class="stat-card"><b id="statTotal" class="num">—</b><span>کل پرونده‌های باز</span></div>
+      <div class="stat-card"><b id="statSolved" class="num">—</b><span>پرونده‌های بسته‌شده</span></div>
+      <div class="stat-card"><b id="statAvg" class="num">—</b><span>میانگین امتیاز</span></div>
+      <div class="stat-card"><b id="statRank">—</b><span>رتبه‌ی فعلی شما</span></div>
+    </div>
+    <div class="stats-login-hint" id="statsLoginHint">
+      <span>برای ثبت پیشرفت، امتیاز و رتبه‌ی کارآگاهی‌تون، وارد حساب‌تون بشید.</span>
+      <button class="btn btn-gold btn-sm" id="statsLoginBtn">ورود / ثبت‌نام</button>
+    </div>
+  </div>
+</section>
+
+<section id="allCases">
+  <div class="wrap">
+    <div class="case-filter-bar" id="caseFilterBar">
+      <button class="case-filter-btn active" data-filter="all">همه‌ی پرونده‌ها<span class="case-filter-count" id="filterCountAll"></span></button>
+      <button class="case-filter-btn" data-filter="unsolved">حل‌نشده<span class="case-filter-count" id="filterCountUnsolved"></span></button>
+      <button class="case-filter-btn" data-filter="solved">حل‌شده<span class="case-filter-count" id="filterCountSolved"></span></button>
+    </div>
+    <div class="case-grid">
+
+      <!-- پرونده‌ی اول: کوچه‌ی سیزده -->
+      <div class="case-card" data-case-id="kooche-sizdah" onclick="location.href='darkfile_case_ui_v8_security.html'">
+        <div class="case-ribbon">رایگان</div>
+        <div class="case-solved-badge" id="caseBadge-kooche-sizdah">✓ پرونده بسته شد</div>
+        <div class="solved-stamp" id="caseStamp-kooche-sizdah"><div class="ring"><div class="t1">حل شد</div><div class="t2">DARKFILE CLOSED</div></div></div>
+        <div class="case-main">
+          <h3>کوچه‌ی سیزده</h3>
+          <p>حاج‌رحیم صرافی، طلافروش قدیمی محله، در مغازه‌اش بی‌جان یافته شده. شش نفر آن شب دلیلی برای حضور در کوچه داشتند — اما فقط یکی از آنها حقیقت را پنهان می‌کند. با ۹ مدرک و ۶ بازجویی، قاتل را پیدا کن.</p>
+        </div>
+        <div class="case-side">
+          <div class="case-meta"><span><b class="num">9</b> سند</span><span><b class="num">6</b> مظنون</span><span>سطح: متوسط</span></div>
+          <div class="case-score-chip" id="caseScore-kooche-sizdah"><span>امتیاز نهایی شما</span><b class="num"></b></div>
+          <button class="btn btn-blood btn-sm" style="width:100%;" id="caseBtn-kooche-sizdah">شروع تحقیقات</button>
+        </div>
+      </div>
+
+      <!-- پرونده‌ی دوم: رازِ ساعتِ موقوفه -->
+      <div class="case-card" data-case-id="clock-case" onclick="location.href='darkfile_case_ui_v9_security.html'">
+        <div class="case-ribbon">رایگان</div>
+        <div class="case-solved-badge" id="caseBadge-clock-case">✓ پرونده بسته شد</div>
+        <div class="solved-stamp" id="caseStamp-clock-case"><div class="ring"><div class="t1">حل شد</div><div class="t2">DARKFILE CLOSED</div></div></div>
+        <div class="case-main">
+          <h3>رازِ ساعتِ موقوفه</h3>
+          <p>استاد حبیب‌الله متین، عتیقه‌فروش کهنه‌کار، در حجره‌اش به قتل می‌رسد. یک ساعت طلایی روی ۲۰:۴۵ متوقف شده — اما فیزیک کوک آن می‌گوید زمان مرگ جای دیگری است. سه مظنون، شش مدرک، یک معمای ریاضی-جنایی. آیا کوک ساعت را درست می‌خوانید؟</p>
+        </div>
+        <div class="case-side">
+          <div class="case-meta"><span><b class="num">6</b> سند</span><span><b class="num">3</b> مظنون</span><span>سطح: پیشرفته</span></div>
+          <div class="case-score-chip" id="caseScore-clock-case"><span>امتیاز نهایی شما</span><b class="num"></b></div>
+          <button class="btn btn-blood btn-sm" style="width:100%;" id="caseBtn-clock-case">شروع تحقیقات</button>
+        </div>
+      </div>
+
+      <!-- پرونده‌ی سوم: ماجرای قتل در کتابخانه (line-end-case) -->
+      <div class="case-card" data-case-id="line-end-case" onclick="location.href='darkfile_case_ui_v10_security.html'">
+        <div class="case-ribbon">رایگان</div>
+        <div class="case-solved-badge" id="caseBadge-line-end-case">✓ پرونده بسته شد</div>
+        <div class="solved-stamp" id="caseStamp-line-end-case"><div class="ring"><div class="t1">حل شد</div><div class="t2">DARKFILE CLOSED</div></div></div>
+        <div class="case-main">
+          <h3>ماجرای قتل در کتابخانه</h3>
+          <p>در کتابخانه‌ی تاریخی «خانه‌ی فرهنگ»، جسد ناصر حکیمی، پژوهشگر سرشناس، پیدا می‌شود. یک قفسه‌ی کتاب به‌هم‌ریخته، یک تکه‌کاغذ با یک معادله‌ی مرموز، و چهار مظنون که هرکدام رازی برای پنهان‌کردن دارند.</p>
+        </div>
+        <div class="case-side">
+          <div class="case-meta"><span><b class="num">7</b> سند</span><span><b class="num">4</b> مظنون</span><span>سطح: پیشرفته</span></div>
+          <div class="case-score-chip" id="caseScore-line-end-case"><span>امتیاز نهایی شما</span><b class="num"></b></div>
+          <button class="btn btn-blood btn-sm" style="width:100%;" id="caseBtn-line-end-case">شروع تحقیقات</button>
+        </div>
+      </div>
+
+      <!-- پرونده‌ی چهارم: سکوت کتابخانه -->
+      <div class="case-card" data-case-id="silent-library-case" onclick="location.href='silent-library-case.html'">
+        <div class="case-ribbon premium">ویژه</div>
+        <div class="case-solved-badge" id="caseBadge-silent-library-case">✓ پرونده بسته شد</div>
+        <div class="solved-stamp" id="caseStamp-silent-library-case"><div class="ring"><div class="t1">حل شد</div><div class="t2">DARKFILE CLOSED</div></div></div>
+        <div class="case-main">
+          <h3>سکوت کتابخانه</h3>
+          <p>مسعود کیانی، کلکسیونر نسخ خطی نایاب، آویزان از سقف کتابخانه‌ی خصوصی‌اش پیدا می‌شود — کنارش یادداشتی با ادعای خودکشی. اما پزشکی‌قانونی چیزی دیده که با آویزان‌شدن ساده جور در نمی‌آید. سخت‌ترین پرونده‌ی DarkFile تا امروز.</p>
+        </div>
+        <div class="case-side">
+          <div class="case-meta"><span><b class="num">7</b> سند</span><span><b class="num">4</b> مظنون</span><span>سطح: فوق‌حرفه‌ای</span></div>
+          <div class="case-score-chip" id="caseScore-silent-library-case"><span>امتیاز نهایی شما</span><b class="num"></b></div>
+          <button class="btn btn-blood btn-sm" style="width:100%;" id="caseBtn-silent-library-case">شروع تحقیقات</button>
+        </div>
+      </div>
+
+      <!-- پرونده‌ی پنجم: بازیِ آخر -->
+      <div class="case-card" data-case-id="endgame-case" onclick="location.href='endgame-case.html'">
+        <div class="case-ribbon premium">ویژه</div>
+        <div class="case-solved-badge" id="caseBadge-endgame-case">✓ پرونده بسته شد</div>
+        <div class="solved-stamp" id="caseStamp-endgame-case"><div class="ring"><div class="t1">حل شد</div><div class="t2">DARKFILE CLOSED</div></div></div>
+        <div class="case-main">
+          <h3>بازیِ آخر</h3>
+          <p>دکتر فرامرز کیانی، طراح مشهور معما، وسط آخرین بازی‌ای که خودش برای چهار رقیبش طراحی کرده بود، در کتابخانه‌ی قفل‌شده‌اش پیدا می‌شود. مهمانان تا ساعت ۲۳:۰۰ صدای زنده‌ی او را می‌شنیدند — اما ساعت مرگ دروغ بود. کمترین راهنمایی، بیشترین چالش.</p>
+        </div>
+        <div class="case-side">
+          <div class="case-meta"><span><b class="num">7</b> سند</span><span><b class="num">4</b> مظنون</span><span>سطح: فوق‌حرفه‌ای</span></div>
+          <div class="case-score-chip" id="caseScore-endgame-case"><span>امتیاز نهایی شما</span><b class="num"></b></div>
+          <button class="btn btn-blood btn-sm" style="width:100%;" id="caseBtn-endgame-case">شروع تحقیقات</button>
+        </div>
+      </div>
+
+      <!-- پرونده‌ی ششم: سرقتِ الماسِ شب -->
+      <div class="case-card" data-case-id="vault-heist-case" onclick="location.href='vault-heist-case.html'">
+        <div class="case-ribbon premium">ویژه</div>
+        <div class="case-solved-badge" id="caseBadge-vault-heist-case">✓ پرونده بسته شد</div>
+        <div class="solved-stamp" id="caseStamp-vault-heist-case"><div class="ring"><div class="t1">حل شد</div><div class="t2">DARKFILE CLOSED</div></div></div>
+        <div class="case-main">
+          <h3>سرقتِ الماسِ شب</h3>
+          <p>دکتر همایون رستمی، جواهرشناس و کلکسیونر مشهور، الماس ۴۱ قیراطیِ تازه‌خریده‌اش را از گاوصندوقی بایومتریک و بدون هیچ ورود غیرمجازِ ثبت‌شده‌ای گم می‌کند. چهار مظنون، یک قطعیِ برقِ ۱۲ دقیقه‌ای، کمترین راهنمایی ممکن.</p>
+        </div>
+        <div class="case-side">
+          <div class="case-meta"><span><b class="num">7</b> سند</span><span><b class="num">4</b> مظنون</span><span>سطح: فوق‌حرفه‌ای</span></div>
+          <div class="case-score-chip" id="caseScore-vault-heist-case"><span>امتیاز نهایی شما</span><b class="num"></b></div>
+          <button class="btn btn-blood btn-sm" style="width:100%;" id="caseBtn-vault-heist-case">شروع تحقیقات</button>
+        </div>
+      </div>
+
+      <!-- پرونده‌ی هفتم: عمارت مه (جدید) -->
+      <div class="case-card" data-case-id="fog-manor-case" onclick="location.href='fog-manor-case.html'">
+        <div class="case-ribbon">رایگان</div>
+        <div class="case-solved-badge" id="caseBadge-fog-manor-case">✓ پرونده بسته شد</div>
+        <div class="solved-stamp" id="caseStamp-fog-manor-case"><div class="ring"><div class="t1">حل شد</div><div class="t2">DARKFILE CLOSED</div></div></div>
+        <div class="case-main">
+          <h3>عمارت مه</h3>
+          <p>سقوط دکتر بهروز مستوفی، بنیان‌گذار باشگاه کارآگاهان مه، از پلِ درّه‌ی مه — دقیقاً به تقلید از سرنوشت افسانه‌ای قهرمانش. مدارک پزشکی‌قانونی، اثر انگشت، ماشین‌تحریر و بازجویی از ۴ مظنون رو با دقت بررسی کن.</p>
+        </div>
+        <div class="case-side">
+          <div class="case-meta"><span><b class="num">7</b> سند</span><span><b class="num">4</b> مظنون</span><span>سطح: متوسط</span></div>
+          <div class="case-score-chip" id="caseScore-fog-manor-case"><span>امتیاز نهایی شما</span><b class="num"></b></div>
+          <button class="btn btn-blood btn-sm" style="width:100%;" id="caseBtn-fog-manor-case">شروع تحقیقات</button>
+        </div>
+      </div>
+
+      <!-- پرونده‌ی هشتم: رمزِ سِن -->
+      <div class="case-card" data-case-id="seine-cipher-case" onclick="location.href='seine-cipher-case.html'">
+        <div class="case-ribbon premium">ویژه</div>
+        <div class="case-solved-badge" id="caseBadge-seine-cipher-case">✓ پرونده بسته شد</div>
+        <div class="solved-stamp" id="caseStamp-seine-cipher-case"><div class="ring"><div class="t1">حل شد</div><div class="t2">DARKFILE CLOSED</div></div></div>
+        <div class="case-main">
+          <h3>رمزِ سِن</h3>
+          <p>مهندس ارشد امنیت بلاک‌چینِ صرافی کریپتویی «سولستیس کاپیتال» در لا دفانسِ پاریس، دقیقاً وسط تحقیقاتی که خودش دربارهٔ پول‌شوییِ مدیران شرکت آغاز کرده بود، ناپدید می‌شود. تنها ردی که به‌جا گذاشته، مسیری چندلایه و رمزگذاری‌شده‌ست. یک پرونده‌ی هکریِ متفاوت — کمترین راهنمایی، بیشترین رمزگشایی.</p>
+        </div>
+        <div class="case-side">
+          <div class="case-meta"><span><b class="num">3</b> مرحله</span><span>بدون مظنون</span><span>سطح: فوق‌حرفه‌ای</span></div>
+          <div class="case-score-chip" id="caseScore-seine-cipher-case"><span>امتیاز نهایی شما</span><b class="num"></b></div>
+          <button class="btn btn-blood btn-sm" style="width:100%;" id="caseBtn-seine-cipher-case">شروع نفوذ</button>
+        </div>
+      </div>
+      <!-- پرونده‌ی نهم: فصلِ آخر -->
+      <div class="case-card" data-case-id="last-chapter-case" onclick="location.href='last-chapter-case.html'">
+        <div class="case-ribbon premium">ویژه</div>
+        <div class="case-solved-badge" id="caseBadge-last-chapter-case">✓ پرونده بسته شد</div>
+        <div class="solved-stamp" id="caseStamp-last-chapter-case"><div class="ring"><div class="t1">حل شد</div><div class="t2">DARKFILE CLOSED</div></div></div>
+        <div class="case-main">
+          <h3>فصلِ آخر</h3>
+          <p>آخرین بازمانده‌ی «باشگاهِ کارآگاهانِ مه» شبِ قبل از خواندنِ فصلِ پایانیِ خاطراتش، در اتاقِ مطالعه‌ی قفل‌شده‌اش مرده پیدا می‌شود — و همان فصل، ناپدید شده. چهار مظنون، یک خبرچینِ چند دهه‌ای، کمترین راهنمایی. ثابت کن او واقعاً چه زمانی و به‌دستِ چه کسی خاموش شد.</p>
+        </div>
+        <div class="case-side">
+          <div class="case-meta"><span><b class="num">7</b> سند</span><span><b class="num">4</b> مظنون</span><span>سطح: فوق‌حرفه‌ای</span></div>
+          <div class="case-score-chip" id="caseScore-last-chapter-case"><span>امتیاز نهایی شما</span><b class="num"></b></div>
+          <button class="btn btn-blood btn-sm" style="width:100%;" id="caseBtn-last-chapter-case">شروع تحقیقات</button>
+        </div>
+      </div>
+      <!-- پرونده‌ی دهم: نفوذِ سایه -->
+      <div class="case-card" data-case-id="shadow-breach-case" onclick="location.href='shadow-breach-case.html'">
+        <div class="case-ribbon premium" style="background:#ff2e63; color:#fff1f3;">ویژه</div>
+        <div class="case-solved-badge" id="caseBadge-shadow-breach-case">✓ پرونده بسته شد</div>
+        <div class="solved-stamp" id="caseStamp-shadow-breach-case"><div class="ring"><div class="t1">حل شد</div><div class="t2">DARKFILE CLOSED</div></div></div>
+        <div class="case-main">
+          <h3>نفوذِ سایه</h3>
+          <p>یک گروهِ هکتیویستی مسئولیتِ نابودیِ سیستم‌های بانکِ مریدین را عمومی اعلام می‌کند — اما مهندسانِ فارنزیک یک ردِ عجیب پیدا می‌کنند: دقیقاً یک سرور، سرورِ حسابرسیِ داخلی، هدفِ یک حمله‌ی کاملاً جداگانه بوده. کسی از آشوبِ یک هکِ واقعی برای پاک‌کردنِ ردِ یک تقلبِ واقعی استفاده کرده. ثابت کن چه کسی.</p>
+        </div>
+        <div class="case-side">
+          <div class="case-meta"><span><b class="num">7</b> سند</span><span><b class="num">4</b> مظنون</span><span>سطح: فوق‌حرفه‌ای</span></div>
+          <div class="case-score-chip" id="caseScore-shadow-breach-case"><span>امتیاز نهایی شما</span><b class="num"></b></div>
+          <button class="btn btn-blood btn-sm" style="width:100%; background:#ff2e63; border-color:#ff2e63; color:#fff1f3;" id="caseBtn-shadow-breach-case">شروع نفوذ</button>
+        </div>
+      </div>
+    </div>
+    <div class="case-filter-empty" id="caseFilterEmpty">پرونده‌ای با این فیلتر پیدا نشد.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="logo">
+    <svg viewBox="0 0 40 40" fill="none" style="width:22px;height:22px;">
+      <mask id="keyhole2"><rect width="40" height="40" fill="white"/><circle cx="20" cy="15" r="7" fill="black"/><path d="M15 21 L25 21 L29 34 L11 34 Z" fill="black"/></mask>
+      <rect width="40" height="40" rx="8" fill="#171a2c" mask="url(#keyhole2)"/>
+    </svg>
+    <span class="word">Dark<b>File</b></span>
+  </div>
+  پلتفرم پرونده‌های جنایی تعاملی
+</footer>
+
+<!-- Auth Modal -->
+<div class="modal-overlay" id="authModal">
+  <div class="auth-box">
+    <button class="auth-close" onclick="closeAuthModal()">✕</button>
+    <div class="auth-badge-icon">🕵️</div>
+    <h2 id="authTitle">ورود به DarkFile</h2>
+    <div class="sub" id="authSub">برای شروع تحقیقات، وارد حساب خود شوید</div>
+    <div class="auth-err" id="authErr"></div>
+
+    <div class="auth-extra" id="authExtraNames">
+      <div class="auth-grid2">
+        <div class="auth-field"><label>نام</label><input type="text" id="authFirstName" placeholder="مثلاً علی"></div>
+        <div class="auth-field"><label>نام خانوادگی</label><input type="text" id="authLastName" placeholder="مثلاً محمدی"></div>
+      </div>
+    </div>
+    <div class="auth-extra" id="authExtraGender">
+      <div class="auth-field">
+        <label>جنسیت (برای پروفایل کارآگاهی)</label>
+        <div class="gender-row">
+          <div class="gender-opt" data-g="male">مرد</div>
+          <div class="gender-opt" data-g="female">زن</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-field"><label>ایمیل</label><input type="email" id="authEmail" placeholder="you@example.com"></div>
+    <div class="auth-field"><label>رمز عبور</label><input type="password" id="authPass" placeholder="حداقل 6 کاراکتر"></div>
+    <button class="btn btn-gold" style="width:100%;" id="authSubmitBtn">ورود</button>
+    <div class="auth-switch" id="authSwitch">حساب ندارید؟ <b>ثبت‌نام کنید</b></div>
+  </div>
+</div>
+
+<!-- ID Card Modal -->
+<div class="modal-overlay id-card-modal" id="idCardModal">
+  <div class="auth-box">
+    <div class="id-card" id="idCardEl">
+      <button class="auth-close" onclick="closeIdCardModal()" style="position:absolute; top:16px; left:16px; z-index:10;">✕</button>
+      <div class="id-card-top">
+        <div class="idc-brand">Dark<b>File</b></div>
+        <div class="idc-label">کارت شناسایی کارآگاهی</div>
+      </div>
+      <div class="id-card-shine"></div>
+      <div class="id-card-body">
+        <div class="id-card-photo" id="idCardPhoto">
+          <img id="idCardPhotoImg" alt="کارآگاه DarkFile" src="">
+          <div class="id-card-photo-actions">
+            <button type="button" class="id-card-photo-btn" id="idCardPhotoUploadBtn" onclick="triggerAvatarUpload()">📷 تغییر</button>
+            <button type="button" class="id-card-photo-btn danger" id="idCardPhotoDeleteBtn" onclick="deleteAvatarPhoto()" style="display:none;">🗑 حذف</button>
+          </div>
+        </div>
+        <input type="file" id="idCardPhotoInput" accept="image/png,image/jpeg,image/webp" style="display:none;">
+        <div class="id-card-info">
+          <div class="id-card-name" id="idCardName">—</div>
+          <div class="id-card-rank" id="idCardRank">کارآگاه تازه‌کار</div>
+          <div class="id-card-row"><span>وضعیت</span><b>فعال</b></div>
+          <div class="id-card-row"><span>سطح دسترسی</span><b id="idCardAccessLevel">پرونده‌های عمومی</b></div>
+          <div class="id-card-row" id="idCardTotalScoreRow"><span>امتیاز کل</span><b class="score-value" id="idCardTotalScore">۰</b></div>
+          <div class="id-card-row"><span>تاریخ صدور</span><b id="idCardDate" class="num">—</b></div>
+          <div class="id-card-row" id="idCardCasesRow"><span>پرونده‌های بسته‌شده</span><b id="idCardCasesVal" class="num">۰</b></div>
+        </div>
+      </div>
+      <div class="id-card-badgeno">
+        <div class="lbl">شماره‌ی کارآگاهی</div>
+        <div class="num" id="idCardBadge">—</div>
+      </div>
+      <div class="id-card-strip"></div>
+      <div class="idc-modal-actions">
+        <a id="idCardAdminBtn" class="btn btn-gold" href="darkfile-admin.html" style="display:none;">⚙️ پنل مدیریت کل</a>
+        <button class="btn btn-blood" onclick="location.href='darkfile-all-cases.html'">ورود به پرونده ها</button>
+        <button class="btn btn-ghost" onclick="closeIdCardModal()">بستن</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ========== تنظیمات Supabase ==========
+const SUPABASE_URL = 'https://uohetpzmscuqdiwibqci.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_CukVAlNn7Nvrx5v_gu7atg_JDcw2dzW';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let currentProfile = null;
+let caseProgress = {};
+
+// ========== رتبه‌بندی بر اساس امتیاز ==========
+function rankForScore(score){
+  if(score>=900) return 'چشم تیزبین محله';
+  if(score>=750) return 'کارآگاه قهوه‌خانه';
+  if(score>=550) return 'شاگرد کارآگاه';
+  if(score>=350) return 'کنجکاو کوچه';
+  return 'هنوز خبری از سرنخ نیست';
+}
+function toFaNum(n){ return String(n); }
+
+// ========== دریافت پیشرفت کاربر روی پرونده‌ها ==========
+async function loadCaseProgress(userId){
+  if(!userId){ caseProgress={}; applyCaseCardsProgress(); updateStatsBar(); updateIdCardScore(); return; }
+  const { data, error } = await sb.from('case_progress').select('case_id, solved, score').eq('user_id', userId);
+  if(error){ console.error('خطا در دریافت پیشرفت پرونده‌ها:', error); caseProgress={}; }
+  else {
+    caseProgress = {};
+    (data || []).forEach(row=>{ caseProgress[row.case_id] = { solved: !!row.solved, score: row.score }; });
+  }
+  applyCaseCardsProgress();
+  updateStatsBar();
+  updateIdCardScore();
+}
+
+// ========== اعمال مهر «حل شد» و امتیاز روی کارت‌های پرونده ==========
+function applyCaseCardsProgress(){
+  document.querySelectorAll('.case-card[data-case-id]').forEach(card=>{
+    const cid = card.dataset.caseId;
+    const p = caseProgress[cid];
+    const badge = document.getElementById(`caseBadge-${cid}`);
+    const stamp = document.getElementById(`caseStamp-${cid}`);
+    const scoreChip = document.getElementById(`caseScore-${cid}`);
+    const btn = document.getElementById(`caseBtn-${cid}`);
+    const isSolved = !!(p && p.solved);
+    card.classList.toggle('solved', isSolved);
+    if(badge) badge.classList.toggle('show', isSolved);
+    if(stamp) stamp.classList.toggle('show', isSolved);
+    if(scoreChip){
+      scoreChip.classList.toggle('show', isSolved);
+      if(isSolved) scoreChip.querySelector('b').textContent = `${toFaNum(p.score)} / 1000 — ${rankForScore(p.score)}`;
+    }
+    if(btn) btn.textContent = isSolved ? 'بازبینی پرونده' : 'شروع تحقیقات';
+  });
+  applyCaseFilter();
+}
+
+// ========== فیلتر پرونده‌ها بر اساس وضعیت حل‌شده / حل‌نشده ==========
+let currentCaseFilter = 'all';
+function applyCaseFilter(){
+  const cards = document.querySelectorAll('.case-card[data-case-id]');
+  let solvedCount = 0, unsolvedCount = 0, visibleCount = 0;
+  cards.forEach(card=>{
+    const isSolved = card.classList.contains('solved');
+    if(isSolved) solvedCount++; else unsolvedCount++;
+    const matches = currentCaseFilter==='all' || (currentCaseFilter==='solved' && isSolved) || (currentCaseFilter==='unsolved' && !isSolved);
+    card.classList.toggle('filtered-out', !matches);
+    if(matches) visibleCount++;
+  });
+  const emptyEl = document.getElementById('caseFilterEmpty');
+  if(emptyEl) emptyEl.classList.toggle('show', visibleCount===0);
+  const allC = document.getElementById('filterCountAll');
+  const solvedC = document.getElementById('filterCountSolved');
+  const unsolvedC = document.getElementById('filterCountUnsolved');
+  if(allC) allC.textContent = `(${toFaNum(cards.length)})`;
+  if(solvedC) solvedC.textContent = `(${toFaNum(solvedCount)})`;
+  if(unsolvedC) unsolvedC.textContent = `(${toFaNum(unsolvedCount)})`;
+}
+document.getElementById('caseFilterBar')?.addEventListener('click', (e)=>{
+  const btn = e.target.closest('.case-filter-btn');
+  if(!btn) return;
+  currentCaseFilter = btn.dataset.filter;
+  document.querySelectorAll('.case-filter-btn').forEach(b=>b.classList.toggle('active', b===btn));
+  applyCaseFilter();
+});
+document.addEventListener('DOMContentLoaded', applyCaseFilter);
+if(document.readyState !== 'loading') applyCaseFilter();
+
+// ========== به‌روزرسانی امتیاز کل و تعداد پرونده‌های بسته‌شده در ID Card ==========
+function updateIdCardScore(){
+  const totalScore = Object.values(caseProgress).reduce((sum, p) => sum + (p.solved ? p.score : 0), 0);
+  const solvedCount = Object.values(caseProgress).filter(p => p.solved).length;
+  const totalEl = document.getElementById('idCardTotalScore');
+  const casesEl = document.getElementById('idCardCasesVal');
+  if(totalEl) totalEl.textContent = toFaNum(totalScore);
+  if(casesEl) casesEl.textContent = toFaNum(solvedCount);
+}
+
+// ========== نوار آمار بالای صفحه ==========
+function updateStatsBar(){
+  const statsBar = document.getElementById('statsBar');
+  const loginHint = document.getElementById('statsLoginHint');
+  if(!currentProfile){
+    statsBar.style.display='none';
+    loginHint.style.display='flex';
+    return;
+  }
+  loginHint.style.display='none';
+  statsBar.style.display='grid';
+
+  const totalCases = document.querySelectorAll('.case-card[data-case-id]').length;
+  const solvedEntries = Object.values(caseProgress).filter(p=>p.solved);
+  const avg = solvedEntries.length ? Math.round(solvedEntries.reduce((a,p)=>a+p.score,0)/solvedEntries.length) : 0;
+  const best = solvedEntries.length ? Math.max(...solvedEntries.map(p=>p.score)) : 0;
+
+  document.getElementById('statTotal').textContent = toFaNum(totalCases);
+  document.getElementById('statSolved').textContent = toFaNum(solvedEntries.length);
+  document.getElementById('statAvg').textContent = solvedEntries.length ? toFaNum(avg) : '—';
+  document.getElementById('statRank').textContent = solvedEntries.length ? rankForScore(best) : 'کارآگاه تازه‌کار';
+}
+
+// ========== تصویر کارآگاهی ==========
+const AVATAR_MALE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">
+  <defs>
+    <radialGradient id="bgm" cx="50%" cy="35%" r="75%"><stop offset="0%" stop-color="#232847"/><stop offset="100%" stop-color="#14172a"/></radialGradient>
+    <linearGradient id="headm" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4d5480"/><stop offset="100%" stop-color="#363c60"/></linearGradient>
+  </defs>
+  <rect width="400" height="500" fill="url(#bgm)"/>
+  <circle cx="200" cy="176" r="80" fill="url(#headm)"/>
+  <path d="M200 240 C150 240 148 270 148 280 L252 280 C252 270 250 240 200 240 Z" fill="url(#headm)"/>
+  <path d="M76 500 C76 372 118 306 200 306 C282 306 324 372 324 500 Z" fill="url(#headm)"/>
+  <path d="M162 306 L200 366 L238 306 C222 300 210 297 200 297 C190 297 178 300 162 306 Z" fill="#151726"/>
+  <path d="M200 366 L182 316 L200 300 L218 316 Z" fill="#8a1f2b"/>
+  <path d="M200 366 L188 386 L200 420 L212 386 Z" fill="#6c1720"/>
+</svg>`;
+
+const AVATAR_FEMALE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">
+  <defs>
+    <radialGradient id="bgf" cx="50%" cy="35%" r="75%"><stop offset="0%" stop-color="#232847"/><stop offset="100%" stop-color="#14172a"/></radialGradient>
+    <linearGradient id="headf" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4d5480"/><stop offset="100%" stop-color="#363c60"/></linearGradient>
+    <linearGradient id="hairf" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5c2a35"/><stop offset="100%" stop-color="#3a1a22"/></linearGradient>
+  </defs>
+  <rect width="400" height="500" fill="url(#bgf)"/>
+  <path d="M200 90 C260 90 288 140 286 196 C284 244 270 288 250 320 L150 320 C130 288 116 244 114 196 C112 140 140 90 200 90 Z" fill="url(#hairf)"/>
+  <circle cx="200" cy="182" r="72" fill="url(#headf)"/>
+  <path d="M200 246 C158 246 156 272 156 280 L244 280 C244 272 242 246 200 246 Z" fill="url(#headf)"/>
+  <path d="M200 96 C150 96 128 140 130 190 C131 210 134 226 140 240 C136 200 140 160 168 140 C176 168 192 182 200 182 C208 182 224 168 232 140 C260 160 264 200 260 240 C266 226 269 210 270 190 C272 140 250 96 200 96 Z" fill="url(#hairf)"/>
+  <path d="M84 500 C84 380 122 310 200 310 C278 310 316 380 316 500 Z" fill="#20243d"/>
+  <path d="M158 310 C170 306 184 304 200 304 C216 304 230 306 242 310 L228 340 L200 322 L172 340 Z" fill="#e9c67a" opacity="0.9"/>
+  <path d="M162 500 L162 340 L200 362 L238 340 L238 500 Z" fill="#161829"/>
+</svg>`;
+
+function getDefaultAvatar(gender){
+  const svg = gender === 'female' ? AVATAR_FEMALE_SVG : AVATAR_MALE_SVG;
+  return 'data:image/svg+xml,' + encodeURIComponent(svg);
+}
+
+// ========== توابع کمکی ==========
+function genBadgeNumber(){
+  const y=new Date().getFullYear();
+  return `DF-${y}-${Math.floor(10000+Math.random()*89999)}`;
+}
+function savePendingProfile(fn,ln,gender){ localStorage.setItem('df_pending_profile', JSON.stringify({first_name:fn,last_name:ln,gender})); }
+function popPendingProfile(){
+  const raw=localStorage.getItem('df_pending_profile'); if(!raw) return null;
+  try{ return JSON.parse(raw); } catch(e){ return null; }
+}
+async function ensureProfile(user){
+  const { data: existing } = await sb.from('profiles').select().eq('id', user.id).maybeSingle();
+  if(existing) return existing;
+  const pending = popPendingProfile();
+  // اگر اطلاعات ثبت‌نامِ در انتظار پیدا نشد (مثلاً localStorage پاک شده بود)
+  // به‌جای برگرداندن null و باقی ماندن حساب در حالت خراب، یک پروفایل پیش‌فرض از روی ایمیل می‌سازیم
+  const fallbackName = (user.email || 'کارآگاه').split('@')[0];
+  const first_name = pending?.first_name || fallbackName;
+  const last_name = pending?.last_name || 'ناشناس';
+  const gender = pending?.gender || null;
+  const { data, error } = await sb.from('profiles').upsert({
+    id:user.id, first_name, last_name, gender, badge_number:genBadgeNumber()
+  }, { onConflict:'id' }).select().single();
+  if(error){ console.error(error); return null; }
+  localStorage.removeItem('df_pending_profile');
+  return data;
+}
+
+// ========== مدیریت UI بر اساس وضعیت ادمین بودن ==========
+function setLoggedInUI(profile){
+  currentProfile = profile;
+  document.getElementById('loginNavBtn').style.display='none';
+  document.getElementById('logoutBtn').style.display='inline-flex';
+  const chip=document.getElementById('detectiveChip'); chip.style.display='flex';
+  document.getElementById('detectiveChipText').innerHTML = profile ? `<b>${profile.first_name} ${profile.last_name}</b> — <span class="num">${profile.badge_number}</span>` : 'کارآگاه';
+
+  // بررسی دسترسی ادمین
+  const adminNavBtn = document.getElementById('adminNavBtn');
+  const commentsAdminNavBtn = document.getElementById('commentsAdminNavBtn');
+  const idCardAdminBtn = document.getElementById('idCardAdminBtn');
+  const idCardAccessLevel = document.getElementById('idCardAccessLevel');
+
+  if(profile && profile.is_admin === true){
+    if(adminNavBtn) adminNavBtn.style.display = 'inline-flex';
+    if(commentsAdminNavBtn) commentsAdminNavBtn.style.display = 'inline-flex';
+    if(idCardAdminBtn) idCardAdminBtn.style.display = 'inline-flex';
+    if(idCardAccessLevel) idCardAccessLevel.textContent = 'مدیریت کل سیستم (Admin)';
+  } else {
+    if(adminNavBtn) adminNavBtn.style.display = 'none';
+    if(commentsAdminNavBtn) commentsAdminNavBtn.style.display = 'none';
+    if(idCardAdminBtn) idCardAdminBtn.style.display = 'none';
+    if(idCardAccessLevel) idCardAccessLevel.textContent = 'پرونده‌های عمومی';
+  }
+}
+function setLoggedOutUI(){
+  currentProfile = null;
+  document.getElementById('loginNavBtn').style.display='inline-flex';
+  document.getElementById('logoutBtn').style.display='none';
+  document.getElementById('detectiveChip').style.display='none';
+
+  const adminNavBtn = document.getElementById('adminNavBtn');
+  const commentsAdminNavBtn = document.getElementById('commentsAdminNavBtn');
+  const idCardAdminBtn = document.getElementById('idCardAdminBtn');
+  if(adminNavBtn) adminNavBtn.style.display = 'none';
+  if(commentsAdminNavBtn) commentsAdminNavBtn.style.display = 'none';
+  if(idCardAdminBtn) idCardAdminBtn.style.display = 'none';
+
+  updateStatsBar();
+  updateIdCardScore();
+}
+
+// ========== مودال‌ها ==========
+let authMode='signin', selectedGender=null;
+const authModal=document.getElementById('authModal');
+function openAuthModal(){ authModal.classList.add('open'); }
+function closeAuthModal(){ authModal.classList.remove('open'); }
+authModal.addEventListener('click', e=>{ if(e.target===authModal) closeAuthModal(); });
+
+function renderIdCardPhoto(){
+  const imgEl = document.getElementById('idCardPhotoImg');
+  const deleteBtn = document.getElementById('idCardPhotoDeleteBtn');
+  const gender = currentProfile && currentProfile.gender;
+  const fallback = getDefaultAvatar(gender);
+  imgEl.onerror = ()=>{ imgEl.onerror=null; imgEl.src = fallback; };
+  imgEl.src = (currentProfile && currentProfile.avatar_url) ? currentProfile.avatar_url : fallback;
+  if(deleteBtn) deleteBtn.style.display = (currentProfile && currentProfile.avatar_url) ? 'flex' : 'none';
+}
+
+function triggerAvatarUpload(){
+  if(!currentProfile) return;
+  document.getElementById('idCardPhotoInput').click();
+}
+
+// ========== فشرده‌سازی عکس قبل از آپلود (کاهش حجم با canvas) ==========
+function compressImage(file, { maxDim = 640, quality = 0.8 } = {}){
+  return new Promise((resolve, reject)=>{
+    const objectUrl = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = ()=>{
+      let { width, height } = img;
+      if(width > height && width > maxDim){
+        height = Math.round(height * (maxDim / width));
+        width = maxDim;
+      } else if(height >= width && height > maxDim){
+        width = Math.round(width * (maxDim / height));
+        height = maxDim;
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      URL.revokeObjectURL(objectUrl);
+      canvas.toBlob((blob)=>{
+        if(!blob){ reject(new Error('تبدیل عکس ناموفق بود.')); return; }
+        resolve(blob);
+      }, 'image/jpeg', quality);
+    };
+    img.onerror = ()=>{ URL.revokeObjectURL(objectUrl); reject(new Error('فایل تصویر خوانده نشد.')); };
+    img.src = objectUrl;
+  });
+}
+
+document.getElementById('idCardPhotoInput').addEventListener('change', async (e)=>{
+  const file = e.target.files && e.target.files[0];
+  e.target.value = '';
+  if(!file || !currentProfile) return;
+
+  if(!['image/png','image/jpeg','image/webp'].includes(file.type)){
+    alert('فقط فایل تصویری با فرمت PNG، JPG یا WebP مجاز است.');
+    return;
+  }
+  if(file.size > 10*1024*1024){
+    alert('حجم عکس باید کمتر از ۱۰ مگابایت باشد.');
+    return;
+  }
+
+  const photoEl = document.getElementById('idCardPhoto');
+  const uploadBtn = document.getElementById('idCardPhotoUploadBtn');
+  const deleteBtn = document.getElementById('idCardPhotoDeleteBtn');
+  photoEl.classList.add('uploading');
+  uploadBtn.disabled = true;
+  if(deleteBtn) deleteBtn.disabled = true;
+  uploadBtn.textContent = 'در حال فشرده‌سازی...';
+
+  try{
+    const compressed = await compressImage(file, { maxDim: 640, quality: 0.8 });
+    uploadBtn.textContent = 'در حال آپلود...';
+
+    // مسیر همیشه ثابت و jpg است، چون خروجی فشرده‌سازی همیشه jpeg است
+    const path = `${currentProfile.id}/avatar.jpg`;
+
+    const { error: uploadError } = await sb.storage.from('avatars').upload(path, compressed, { upsert: true, cacheControl: '3600', contentType: 'image/jpeg' });
+    if(uploadError) throw uploadError;
+
+    const { data: pub } = sb.storage.from('avatars').getPublicUrl(path);
+    const publicUrl = `${pub.publicUrl}?t=${Date.now()}`; // cache-bust
+
+    const { error: dbError } = await sb.from('profiles').update({ avatar_url: publicUrl }).eq('id', currentProfile.id);
+    if(dbError) throw dbError;
+
+    currentProfile.avatar_url = publicUrl;
+    renderIdCardPhoto();
+  } catch(err){
+    console.error('خطا در آپلود عکس:', err);
+    const msg = (err && (err.message || err.error_description || err.statusText)) || 'خطای نامشخص';
+    alert('آپلود عکس با خطا مواجه شد:\n' + msg);
+  } finally {
+    photoEl.classList.remove('uploading');
+    uploadBtn.disabled = false;
+    if(deleteBtn) deleteBtn.disabled = false;
+    uploadBtn.textContent = '📷 تغییر';
+  }
+});
+
+// ========== حذف عکس پروفایل (هم از Storage و هم از دیتابیس) ==========
+async function deleteAvatarPhoto(){
+  if(!currentProfile || !currentProfile.avatar_url) return;
+  if(!confirm('آیا مطمئنید می‌خواهید عکس پروفایل‌تان حذف شود؟ این کار قابل بازگشت نیست.')) return;
+
+  const photoEl = document.getElementById('idCardPhoto');
+  const uploadBtn = document.getElementById('idCardPhotoUploadBtn');
+  const deleteBtn = document.getElementById('idCardPhotoDeleteBtn');
+  photoEl.classList.add('uploading');
+  uploadBtn.disabled = true;
+  deleteBtn.disabled = true;
+  deleteBtn.textContent = 'در حال حذف...';
+
+  try{
+    // تلاش برای حذف فایل با پسوندهای مختلف (برای سازگاری با آپلودهای قدیمی‌تر)
+    const paths = ['jpg','jpeg','png','webp'].map(ext => `${currentProfile.id}/avatar.${ext}`);
+    const { error: removeError } = await sb.storage.from('avatars').remove(paths);
+    if(removeError) console.warn('هشدار در حذف از Storage:', removeError);
+
+    const { error: dbError } = await sb.from('profiles').update({ avatar_url: null }).eq('id', currentProfile.id);
+    if(dbError) throw dbError;
+
+    currentProfile.avatar_url = null;
+    renderIdCardPhoto();
+  } catch(err){
+    console.error('خطا در حذف عکس:', err);
+    const msg = (err && (err.message || err.error_description || err.statusText)) || 'خطای نامشخص';
+    alert('حذف عکس با خطا مواجه شد:\n' + msg);
+  } finally {
+    photoEl.classList.remove('uploading');
+    uploadBtn.disabled = false;
+    deleteBtn.disabled = false;
+    deleteBtn.textContent = '🗑 حذف';
+  }
+}
+
+const idCardModal=document.getElementById('idCardModal');
+function openIdCardModal(){
+  if(!currentProfile){ alert('پروفایل شما هنوز آماده نیست. لطفاً چند لحظه صبر کنید یا صفحه را رفرش کنید.'); return; }
+  renderIdCardPhoto();
+  document.getElementById('idCardName').textContent = `${currentProfile.first_name} ${currentProfile.last_name}`;
+  document.getElementById('idCardBadge').textContent = currentProfile.badge_number;
+  document.getElementById('idCardDate').textContent = new Date(currentProfile.created_at || Date.now()).toLocaleDateString('fa-IR-u-nu-latn');
+
+  const solvedEntries = Object.values(caseProgress).filter(p=>p.solved);
+  const rankEl = document.getElementById('idCardRank');
+  if(solvedEntries.length>0){
+    const bestScore = Math.max(...solvedEntries.map(p=>p.score));
+    rankEl.textContent = rankForScore(bestScore);
+  } else {
+    rankEl.textContent = 'کارآگاه تازه‌کار';
+  }
+
+  // به‌روزرسانی امتیاز کل و تعداد پرونده‌ها
+  updateIdCardScore();
+
+  idCardModal.classList.add('open');
+}
+function closeIdCardModal(){ idCardModal.classList.remove('open'); }
+idCardModal.addEventListener('click', e=>{ if(e.target===idCardModal) closeIdCardModal(); });
+
+document.getElementById('detectiveChip').addEventListener('click', openIdCardModal);
+document.getElementById('loginNavBtn').addEventListener('click', openAuthModal);
+document.getElementById('statsLoginBtn').addEventListener('click', openAuthModal);
+
+// ========== انتخاب جنسیت ==========
+document.querySelectorAll('.gender-opt').forEach(el=>{
+  el.addEventListener('click', ()=>{
+    document.querySelectorAll('.gender-opt').forEach(o=>o.classList.remove('sel'));
+    el.classList.add('sel'); selectedGender=el.dataset.g;
+  });
+});
+
+// ========== احراز هویت ==========
+const authErr=document.getElementById('authErr');
+const authSwitch=document.getElementById('authSwitch');
+const authSubmitBtn=document.getElementById('authSubmitBtn');
+const authTitle=document.getElementById('authTitle');
+const authSub=document.getElementById('authSub');
+const authExtraNames=document.getElementById('authExtraNames');
+const authExtraGender=document.getElementById('authExtraGender');
+
+function applyAuthMode(){
+  const isSignup = authMode==='signup';
+  authExtraNames.classList.toggle('show', isSignup);
+  authExtraGender.classList.toggle('show', isSignup);
+  authTitle.textContent = isSignup ? 'ساخت پرونده‌ی کارآگاهی' : 'ورود به DarkFile';
+  authSub.textContent = isSignup ? 'اطلاعات‌تان برای صدور کارت شناسایی کارآگاهی لازم است' : 'برای شروع تحقیقات، وارد حساب خود شوید';
+  authSubmitBtn.textContent = isSignup ? 'ثبت‌نام و دریافت کارت' : 'ورود';
+  authSwitch.innerHTML = isSignup ? 'قبلاً ثبت‌نام کرده‌اید؟ <b>وارد شوید</b>' : 'حساب ندارید؟ <b>ثبت‌نام کنید</b>';
+}
+applyAuthMode();
+authSwitch.addEventListener('click', ()=>{ authMode = authMode==='signin' ? 'signup' : 'signin'; applyAuthMode(); authErr.classList.remove('show'); });
+
+authSubmitBtn.addEventListener('click', async ()=>{
+  const email=document.getElementById('authEmail').value.trim();
+  const pass=document.getElementById('authPass').value;
+  authErr.classList.remove('show');
+  if(!email || pass.length<6){ authErr.textContent='ایمیل معتبر و رمز حداقل 6 کاراکتری وارد کنید.'; authErr.classList.add('show'); return; }
+  if(authMode==='signup'){
+    const fn=document.getElementById('authFirstName').value.trim();
+    const ln=document.getElementById('authLastName').value.trim();
+    if(!fn || !ln){ authErr.textContent='نام و نام خانوادگی را وارد کنید.'; authErr.classList.add('show'); return; }
+    if(!selectedGender){ authErr.textContent='یکی از گزینه‌های جنسیت را انتخاب کنید.'; authErr.classList.add('show'); return; }
+    savePendingProfile(fn, ln, selectedGender);
+  }
+  authSubmitBtn.disabled=true; authSubmitBtn.textContent='لطفاً صبر کنید...';
+  const fn = authMode==='signin' ? sb.auth.signInWithPassword({email, password:pass}) : sb.auth.signUp({email, password:pass});
+  const { data, error } = await fn;
+  authSubmitBtn.disabled=false; applyAuthMode();
+  if(error){ authErr.textContent = error.message; authErr.classList.add('show'); return; }
+  if(authMode==='signup' && !data.session){
+    authErr.textContent='حساب ساخته شد — ایمیلتان را برای تأیید بررسی کنید، سپس وارد شوید.';
+    authErr.classList.add('show'); authMode='signin'; applyAuthMode();
+    return;
+  }
+  const profile = await ensureProfile(data.user);
+  setLoggedInUI(profile);
+  await loadCaseProgress(data.user.id);
+  closeAuthModal();
+});
+
+document.getElementById('logoutBtn').addEventListener('click', async ()=>{
+  await sb.auth.signOut();
+  setLoggedOutUI();
+  caseProgress = {};
+  applyCaseCardsProgress();
+  updateStatsBar();
+  updateIdCardScore();
+});
+
+// ========== بررسی نشست اولیه ==========
+(async ()=>{
+  const { data:{ session } } = await sb.auth.getSession();
+  if(session){
+    const profile = await ensureProfile(session.user);
+    setLoggedInUI(profile);
+    await loadCaseProgress(session.user.id);
+  } else {
+    setLoggedOutUI();
+    applyCaseCardsProgress();
+  }
+})();
+</script>
+</body>
+</html>

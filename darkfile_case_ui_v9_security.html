@@ -1,0 +1,2587 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رازِ ساعتِ موقوفه — DarkFile</title>
+    <meta name="description" content="پرونده‌ی قتل استاد حبیب‌الله متین در حجره عتیقه‌فروشی. مدارک را بررسی کن، مظنونین را بازجویی کن و قاتل را پیدا کن.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Noto+Naskh+Arabic:wght@400;700&family=Space+Mono:wght@400;700&family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+    </script>
+    <style>
+        /* ===== تمام استایل‌های قبلی ===== */
+        :root {
+            --bg: #0d0f1a;
+            --bg2: #161a2b;
+            --panel: #1c2036;
+            --panel2: #232847;
+            --paper: #efe6cf;
+            --paper-dim: #d9cdaa;
+            --paper-shadow: #a99a6f;
+            --blood: #8a1f2b;
+            --blood-light: #b83e42;
+            --gold: #d1a13a;
+            --gold-light: #e9c67a;
+            --text: #ece6d6;
+            --text-dim: #9391a3;
+            --text-faint: #5c5a72;
+            --ok: #5f9e6f;
+            --line: rgba(255, 255, 255, 0.07);
+            --shadow: 0 24px 70px rgba(0, 0, 0, .55);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Vazirmatn', sans-serif;
+            line-height: 1.8;
+            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .serif {
+            font-family: 'Noto Naskh Arabic', serif;
+        }
+        .mono {
+            font-family: 'Space Mono', monospace;
+            direction: ltr;
+            unicode-bidi: isolate;
+        }
+        .num-fa {
+            font-family: 'Vazirmatn', sans-serif !important;
+            font-weight: 800 !important;
+            font-variant-numeric: tabular-nums !important;
+            letter-spacing: .5px;
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+        button {
+            font-family: inherit;
+            cursor: pointer;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+            border-left: 1px solid var(--line);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 999px;
+            border: 2px solid var(--bg);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gold-light);
+        }
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--gold) var(--bg);
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background: radial-gradient(circle at 14% 10%, rgba(138, 31, 43, .09), transparent 42%),
+                radial-gradient(circle at 88% 78%, rgba(209, 161, 58, .06), transparent 46%);
+        }
+        .grain {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: .045;
+            mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+
+        /* ---------- LOGO ---------- */
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: inherit;
+            text-decoration: none;
+        }
+        .logo svg {
+            width: 30px;
+            height: 30px;
+            flex-shrink: 0;
+        }
+        .logo .word {
+            font-weight: 900;
+            letter-spacing: .3px;
+            font-size: 16px;
+        }
+        .logo .word b {
+            color: var(--blood-light);
+        }
+
+        /* ---------- AUTH STAGE ---------- */
+        #authStage {
+            position: fixed;
+            inset: 0;
+            z-index: 210;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at 20% 15%, rgba(138, 31, 43, .16), transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(209, 161, 58, .10), transparent 50%), var(--bg);
+            transition: opacity .6s ease, filter .6s ease;
+        }
+        #authStage.hide {
+            opacity: 0;
+            filter: blur(8px);
+            pointer-events: none;
+        }
+        .auth-box {
+            width: 400px;
+            max-width: 92vw;
+            background: linear-gradient(180deg, var(--panel2), var(--panel));
+            border: 1px solid rgba(209, 161, 58, .25);
+            border-radius: 14px;
+            padding: 34px 32px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 255, 255, .04);
+            position: relative;
+        }
+        .auth-box::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 14px;
+            padding: 1px;
+            background: linear-gradient(140deg, rgba(209, 161, 58, .4), transparent 30%, transparent 70%, rgba(138, 31, 43, .35));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        .auth-badge-icon {
+            width: 54px;
+            height: 54px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, var(--blood-light), var(--blood) 70%, #3f1116 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(138, 31, 43, .4);
+            font-size: 24px;
+        }
+        .auth-box h2 {
+            font-family: 'Noto Naskh Arabic', serif;
+            font-size: 23px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 6px;
+            color: var(--paper);
+        }
+        .auth-box .sub {
+            font-size: 12.5px;
+            color: var(--text-dim);
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .auth-grid2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .auth-field {
+            margin-bottom: 15px;
+        }
+        .auth-field label {
+            display: block;
+            font-size: 11.5px;
+            color: var(--gold-light);
+            margin-bottom: 7px;
+            letter-spacing: .3px;
+        }
+        .auth-field input {
+            width: 100%;
+            background: var(--bg2);
+            border: 1px solid var(--line);
+            border-radius: 7px;
+            padding: 12px 14px;
+            color: var(--text);
+            font-family: 'Vazirmatn';
+            font-size: 13.5px;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .auth-field input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(209, 161, 58, .15);
+        }
+        .gender-row {
+            display: flex;
+            gap: 10px;
+        }
+        .gender-opt {
+            flex: 1;
+            text-align: center;
+            padding: 11px 8px;
+            border: 1px solid var(--line);
+            border-radius: 7px;
+            font-size: 13px;
+            cursor: pointer;
+            background: var(--bg2);
+            transition: .15s;
+        }
+        .gender-opt.sel {
+            border-color: var(--gold);
+            background: rgba(209, 161, 58, .1);
+            color: var(--gold-light);
+        }
+        .auth-err {
+            font-size: 12px;
+            color: var(--blood-light);
+            margin-bottom: 12px;
+            display: none;
+            background: rgba(138, 31, 43, .1);
+            border-radius: 6px;
+            padding: 9px 12px;
+        }
+        .auth-err.show {
+            display: block;
+        }
+        .auth-switch {
+            text-align: center;
+            font-size: 12.5px;
+            color: var(--text-faint);
+            margin-top: 18px;
+            cursor: pointer;
+        }
+        .auth-switch b {
+            color: var(--gold-light);
+        }
+        .auth-extra {
+            display: none;
+        }
+        .auth-extra.show {
+            display: block;
+        }
+
+        /* ---------- ID CARD ---------- */
+        #idCardStage {
+            position: fixed;
+            inset: 0;
+            z-index: 205;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 24px;
+            background: var(--bg);
+        }
+        #idCardStage.show {
+            display: flex;
+        }
+        .id-card {
+            width: 400px;
+            max-width: 90vw;
+            border-radius: 16px;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(160deg, #1c2036, #11131f);
+            border: 1px solid rgba(209, 161, 58, .3);
+            box-shadow: var(--shadow);
+        }
+        .id-card-top {
+            background: linear-gradient(120deg, var(--blood), #5c141c);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .id-card-top .idc-brand {
+            font-weight: 900;
+            font-size: 13px;
+            color: #fbe9e7;
+            letter-spacing: .5px;
+        }
+        .id-card-top .idc-brand b {
+            color: var(--gold-light);
+        }
+        .id-card-top .idc-label {
+            font-size: 10px;
+            color: #f3c9c9;
+            letter-spacing: 1px;
+        }
+        .id-card-body {
+            padding: 22px 22px 18px;
+            display: flex;
+            gap: 18px;
+            align-items: flex-start;
+        }
+        .id-card-photo {
+            width: 88px;
+            height: 88px;
+            border-radius: 10px;
+            background: linear-gradient(160deg, #2c3050, #171929);
+            border: 2px solid var(--gold);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .id-card-photo svg {
+            width: 100%;
+            height: 100%;
+        }
+        .id-card-info {
+            flex: 1;
+        }
+        .id-card-name {
+            font-family: 'Noto Naskh Arabic', serif;
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--paper);
+            margin-bottom: 3px;
+        }
+        .id-card-rank {
+            font-size: 11.5px;
+            color: var(--gold-light);
+            margin-bottom: 10px;
+        }
+        .id-card-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-dim);
+            padding: 4px 0;
+            border-bottom: 1px dashed var(--line);
+        }
+        .id-card-row b {
+            color: var(--text);
+            font-family: 'Vazirmatn';
+            font-weight: 700;
+        }
+        .id-card-row .gold-value {
+            color: var(--gold-light);
+            font-weight: 800;
+        }
+        .id-card-badgeno {
+            text-align: center;
+            padding: 12px 22px 18px;
+        }
+        .id-card-badgeno .lbl {
+            font-size: 9.5px;
+            color: var(--text-faint);
+            letter-spacing: 1.5px;
+            margin-bottom: 4px;
+        }
+        .id-card-badgeno .num {
+            font-family: 'Vazirmatn';
+            font-weight: 800;
+            font-size: 20px;
+            color: var(--gold-light);
+            letter-spacing: 2px;
+            font-variant-numeric: tabular-nums;
+        }
+        .id-card-strip {
+            height: 10px;
+            background: repeating-linear-gradient(45deg, var(--gold) 0 8px, #2a2410 8px 16px);
+            opacity: .55;
+        }
+        .id-card-shine {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, .06) 45%, transparent 60%);
+            pointer-events: none;
+        }
+        .idc-continue-hint {
+            color: var(--text-faint);
+            font-size: 12.5px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 11px 24px;
+            border-radius: 5px;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: transform .15s, background .2s;
+            font-family: inherit;
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        .btn-blood {
+            background: var(--blood);
+            color: #fbe9e7;
+        }
+        .btn-blood:hover {
+            background: var(--blood-light);
+        }
+        .btn-gold {
+            background: var(--gold);
+            color: #241d09;
+        }
+        .btn-gold:hover {
+            background: var(--gold-light);
+        }
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--line);
+            color: var(--text);
+        }
+        .btn-ghost:hover {
+            border-color: var(--gold);
+        }
+        .btn:disabled {
+            opacity: .35;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-block {
+            width: 100%;
+        }
+        .btn-sm {
+            padding: 7px 14px;
+            font-size: 12px;
+        }
+
+        /* ---------- SEAL ---------- */
+        #sealStage {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 26px;
+            background: var(--bg);
+            transition: opacity .8s ease, filter .8s ease;
+        }
+        #sealStage.hide {
+            opacity: 0;
+            filter: blur(8px);
+            pointer-events: none;
+        }
+        .folder {
+            width: 360px;
+            height: 460px;
+            background: linear-gradient(165deg, #2b251a 0%, #151310 100%);
+            border: 2px solid #4a3e2c;
+            border-radius: 8px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85), inset 0 0 50px rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .folder:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 40px 100px rgba(138, 31, 43, 0.25), inset 0 0 50px rgba(0, 0, 0, 0.8);
+        }
+        .folder::before {
+            content: 'پرونده‌ی محرمانه';
+            position: absolute;
+            top: 36px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 800;
+            font-size: 24px;
+            color: #d1a13a;
+            letter-spacing: 0.5px;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.9);
+            border-bottom: 2px solid rgba(209, 161, 58, 0.3);
+            padding-bottom: 6px;
+        }
+        .folder::after {
+            content: '⚠️ رازِ ساعتِ موقوفه';
+            position: absolute;
+            bottom: 30px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 800;
+            font-size: 15px;
+            color: var(--blood-light);
+            letter-spacing: 0.5px;
+            background: rgba(138, 31, 43, 0.15);
+            padding: 6px 18px;
+            border-radius: 6px;
+            border: 1px dashed rgba(138, 31, 43, 0.4);
+        }
+        .seal {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #b83e42, #8a1f2b 60%, #2d0b0e 100%);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), inset 0 -6px 12px rgba(0, 0, 0, 0.5), 0 0 0 4px rgba(184, 62, 66, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .seal span {
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            color: #fbe9e7;
+            text-align: center;
+            line-height: 1.4;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+        .folder:hover .seal {
+            transform: scale(1.05);
+        }
+        .seal.crack {
+            animation: crack .5s forwards;
+        }
+        @keyframes crack {
+            0% {
+                transform: scale(1)
+            }
+            40% {
+                transform: scale(1.15) rotate(-4deg)
+            }
+            100% {
+                transform: scale(0) rotate(20deg);
+                opacity: 0
+            }
+        }
+        .hint-open {
+            color: var(--text-faint);
+            font-size: 13px;
+        }
+        .glitch-flash {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 210;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .glitch-flash.on {
+            animation: fl .5s steps(2, end);
+        }
+        @keyframes fl {
+            0% {
+                opacity: .9
+            }
+            20% {
+                opacity: .2
+            }
+            35% {
+                opacity: .7
+            }
+            55% {
+                opacity: .1
+            }
+            100% {
+                opacity: 0
+            }
+        }
+
+        /* ---------- MAIN PAGE ---------- */
+        #mainPage {
+            opacity: 0;
+            transition: opacity .7s ease;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        #mainPage.show {
+            opacity: 1;
+        }
+
+        /* HEADER */
+        .topbar {
+            flex: none;
+            background: rgba(13, 15, 26, .94);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--line);
+            padding: 0 22px;
+            height: 62px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 60;
+        }
+        .topbar .wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            gap: 16px;
+        }
+        .head-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .case-name-chip {
+            font-size: 12px;
+            color: var(--text-faint);
+            border-right: 1px solid var(--line);
+            padding-right: 16px;
+        }
+        .case-name-chip b {
+            color: var(--gold-light);
+            font-weight: 700;
+        }
+        .tb-stats {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+        .tb-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+        .tb-stat b {
+            color: var(--text);
+            font-family: 'Space Mono', monospace;
+        }
+        .score-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(209, 161, 58, 0.3);
+            background: rgba(209, 161, 58, 0.08);
+            border-radius: 6px;
+            padding: 5px 14px;
+            font-size: 12.5px;
+            color: var(--gold-light);
+        }
+        .score-chip b {
+            font-size: 15px;
+            color: var(--gold);
+        }
+        .hint-dots {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+        .hint-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(209, 161, 58, 0.2);
+            border: 1px solid var(--gold);
+        }
+        .hint-dot.used {
+            background: var(--gold);
+        }
+        #tbDetective {
+            display: none;
+        }
+        #tbDetective b {
+            font-weight: 700;
+            color: var(--gold-light);
+        }
+
+        /* LAYOUT */
+        .layout {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 260px 1fr 300px;
+            min-height: 0;
+        }
+
+        /* LEFT SIDEBAR */
+        .sidebar {
+            background: var(--panel);
+            border-left: 1px solid var(--line);
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .sb-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--line);
+            flex: none;
+            background: var(--bg2);
+        }
+        .sb-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px 4px;
+            font-size: 12.5px;
+            color: var(--text-dim);
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .sb-tab.active {
+            color: var(--gold-light);
+            border-color: var(--gold);
+            background: var(--panel);
+        }
+        .sb-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px;
+            display: none;
+        }
+        .sb-list.active {
+            display: block;
+        }
+        .sb-item {
+            background: var(--bg2);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: border-color .2s, transform .15s;
+        }
+        .sb-item:hover {
+            border-color: rgba(209, 161, 58, 0.4);
+            transform: translateX(-2px);
+        }
+        .sb-item-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 3px;
+        }
+        .sb-item-sub {
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+        .sb-suspect {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .avatar-sm {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            flex: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        /* CORKBOARD */
+        .board-wrap {
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle at 50% 50%, rgba(28, 32, 54, 0.6), rgba(13, 15, 26, 0.95)),
+                repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 28px),
+                repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 28px),
+                var(--bg);
+        }
+        .board-toolbar {
+            position: absolute;
+            top: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 15;
+            display: flex;
+            gap: 8px;
+            background: rgba(22, 26, 43, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 6px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+        }
+        .tool-btn {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            color: var(--text-dim);
+            border-radius: 5px;
+            padding: 7px 12px;
+            font-size: 11.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .tool-btn:hover {
+            color: var(--text);
+            border-color: rgba(209, 161, 58, 0.4);
+        }
+        .tool-btn.active {
+            background: var(--blood);
+            border-color: var(--blood-light);
+            color: #fff;
+        }
+        .board-svg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .board-hint {
+            position: absolute;
+            bottom: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: var(--text-faint);
+            background: rgba(13, 15, 26, 0.8);
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            z-index: 5;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        .pin-card {
+            position: absolute;
+            width: 155px;
+            background: var(--paper);
+            color: #26241c;
+            border-radius: 3px;
+            padding: 10px 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+            cursor: grab;
+            touch-action: none;
+            z-index: 3;
+            user-select: none;
+        }
+        .pin-card:active {
+            cursor: grabbing;
+        }
+        .pin-card.selected {
+            outline: 2px solid var(--blood-light);
+        }
+        .pin-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--blood-light);
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+        .pin-card-title {
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 4px;
+            line-height: 1.3;
+        }
+        .pin-card-sub {
+            font-size: 10px;
+            color: #6b6653;
+            margin-top: 4px;
+        }
+        .flashlight-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 8;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity .25s;
+            background: radial-gradient(circle 160px at var(--mx, 50%) var(--my, 50%), transparent 0%, transparent 55%, rgba(5, 6, 10, 0.95) 100%);
+        }
+        .flashlight-overlay.on {
+            opacity: 1;
+        }
+
+        /* RIGHT PANEL */
+        .rpanel {
+            background: var(--panel);
+            border-right: 1px solid var(--line);
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow-y: auto;
+        }
+        .rp-section {
+            padding: 16px 18px 0;
+        }
+        .rp-title {
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        textarea.notebook {
+            width: 100%;
+            min-height: 85px;
+            background: var(--bg2);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 12px;
+            padding: 10px 12px;
+            resize: none;
+            line-height: 1.6;
+        }
+        textarea.notebook:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+        .hint-btn {
+            width: 100%;
+            background: var(--bg2);
+            border: 1px solid rgba(209, 161, 58, 0.3);
+            color: var(--gold-light);
+            border-radius: 6px;
+            padding: 9px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .hint-btn:hover {
+            border-color: var(--gold);
+            background: rgba(209, 161, 58, 0.08);
+        }
+        .hint-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+        .hint-log {
+            font-size: 11.5px;
+            color: var(--text-dim);
+            margin-top: 8px;
+        }
+        .hint-log div {
+            padding: 8px 10px;
+            background: rgba(209, 161, 58, 0.06);
+            border-radius: 5px;
+            margin-bottom: 6px;
+            border-right: 2px solid var(--gold);
+            line-height: 1.6;
+        }
+
+        .suspect-opt {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 11px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            margin-bottom: 7px;
+            font-size: 12px;
+            cursor: pointer;
+            background: var(--bg2);
+            transition: .15s;
+        }
+        .suspect-opt:hover {
+            border-color: rgba(209, 161, 58, 0.3);
+        }
+        .suspect-opt.selected {
+            border-color: var(--blood-light);
+            background: rgba(138, 31, 43, 0.12);
+        }
+        .suspect-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            border: 1.5px solid var(--text-faint);
+            flex: none;
+        }
+        .suspect-opt.selected .suspect-dot {
+            background: var(--blood-light);
+            border-color: var(--blood-light);
+        }
+        .suspect-opt-name {
+            font-weight: 700;
+            color: var(--text);
+        }
+        .suspect-opt-role {
+            font-size: 10px;
+            color: var(--text-dim);
+        }
+        .accuse-btn {
+            width: 100%;
+            margin-top: 10px;
+        }
+        .cooldown-note {
+            font-size: 11px;
+            color: var(--text-faint);
+            text-align: center;
+            margin-top: 6px;
+            margin-bottom: 12px;
+        }
+        .result-inline {
+            margin: 0 18px 18px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            display: none;
+            line-height: 1.6;
+        }
+        .result-inline.show {
+            display: block;
+        }
+        .result-inline.wrong {
+            background: rgba(138, 31, 43, 0.15);
+            border: 1px solid rgba(138, 31, 43, 0.4);
+            color: #eab3ae;
+        }
+
+        /* MODALS */
+        .modal-bg {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 6, 10, 0.82);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-bg.open {
+            display: flex;
+        }
+        .modal {
+            width: 100%;
+            max-width: 560px;
+            max-height: 86vh;
+            overflow-y: auto;
+            background: var(--panel);
+            border: 1px solid rgba(209, 161, 58, 0.25);
+            color: var(--text);
+            border-radius: 10px;
+            position: relative;
+            box-shadow: var(--shadow);
+        }
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            font-size: 14px;
+            z-index: 5;
+            cursor: pointer;
+        }
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .interrogate-head {
+            padding: 26px 24px 18px;
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            border-bottom: 1px solid var(--line);
+        }
+        .interrogate-head .avatar-lg {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            flex: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .interrogate-head h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .interrogate-head .role {
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+        .interrogate-body {
+            padding: 20px 24px 24px;
+        }
+        .q-row {
+            background: var(--bg2);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--gold-light);
+            transition: .15s;
+        }
+        .q-row:hover {
+            border-color: var(--gold);
+        }
+        .q-row.asked {
+            opacity: 0.6;
+            cursor: default;
+        }
+        .a-box {
+            background: var(--bg2);
+            border-right: 3px solid var(--blood-light);
+            padding: 12px 14px;
+            border-radius: 0 6px 6px 0;
+            font-size: 13px;
+            line-height: 1.9;
+            margin: -2px 0 12px;
+            color: var(--text);
+        }
+        .pin-answer-btn {
+            font-size: 10.5px;
+            color: var(--gold-light);
+            background: none;
+            border: 1px solid var(--gold);
+            border-radius: 999px;
+            padding: 3px 10px;
+            margin-top: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .pin-answer-btn:hover {
+            background: rgba(209, 161, 58, 0.1);
+        }
+
+        .evidence-head {
+            padding: 26px 24px 14px;
+            position: relative;
+        }
+        .evidence-head .file-no {
+            font-size: 11px;
+            color: var(--gold-light);
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+        .evidence-head h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .evidence-body {
+            padding: 0 24px 20px;
+            font-size: 13.5px;
+            line-height: 1.9;
+            color: var(--text-dim);
+        }
+
+        .magnify-container {
+            position: relative;
+            width: calc(100% - 48px);
+            margin: 0 24px 18px;
+            height: 180px;
+            border-radius: 6px;
+            background: #151824;
+            border: 1px solid var(--line);
+            overflow: hidden;
+            cursor: none;
+        }
+        .doc-layer {
+            position: absolute;
+            inset: 0;
+            padding: 18px;
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            line-height: 2;
+            color: #c9c4b0;
+            direction: ltr;
+            unicode-bidi: plaintext;
+            white-space: pre-wrap;
+            user-select: none;
+        }
+        .doc-blur {
+            filter: blur(3.5px);
+            opacity: .5;
+        }
+        .doc-sharp {
+            color: #fff;
+            text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
+            clip-path: circle(0px at 0px 0px);
+            background: #1c2032;
+        }
+        .lens-ring {
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            margin: -55px 0 0 -55px;
+            border-radius: 50%;
+            border: 2px solid var(--gold-light);
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, .6), inset 0 0 15px rgba(209, 161, 58, 0.3);
+            pointer-events: none;
+            display: none;
+            z-index: 10;
+        }
+
+        /* ===== RESULT OVERLAY ===== */
+        .result-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 150;
+            background: radial-gradient(circle at 50% 50%, #161a2b, #0d0f1a);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .result-overlay.open {
+            display: flex;
+        }
+        .result-card {
+            width: 100%;
+            max-width: 620px;
+            background: linear-gradient(160deg, var(--panel2), var(--panel));
+            border: 2px solid rgba(209, 161, 58, 0.4);
+            border-radius: 14px;
+            padding: 36px 34px 30px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            max-height: 92vh;
+            overflow-y: auto;
+        }
+        .result-card .stamp {
+            display: inline-block;
+            margin-bottom: 16px;
+            border: 3px solid var(--blood-light);
+            color: var(--blood-light);
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            font-size: 15px;
+            letter-spacing: 3px;
+            padding: 6px 24px;
+            border-radius: 4px;
+            transform: rotate(-6deg);
+            background: rgba(138, 31, 43, 0.08);
+        }
+        .result-card .case-badge {
+            display: inline-block;
+            background: rgba(209, 161, 58, 0.12);
+            color: var(--gold-light);
+            font-size: 11px;
+            padding: 4px 14px;
+            border-radius: 999px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(209, 161, 58, 0.2);
+            letter-spacing: 0.5px;
+        }
+        .result-card h2 {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 6px;
+            color: var(--paper);
+            font-family: 'Noto Naskh Arabic', serif;
+        }
+        .result-card .subtitle {
+            font-size: 13px;
+            color: var(--text-dim);
+            margin-bottom: 20px;
+        }
+        .result-card .narrative-box {
+            font-size: 13.5px;
+            color: var(--text);
+            margin-bottom: 22px;
+            line-height: 2;
+            text-align: justify;
+            background: var(--bg2);
+            padding: 18px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            border-right: 4px solid var(--gold);
+        }
+        .result-card .narrative-box strong {
+            color: var(--gold-light);
+        }
+        .score-breakdown {
+            text-align: right;
+            background: var(--bg2);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            font-size: 12.5px;
+        }
+        .score-breakdown .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+        }
+        .score-breakdown .row:last-child {
+            border-bottom: none;
+        }
+        .score-breakdown .row .label {
+            color: var(--text-dim);
+        }
+        .score-breakdown .row .value {
+            color: var(--text);
+            font-weight: 600;
+        }
+        .score-breakdown .total {
+            border-top: 2px solid var(--gold);
+            margin-top: 8px;
+            padding-top: 10px;
+            font-weight: 800;
+            font-size: 15px;
+        }
+        .score-breakdown .total .label {
+            color: var(--gold-light);
+        }
+        .score-breakdown .total .value {
+            color: var(--gold);
+            font-size: 18px;
+        }
+        .result-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--panel2);
+            border: 1px solid rgba(209, 161, 58, 0.4);
+            color: var(--text);
+            padding: 10px 20px;
+            border-radius: 999px;
+            font-size: 12.5px;
+            z-index: 120;
+            opacity: 0;
+            transition: all .3s;
+            pointer-events: none;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        footer {
+            border-top: 1px solid var(--line);
+            padding: 20px 0;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-faint);
+            flex: none;
+            background: var(--bg);
+        }
+        footer .logo {
+            justify-content: center;
+            margin-bottom: 4px;
+        }
+
+        @media (max-width: 880px) {
+            .layout {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr auto;
+            }
+            .sidebar {
+                border-left: none;
+                border-bottom: 1px solid var(--line);
+                max-height: 200px;
+            }
+            .rpanel {
+                border-right: none;
+                border-top: 1px solid var(--line);
+                max-height: 280px;
+            }
+            .board-wrap {
+                min-height: 420px;
+            }
+            .tb-stats .tb-stat:not(.score-chip) {
+                display: none;
+            }
+            .topbar .wrap {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 8px 0;
+            }
+            .case-name-chip {
+                border-right: none;
+                padding-right: 0;
+            }
+            .board-toolbar {
+                flex-wrap: wrap;
+                justify-content: center;
+                top: 8px;
+                padding: 4px;
+                gap: 4px;
+            }
+            .tool-btn {
+                font-size: 10px;
+                padding: 4px 8px;
+            }
+            .board-hint {
+                font-size: 9px;
+                padding: 4px 10px;
+                bottom: 8px;
+                white-space: normal;
+            }
+            .pin-card {
+                width: 120px;
+                padding: 8px 10px;
+            }
+            .pin-card-title {
+                font-size: 10px;
+            }
+            .pin-card-sub {
+                font-size: 9px;
+            }
+            .result-card {
+                padding: 24px 18px;
+            }
+            .result-card h2 {
+                font-size: 20px;
+            }
+        }
+        @media (max-width: 500px) {
+            .auth-box {
+                padding: 24px 18px;
+            }
+            .id-card {
+                max-width: 96vw;
+            }
+            .id-card-body {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .result-card {
+                padding: 18px 14px;
+            }
+            .result-card .narrative-box {
+                font-size: 12px;
+                padding: 14px;
+            }
+            .score-breakdown {
+                font-size: 11px;
+                padding: 12px 14px;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
+    </script>
+</head>
+<body>
+    <div class="grain"></div>
+    <div class="glitch-flash" id="flash"></div>
+
+    <!-- ===== AUTH STAGE ===== -->
+    <div id="authStage">
+        <div class="auth-box">
+            <div class="auth-badge-icon">🕵️</div>
+            <h2 id="authTitle">ورود به DarkFile</h2>
+            <div class="sub" id="authSub">برای شروع تحقیقات، وارد حساب خود شوید</div>
+            <div class="auth-err" id="authErr"></div>
+            <div class="auth-extra" id="authExtraNames">
+                <div class="auth-grid2">
+                    <div class="auth-field"><label>نام</label><input type="text" id="authFirstName" placeholder="مثلاً علی"></div>
+                    <div class="auth-field"><label>نام خانوادگی</label><input type="text" id="authLastName" placeholder="مثلاً محمدی"></div>
+                </div>
+            </div>
+            <div class="auth-extra" id="authExtraGender">
+                <div class="auth-field">
+                    <label>جنسیت (برای پروفایل کارآگاهی)</label>
+                    <div class="gender-row">
+                        <div class="gender-opt" data-g="male">مرد</div>
+                        <div class="gender-opt" data-g="female">زن</div>
+                    </div>
+                </div>
+            </div>
+            <div class="auth-field"><label>ایمیل</label><input type="email" id="authEmail" placeholder="you@example.com"></div>
+            <div class="auth-field"><label>رمز عبور</label><input type="password" id="authPass" placeholder="حداقل ۶ کاراکتر"></div>
+            <button class="btn btn-gold btn-block" id="authSubmitBtn">ورود</button>
+            <div class="auth-switch" id="authSwitch">حساب ندارید؟ <b>ثبت‌نام کنید</b></div>
+        </div>
+    </div>
+
+    <!-- ===== ID CARD ===== -->
+    <div id="idCardStage">
+        <div class="id-card" id="idCardEl">
+            <div class="id-card-top">
+                <div class="idc-brand">Dark<b>File</b></div>
+                <div class="idc-label">کارت شناسایی کارآگاهی</div>
+            </div>
+            <div class="id-card-shine"></div>
+            <div class="id-card-body">
+                <div class="id-card-photo" id="idCardPhoto"></div>
+                <div class="id-card-info">
+                    <div class="id-card-name" id="idCardName">—</div>
+                    <div class="id-card-rank" id="idCardRank">کارآگاه تازه‌کار</div>
+                    <div class="id-card-row"><span>وضعیت</span><b>فعال</b></div>
+                    <div class="id-card-row"><span>سطح دسترسی</span><b>پرونده‌های عمومی</b></div>
+                    <div class="id-card-row"><span>امتیاز کل</span><b class="gold-value" id="idCardScore">۰</b></div>
+                    <div class="id-card-row"><span>تاریخ صدور</span><b id="idCardDate">—</b></div>
+                </div>
+            </div>
+            <div class="id-card-badgeno">
+                <div class="lbl">شماره‌ی کارآگاهی</div>
+                <div class="num" id="idCardBadge">—</div>
+            </div>
+            <div class="id-card-strip"></div>
+        </div>
+        <button class="btn btn-blood" id="idCardContinueBtn">شروع تحقیقات</button>
+        <div class="idc-continue-hint">این کارت همیشه در پروفایل شما قابل مشاهده است</div>
+    </div>
+
+    <!-- ===== SEAL ===== -->
+    <div id="sealStage">
+        <div class="folder" id="folderBtn">
+            <div class="seal" id="sealEl"><span>پرونده‌ی<br>محرمانه</span></div>
+        </div>
+        <div class="hint-open">برای شکستن مهر و باز کردن پرونده کلیک کنید</div>
+    </div>
+
+    <!-- ===== MAIN PAGE ===== -->
+    <div id="mainPage">
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <div class="wrap">
+                <div class="head-left">
+                    <div class="logo">
+                        <a href="index.html">
+                            <svg viewBox="0 0 40 40" fill="none">
+                                <defs>
+                                    <radialGradient id="darkSpace" cx="50%" cy="45%" r="65%">
+                                        <stop offset="0%" stop-color="#2b2f4a"/>
+                                        <stop offset="100%" stop-color="#0a0b14"/>
+                                    </radialGradient>
+                                </defs>
+                                <mask id="keyhole"><rect width="40" height="40" fill="white"/><circle cx="20" cy="15" r="7" fill="black"/><path d="M15 21 L25 21 L29 34 L11 34 Z" fill="black"/></mask>
+                                <rect width="40" height="40" rx="8" fill="url(#darkSpace)" mask="url(#keyhole)"/>
+                                <circle cx="12" cy="10" r=".7" fill="#e9c67a"/><circle cx="28" cy="8" r=".5" fill="#e9c67a"/><circle cx="30" cy="16" r=".6" fill="#e9c67a"/>
+                                <circle cx="20" cy="15" r="6.3" fill="none" stroke="#8a1f2b" stroke-width="1.1"/>
+                            </svg>
+                            <span class="word">Dark<b>File</b></span>
+                        </a>
+                    </div>
+                    <div class="case-name-chip">در حال بررسی: <b>رازِ ساعتِ موقوفه</b></div>
+                </div>
+                <div class="tb-stats">
+                    <div class="tb-stat" id="tbDetective">🕵️ <b id="tbDetectiveName"></b></div>
+                    <div class="tb-stat hint-dots">
+                        <span class="hint-dot" id="hd1"></span>
+                        <span class="hint-dot" id="hd2"></span>
+                        <span class="hint-dot" id="hd3"></span>
+                        راهنمایی
+                    </div>
+                    <div class="score-chip">امتیاز: <b class="num-fa" id="tbScore">۱۰۰۰</b></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LAYOUT -->
+        <div class="layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sb-tabs">
+                    <div class="sb-tab active" data-tab="evidence">مدارک پرونده</div>
+                    <div class="sb-tab" data-tab="suspects">اتاق بازجویی</div>
+                </div>
+                <div class="sb-list active" id="list-evidence"></div>
+                <div class="sb-list" id="list-suspects"></div>
+            </aside>
+
+            <!-- Corkboard -->
+            <section class="board-wrap" id="board">
+                <div class="board-toolbar">
+                    <button class="tool-btn" id="connect-toggle">🧵 وصل کردن سرنخ‌ها</button>
+                    <button class="tool-btn" id="flash-toggle">🔦 حالت چراغ‌قوه</button>
+                    <button class="tool-btn" id="shot-btn">📸 اسکرین‌شات</button>
+                </div>
+                <svg class="board-svg" id="board-svg"></svg>
+                <div class="flashlight-overlay" id="flash-overlay"></div>
+                <div class="board-hint">مدارک و اظهارات را پین کن، بکش و با نخ قرمز وصلشون کن</div>
+            </section>
+
+            <!-- Right Panel -->
+            <aside class="rpanel">
+                <div class="rp-section">
+                    <div class="rp-title">دفترچه کارآگاه</div>
+                    <textarea class="notebook" placeholder="فرضیه‌ها و تحلیل زمان مرگ را اینجا بنویسید..."></textarea>
+                    <button class="hint-btn" id="hint-btn">💡 دریافت راهنمایی (−۱۵٪ امتیاز)</button>
+                    <div class="hint-log" id="hint-log"></div>
+                </div>
+
+                <!-- ====== فرم اتهام‌نامه حرفه‌ای ====== -->
+                <div class="rp-section" style="margin-top:12px; border-top:1px solid var(--line); padding-top:16px;">
+                    <div class="rp-title">🔍 اتهام‌نامه نهایی</div>
+                    <div style="font-size:11px; color:var(--text-faint); margin-bottom:12px;">
+                        برای صدور حکم، مظنون، انگیزه و حداقل ۲ مدرک کلیدی را انتخاب کنید.
+                    </div>
+
+                    <!-- ۱. انتخاب مظنون -->
+                    <div style="margin-bottom:14px;">
+                        <label style="font-size:11px; color:var(--gold-light); display:block; margin-bottom:6px;">۱. مظنون اصلی کیست؟</label>
+                        <div id="suspect-radio" style="display:flex; flex-direction:column; gap:4px;"></div>
+                    </div>
+
+                    <!-- ۲. انتخاب انگیزه -->
+                    <div style="margin-bottom:14px;">
+                        <label style="font-size:11px; color:var(--gold-light); display:block; margin-bottom:6px;">۲. انگیزه‌ی اصلی قتل چه بوده؟</label>
+                        <div id="motive-group" style="display:flex; flex-wrap:wrap; gap:6px;">
+                            <label style="font-size:11px; color:var(--text-dim); display:flex; align-items:center; gap:5px; cursor:pointer; background:var(--bg2); padding:4px 10px; border-radius:4px; border:1px solid var(--line); transition:.15s;" class="motive-opt" data-value="debt">
+                                <input type="radio" name="motive" value="debt" style="accent-color:var(--gold);"> بدهی سنگین
+                            </label>
+                            <label style="font-size:11px; color:var(--text-dim); display:flex; align-items:center; gap:5px; cursor:pointer; background:var(--bg2); padding:4px 10px; border-radius:4px; border:1px solid var(--line); transition:.15s;" class="motive-opt" data-value="inherit">
+                                <input type="radio" name="motive" value="inherit" style="accent-color:var(--gold);"> ارث و دارایی
+                            </label>
+                            <label style="font-size:11px; color:var(--text-dim); display:flex; align-items:center; gap:5px; cursor:pointer; background:var(--bg2); padding:4px 10px; border-radius:4px; border:1px solid var(--line); transition:.15s;" class="motive-opt" data-value="smuggle">
+                                <input type="radio" name="motive" value="smuggle" style="accent-color:var(--gold);"> افشای قاچاق
+                            </label>
+                            <label style="font-size:11px; color:var(--text-dim); display:flex; align-items:center; gap:5px; cursor:pointer; background:var(--bg2); padding:4px 10px; border-radius:4px; border:1px solid var(--line); transition:.15s;" class="motive-opt" data-value="rivalry">
+                                <input type="radio" name="motive" value="rivalry" style="accent-color:var(--gold);"> رقابت صنفی
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- ۳. انتخاب مدارک کلیدی -->
+                    <div style="margin-bottom:16px;">
+                        <label style="font-size:11px; color:var(--gold-light); display:block; margin-bottom:6px;">۳. کدام مدارک بیشتر اثبات‌کننده‌اند؟ (حداقل ۲ مورد)</label>
+                        <div id="evidence-group" style="display:flex; flex-wrap:wrap; gap:6px;">
+                            <label style="font-size:10.5px; color:var(--text-dim); display:flex; align-items:center; gap:4px; cursor:pointer; background:var(--bg2); padding:3px 10px; border-radius:4px; border:1px solid var(--line); transition:.15s;" class="evidence-opt" data-value="e1">
+                                <input type="checkbox" name="evidence" value="e1" style="accent-color:var(--gold); width:14px; height:14px;"> ساعت موقوفه
+                            </label>
+                            <label style="font-size:10.5px; color:var(--text-dim); display:flex; align-items:center; gap:4px; cursor:pointer; background:var(--bg2); padding:3px 10px; border-radius:4px; border:1px solid var(--line); transition:.15s;" class="evidence-opt" data-value="e2">
+                                <input type="checkbox" name="evidence" value="e2" style="accent-color:var(--gold); width:14px; height:14px;"> فنجان چای
+                            </label>
+                            <label style="font-size:10.5px; color:var(--text-dim); display:flex; align-items:center; gap:4px; cursor:pointer; background:var(--bg2); padding:3px 10px; border-radius:4px; border:1px solid var(--line); transition:.15s;" class="evidence-opt" data-value="e3">
+                                <input type="checkbox" name="evidence" value="e3" style="accent-color:var(--gold); width:14px; height:14px;"> شرایط جوی
+                            </label>
+                            <label style="font-size:10.5px; color:var(--text-dim); display:flex; align-items:center; gap:4px; cursor:pointer; background:var(--bg2); padding:3px 10px; border-radius:4px; border:1px solid var(--line); transition:.15s;" class="evidence-opt" data-value="e4">
+                                <input type="checkbox" name="evidence" value="e4" style="accent-color:var(--gold); width:14px; height:14px;"> پزشکی قانونی
+                            </label>
+                            <label style="font-size:10.5px; color:var(--text-dim); display:flex; align-items:center; gap:4px; cursor:pointer; background:var(--bg2); padding:3px 10px; border-radius:4px; border:1px solid var(--line); transition:.15s;" class="evidence-opt" data-value="e5">
+                                <input type="checkbox" name="evidence" value="e5" style="accent-color:var(--gold); width:14px; height:14px;"> قفل در
+                            </label>
+                            <label style="font-size:10.5px; color:var(--text-dim); display:flex; align-items:center; gap:4px; cursor:pointer; background:var(--bg2); padding:3px 10px; border-radius:4px; border:1px solid var(--line); transition:.15s;" class="evidence-opt" data-value="e6">
+                                <input type="checkbox" name="evidence" value="e6" style="accent-color:var(--gold); width:14px; height:14px;"> دفترچه ناپدیدشده
+                            </label>
+                        </div>
+                        <div id="evidence-count" style="font-size:10px; color:var(--text-faint); margin-top:4px;">۰ مدرک انتخاب شده (حداقل ۲ مورد نیاز است)</div>
+                    </div>
+
+                    <!-- دکمه اعلام نتیجه -->
+                    <button class="btn btn-blood accuse-btn" id="accuse-btn" disabled>اعلام نتیجه پرونده</button>
+                    <div class="cooldown-note" id="cooldown-note"></div>
+                    <div class="result-inline" id="result-inline"></div>
+                </div>
+            </aside>
+        </div>
+
+        <footer>
+            <div class="logo">
+                <a href="index.html">
+                    <svg viewBox="0 0 40 40" fill="none" style="width:22px;height:22px;">
+                        <mask id="keyhole2"><rect width="40" height="40" fill="white"/><circle cx="20" cy="15" r="7" fill="black"/><path d="M15 21 L25 21 L29 34 L11 34 Z" fill="black"/></mask>
+                        <rect width="40" height="40" rx="8" fill="#171a2c" mask="url(#keyhole2)"/>
+                    </svg>
+                    <span class="word">Dark<b>File</b></span>
+                </a>
+            </div>
+            رازِ ساعتِ موقوفه — یک تجربه‌ی DarkFile
+        </footer>
+    </div>
+
+    <!-- MODALS -->
+    <div class="modal-bg" id="interrogate-modal">
+        <div class="modal">
+            <button class="modal-close" id="interrogate-close">✕</button>
+            <div class="interrogate-head">
+                <div class="avatar-lg" id="ig-avatar"></div>
+                <div><h2 id="ig-name"></h2><div class="role" id="ig-role"></div></div>
+            </div>
+            <div class="interrogate-body" id="ig-questions"></div>
+        </div>
+    </div>
+
+    <div class="modal-bg" id="evidence-modal">
+        <div class="modal">
+            <button class="modal-close" id="evidence-close">✕</button>
+            <div class="evidence-head">
+                <div class="file-no mono" id="ev-fileno"></div>
+                <h2 id="ev-title"></h2>
+            </div>
+            <div class="magnify-container" id="ev-scene" style="display:none;">
+                <div class="doc-layer doc-blur" id="docBlur"></div>
+                <div class="doc-layer doc-sharp" id="docSharp"></div>
+                <div class="lens-ring" id="lensRing"></div>
+            </div>
+            <div class="evidence-body" id="ev-body"></div>
+            <div style="padding:0 24px 20px;"><button class="pin-answer-btn" id="ev-pin-btn">+ پین مدرک به تخته</button></div>
+        </div>
+    </div>
+
+    <!-- ===== RESULT MODAL ===== -->
+    <div class="result-overlay" id="result-overlay">
+        <div class="result-card">
+            <div class="stamp mono">CASE CLOSED</div>
+            <div class="case-badge">🕵️ پرونده‌ی ساعت موقوفه</div>
+            <h2>پرونده مختومه شد — قاتل دستگیر شد!</h2>
+            <div class="subtitle">تحلیل نهایی کارآگاه</div>
+            <div class="narrative-box" id="result-desc"></div>
+            <div class="score-breakdown" id="score-breakdown"></div>
+            <div class="result-actions">
+                <button class="btn btn-ghost" id="close-result-btn">✕ بستن</button>
+                <a href="index.html" class="btn btn-gold">🏠 بازگشت به صفحه اصلی</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        function toFa(n) { return String(n).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]); }
+
+        // ===== SUPABASE =====
+        const SUPABASE_URL = 'https://uohetpzmscuqdiwibqci.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_CukVAlNn7Nvrx5v_gu7atg_JDcw2dzW';
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let currentSession = null;
+        let currentProfile = null;
+
+        // ===== AVATARS =====
+        const AVATAR_MALE =
+            `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#171929"/><circle cx="50" cy="42" r="20" fill="#2c3050"/><path d="M50 20 a20 20 0 0 1 20 20 h-6 a4 4 0 0 0 -4 -4 h-20 a4 4 0 0 0 -4 4 h-6 a20 20 0 0 1 20 -20z" fill="#0e1020"/><path d="M22 44 q28 -14 56 0 l0 10 q-28 -12 -56 0 z" fill="#0e1020"/><path d="M20 90 q30 -24 60 0 l0 10 -60 0 z" fill="#2c3050"/><rect x="10" y="40" width="80" height="6" fill="#d1a13a" opacity=".18"/></svg>`;
+        const AVATAR_FEMALE =
+            `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#171929"/><circle cx="50" cy="44" r="19" fill="#2c3050"/><path d="M30 40 q-4 30 6 46 q-14 -4 -16 -30 q0 -18 10 -16z" fill="#0e1020"/><path d="M70 40 q4 30 -6 46 q14 -4 16 -30 q0 -18 -10 -16z" fill="#0e1020"/><path d="M50 22 a18 18 0 0 1 18 18 q-6 -6 -18 -6 q-12 0 -18 6 a18 18 0 0 1 18 -18z" fill="#0e1020"/><path d="M20 92 q30 -22 60 0 l0 8 -60 0 z" fill="#2c3050"/><rect x="10" y="40" width="80" height="6" fill="#d1a13a" opacity=".18"/></svg>`;
+
+        let selectedGender = null;
+        document.querySelectorAll('.gender-opt').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('.gender-opt').forEach(o => o.classList.remove('sel'));
+                el.classList.add('sel');
+                selectedGender = el.dataset.g;
+            });
+        });
+
+        function genBadgeNumber() {
+            const y = new Date().getFullYear();
+            const rand = Math.floor(10000 + Math.random() * 89999);
+            return `DF-${y}-${rand}`;
+        }
+
+        function savePendingProfile(firstName, lastName, gender) {
+            localStorage.setItem('df_pending_profile', JSON.stringify({ first_name: firstName, last_name: lastName,
+                gender }));
+        }
+
+        function popPendingProfile() {
+            const raw = localStorage.getItem('df_pending_profile');
+            if (!raw) return null;
+            try { return JSON.parse(raw); } catch (e) { return null; }
+        }
+
+        async function ensureProfile(user) {
+            const { data: existing } = await sb.from('profiles').select().eq('id', user.id).maybeSingle();
+            if (existing) {
+                currentProfile = existing;
+                return existing;
+            }
+            const pending = popPendingProfile();
+            if (!pending) return null;
+            const badge = genBadgeNumber();
+            const { data, error } = await sb.from('profiles').upsert({
+                id: user.id,
+                first_name: pending.first_name,
+                last_name: pending.last_name,
+                gender: pending.gender,
+                badge_number: badge,
+                total_score: 0
+            }, { onConflict: 'id' }).select().single();
+            if (error) { console.error('profile insert failed:', error); return null; }
+            localStorage.removeItem('df_pending_profile');
+            currentProfile = data;
+            return data;
+        }
+
+        async function refreshProfile(userId) {
+            const { data } = await sb.from('profiles').select().eq('id', userId).single();
+            if (data) {
+                currentProfile = data;
+                updateIdCardScore(data.total_score || 0);
+            }
+            return data;
+        }
+
+        function updateIdCardScore(score) {
+            const el = document.getElementById('idCardScore');
+            if (el) el.textContent = toFa(score || 0);
+        }
+
+        function showIdCard(profile) {
+            document.getElementById('idCardPhoto').innerHTML = profile.gender === 'female' ? AVATAR_FEMALE : AVATAR_MALE;
+            document.getElementById('idCardName').textContent = `${profile.first_name} ${profile.last_name}`;
+            document.getElementById('idCardBadge').textContent = profile.badge_number;
+            document.getElementById('idCardDate').textContent = new Date(profile.created_at || Date.now())
+            .toLocaleDateString('fa-IR');
+            updateIdCardScore(profile.total_score || 0);
+            document.getElementById('idCardStage').classList.add('show');
+            setHeaderDetective(profile);
+        }
+
+        function setHeaderDetective(profile) {
+            if (!profile) return;
+            document.getElementById('tbDetective').style.display = 'flex';
+            document.getElementById('tbDetectiveName').textContent = `${profile.first_name} ${profile.last_name} — ${profile
+            .badge_number}`;
+        }
+
+        document.getElementById('idCardContinueBtn').addEventListener('click', () => {
+            document.getElementById('idCardStage').classList.remove('show');
+        });
+
+        // ===== AUTH FLOW =====
+        let authMode = 'signin';
+        const authErr = document.getElementById('authErr');
+        const authSwitch = document.getElementById('authSwitch');
+        const authSubmitBtn = document.getElementById('authSubmitBtn');
+        const authTitle = document.getElementById('authTitle');
+        const authSub = document.getElementById('authSub');
+        const authExtraNames = document.getElementById('authExtraNames');
+        const authExtraGender = document.getElementById('authExtraGender');
+
+        function applyAuthMode() {
+            const isSignup = authMode === 'signup';
+            authExtraNames.classList.toggle('show', isSignup);
+            authExtraGender.classList.toggle('show', isSignup);
+            authTitle.textContent = isSignup ? 'ساخت پرونده‌ی کارآگاهی' : 'ورود به DarkFile';
+            authSub.textContent = isSignup ? 'اطلاعات‌تان برای صدور کارت شناسایی کارآگاهی لازم است' :
+                'برای شروع تحقیقات، وارد حساب خود شوید';
+            authSubmitBtn.textContent = isSignup ? 'ثبت‌نام و دریافت کارت' : 'ورود';
+            authSwitch.innerHTML = isSignup ? 'قبلاً ثبت‌نام کرده‌اید؟ <b>وارد شوید</b>' :
+                'حساب ندارید؟ <b>ثبت‌نام کنید</b>';
+        }
+        applyAuthMode();
+
+        authSwitch.addEventListener('click', () => {
+            authMode = authMode === 'signin' ? 'signup' : 'signin';
+            applyAuthMode();
+            authErr.classList.remove('show');
+        });
+
+        authSubmitBtn.addEventListener('click', async () => {
+            const email = document.getElementById('authEmail').value.trim();
+            const pass = document.getElementById('authPass').value;
+            authErr.classList.remove('show');
+            if (!email || pass.length < 6) { authErr.textContent = 'ایمیل معتبر و رمز حداقل ۶ کاراکتری وارد کنید.';
+                authErr.classList.add('show'); return; }
+            if (authMode === 'signup') {
+                const fn = document.getElementById('authFirstName').value.trim();
+                const ln = document.getElementById('authLastName').value.trim();
+                if (!fn || !ln) { authErr.textContent = 'نام و نام خانوادگی را وارد کنید.'; authErr.classList.add('show');
+                    return; }
+                if (!selectedGender) { authErr.textContent = 'یکی از گزینه‌های جنسیت را برای پروفایل انتخاب کنید.';
+                    authErr.classList.add('show'); return; }
+                savePendingProfile(fn, ln, selectedGender);
+            }
+            authSubmitBtn.disabled = true;
+            authSubmitBtn.textContent = 'لطفاً صبر کنید...';
+            try {
+                const fn = authMode === 'signin' ? sb.auth.signInWithPassword({ email, password: pass }) : sb.auth
+                    .signUp({ email, password: pass });
+                const { data, error } = await fn;
+                authSubmitBtn.disabled = false;
+                applyAuthMode();
+                if (error) { authErr.textContent = error.message;
+                    authErr.classList.add('show'); return; }
+                if (authMode === 'signup' && !data.session) {
+                    authErr.textContent = 'حساب ساخته شد — ایمیلتان را برای تأیید بررسی کنید، سپس با همین ایمیل و رمز وارد شوید.';
+                    authErr.classList.add('show');
+                    authMode = 'signin';
+                    applyAuthMode();
+                    return;
+                }
+                currentSession = data.session;
+                await sb.from('case_progress').upsert({ user_id: data.user.id, case_id: 'clock-case' }, { onConflict: 'user_id,case_id',
+                    ignoreDuplicates: true });
+                const profile = await ensureProfile(data.user);
+                document.getElementById('authStage').classList.add('hide');
+                if (profile) { showIdCard(profile); } else {
+                    authErr.textContent = 'ورود موفق بود ولی ساخت کارت هویت با خطا مواجه شد.';
+                    authErr.classList.add('show');
+                }
+            } catch (e) {
+                authSubmitBtn.disabled = false;
+                applyAuthMode();
+                authErr.textContent = 'خطا در اتصال به سرور احراز هویت.';
+                authErr.classList.add('show');
+            }
+        });
+
+        (async () => {
+            try {
+                const { data: { session } } = await sb.auth.getSession();
+                if (session) {
+                    currentSession = session;
+                    document.getElementById('authStage').classList.add('hide');
+                    const profile = await ensureProfile(session.user);
+                    setHeaderDetective(profile);
+                    if (profile) updateIdCardScore(profile.total_score || 0);
+                }
+            } catch (e) { console.error('Session init error:', e); }
+        })();
+
+        // ===== SEAL =====
+        document.getElementById('folderBtn').addEventListener('click', () => {
+            document.getElementById('sealEl').classList.add('crack');
+            setTimeout(() => {
+                document.getElementById('sealStage').classList.add('hide');
+                const flash = document.getElementById('flash');
+                flash.classList.add('on');
+                setTimeout(() => flash.classList.remove('on'), 550);
+                setTimeout(() => { document.getElementById('mainPage').classList.add('show'); }, 250);
+            }, 480);
+        });
+
+        // ============================================================
+        //  CASE DATA — رازِ ساعتِ موقوفه
+        // ============================================================
+        const CORRECT_SUSPECT = 'kamran';
+
+        const suspectsData = [{
+            id: 'kamran',
+            name: 'کامران',
+            role: 'شاگرد حجره، ۲۸ ساله',
+            color: '#8a1f2b',
+            questions: [
+                { q: 'دیشب چه زمانی از حجره خارج شدید؟',
+                a: 'من دیشب ساعت ۱۹:۰۰ کارم تمام شد. استاد گفت برو خانه چون مشتری دارد. باران تازه شروع شده بود که ساعت ۱۹:۱۵ از بازار خارج شدم.' },
+                { q: 'درباره ساعت موقوفه طلا چه می‌دانید؟',
+                    a: 'خودم صبح چهارشنبه ساعت ۰۸:۰۰ صبح جلوی چشم استاد کاملاً کوکش کردم تا رگلاژش کنم. این ساعت با کوک کامل ۳۶ ساعت کار می‌کند.' },
+                { q: 'آیا کلید مغازه را در اختیار داشتید?',
+                a: 'بله، کلید زاپاس دست من است اما دیشب اصلاً برنگشتم به مغازه و خبر نداشتم چه شده است.' }
+            ]
+        }, {
+            id: 'rahim',
+            name: 'رحیم',
+            role: 'همکار و رقیب عتیقه‌فروش، ۵۵ ساله',
+            color: '#d1a13a',
+            questions: [
+                { q: 'چرا دیشب به حجره استاد رفتید؟',
+                    a: 'حبیب‌الله به من بدهکار بود. ساعت ۲۰:۱۵ رفتم طلبم را بگیرم. خیلی بحثمان شد.' },
+                { q: 'درباره اثر انگشتتان روی فنجان چای توضیح دهید.',
+                    a: 'از شدت عصبانیت فنجان چای را از روی میزش برداشتم که بزنم زمین، اما خودداری کردم و گذاشتمش روی میز. موقع رفتن ساعت ۲۰:۳۰ باران شدید بود.' },
+                { q: 'وقتی خارج شدید استاد در چه حالتی بود؟',
+                    a: 'زنده بود و داشت چای می‌خورد و دفتر حساب‌وکتابش را نگاه می‌کرد.' }
+            ]
+        }, {
+            id: 'dariush',
+            name: 'سهراب',
+            role: 'برادرزاده و وارث مقتول، ۳۵ ساله',
+            color: '#2e3350',
+            questions: [
+                { q: 'دیشب چه ساعتی مراجعه کردید؟',
+                    a: 'ساعت ۲۱:۱۵ رفتم تا برای وام بانکی‌ام امضا بگیرم. مغازه تاریک بود و در قفل بود.' },
+                { q: 'چرا وارد حجره نشدید؟', a: 'چند بار در زدم جواب نداد. از لای در دیدم چراغ مطالعه‌اش روشن است. کلید نداشتم پس برگشتم.' },
+                { q: 'آیا رد گل روی کفش‌های شما بود؟',
+                    a: 'کفش‌هایم اصلاً گلی نشد چون با ماشین تا دم پاساژ رفتم و چتر داشتم.' }
+            ]
+        }];
+
+        const evidenceData = [{
+            id: 'e1',
+            title: 'مدرک A: ساعت موقوفه طلا',
+            sub: 'متوقف روی ۲۰:۴۵',
+            fileno: 'EX-01 / متعلقات',
+            desc: 'ساعت مکانیکی سوئیسی کوکی. روی ۲۰:۴۵ متوقف شده. بررسی تکنسین نشان می‌دهد کوک فنر کاملاً خالی شده است. ظرفیت کارکرد با کوک کامل: دقیقا ۳۶ ساعت.'
+        }, {
+            id: 'e2',
+            title: 'مدرک B: فنجان چای',
+            sub: 'روی میز کار مقتول',
+            fileno: 'EX-02 / صحنه جرم',
+            desc: 'فنجان نیمه‌خورده روی میز. سم‌شناسی منفی است. اثر انگشت شست مقتول روی دسته و اثر انگشت سبابه رحیم روی بدنه خارجی فنجان ثبت شده است.'
+        }, {
+            id: 'e3',
+            title: 'مدرک C: شرایط جوی و گل‌ولای',
+            sub: 'گزارش هواشناسی',
+            fileno: 'EX-03 / محیطی',
+            desc: 'دیشب (پنج‌شنبه) از ساعت ۱۹:۳۰ تا ۲۱:۰۰ باران شدیدی بارید. زمین خاکی کوچه بازار تا ساعت‌ها کاملاً گل‌آلود بوده است.'
+        }, {
+            id: 'e4',
+            title: 'گزارش پزشکی قانونی',
+            sub: 'علت و زمان مرگ',
+            fileno: 'EX-04 / پزشکی',
+            desc: 'علت مرگ: ضربه مغزی ناشی از اصابت جسم سخت (مجسمه برنجی). زمان تقریبی مرگ: بین ساعت ۲۰:۰۰ تا ۲۲:۰۰ پنج‌شنبه شب.'
+        }, {
+            id: 'e5',
+            title: 'وضعیت در و قفل حجره',
+            sub: 'بررسی فنی قفل',
+            fileno: 'EX-05 / فیزیکی',
+            desc: 'در اصلی از بیرون قفل پدالی خورده بود بدون هیچ نشانه‌ای از شکستگی. یعنی قاتل کلید در را در اختیار داشته و پس از جنایت در را قفل کرده است.'
+        }, {
+            id: 'e6',
+            title: 'دفترچه حساب ناپدیدشده',
+            sub: 'تکه‌ی برگه سوخته',
+            fileno: 'EX-06 / سند',
+            desc: 'دفتر حساب‌وکتاب روزانه ناپدید شده، اما تکه کاغذی سوخته در سطل پیدا شده است.',
+            scene: true,
+            sceneText: `... دفترچه بدهی‌ها ...
+        کامران: ۱۴۵,۰۰۰,۰۰۰ ریال
+        رحیم: ۴۲,۰۰۰,۰۰۰ ریال
+        سهراب: ۰ (وام بانکی)
+        ... دریافت کلید زاپاس توسط کامران ...
+        ... بدهی سهراب صفر ...`
+        }];
+
+        const hintsData = [
+            'ریاضیات ساعت را محاسبه کن: چهارشنبه ساعت ۰۸:۰۰ + ۳۶ ساعت کارکرد = پنج‌شنبه ساعت ۲۰:۰۰! پس چرا ساعت روی ۲۰:۴۵ ایستاده است؟',
+            'کامران ادعا می‌کند ساعت را چهارشنبه کوک کرده است، اما اگر ساعت ۳۶ ساعت کار کند باید ۲۰:۰۰ خاموش می‌شد. پس یک نفر دیشب ساعت ۲۰:۴۵ آن را دستکاری یا در زمان متفاوتی کوک کرده است!',
+            'چه کسی کلید قفل کردن در از بیرون را داشت و ذی‌نفع اصلی از سرقت دفترچه حساب‌وکتاب و بدهی‌ها بود؟'
+        ];
+
+        // ============================================================
+        //  STATE
+        // ============================================================
+        let hintsUsed = 0,
+            wrongGuesses = 0,
+            cooldownActive = false;
+        let currentScore = 1000;
+        let connections = [],
+            selectedForConnect = null,
+            connectMode = false;
+        let pinCounter = 0;
+        let startTime = null;
+
+        function updateScoreDisplay() {
+            document.getElementById('tbScore').textContent = toFa(currentScore);
+        }
+
+        // ============================================================
+        //  BUILD SIDEBAR
+        // ============================================================
+        const evList = document.getElementById('list-evidence');
+        evidenceData.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'sb-item';
+            div.innerHTML = `<div class="sb-item-title">${item.title}</div><div class="sb-item-sub">${item.sub}</div>`;
+            div.addEventListener('click', () => openEvidence(item));
+            evList.appendChild(div);
+        });
+
+        const susList = document.getElementById('list-suspects');
+        const radioBox = document.getElementById('suspect-radio');
+        suspectsData.forEach(s => {
+            const div = document.createElement('div');
+            div.className = 'sb-item sb-suspect';
+            div.innerHTML =
+                `<div class="avatar-sm" style="background:${s.color}">${s.name.charAt(0)}</div><div><div class="sb-item-title">${s.name}</div><div class="sb-item-sub">${s.role}</div></div>`;
+            div.addEventListener('click', () => openInterrogation(s));
+            susList.appendChild(div);
+            const sOpt = document.createElement('div');
+            sOpt.className = 'suspect-opt';
+            sOpt.dataset.id = s.id;
+            sOpt.innerHTML =
+                `<div class="suspect-dot"></div><div><div class="suspect-opt-name">${s.name}</div><div class="suspect-opt-role">${s.role}</div></div>`;
+            sOpt.addEventListener('click', () => {
+                document.querySelectorAll('.suspect-opt').forEach(o => o.classList.remove('selected'));
+                sOpt.classList.add('selected');
+                checkAccusationReady();
+            });
+            radioBox.appendChild(sOpt);
+        });
+
+        document.querySelectorAll('.sb-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.sb-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.sb-list').forEach(l => l.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById('list-' + tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        // ============================================================
+        //  INTERROGATION MODAL
+        // ============================================================
+        const igModal = document.getElementById('interrogate-modal');
+
+        function openInterrogation(s) {
+            document.getElementById('ig-avatar').style.background = s.color;
+            document.getElementById('ig-avatar').textContent = s.name.charAt(0);
+            document.getElementById('ig-name').textContent = s.name;
+            document.getElementById('ig-role').textContent = s.role;
+            const box = document.getElementById('ig-questions');
+            box.innerHTML = '';
+            s.questions.forEach(qa => {
+                const qRow = document.createElement('div');
+                qRow.className = 'q-row';
+                qRow.textContent = '؟ ' + qa.q;
+                const aBox = document.createElement('div');
+                aBox.className = 'a-box';
+                aBox.style.display = 'none';
+                let answered = false;
+                qRow.addEventListener('click', () => {
+                    if (answered) return;
+                    answered = true;
+                    qRow.classList.add('asked');
+                    aBox.style.display = 'block';
+                    aBox.textContent = qa.a;
+                    const pinBtn = document.createElement('button');
+                    pinBtn.className = 'pin-answer-btn';
+                    pinBtn.textContent = '+ پین این اظهار به تخته';
+                    pinBtn.addEventListener('click', () => pinItem(s.name + ': ' + qa.q.substring(0, 30) + '…', qa.a
+                        .substring(0, 40) + '…'));
+                    aBox.appendChild(document.createElement('br'));
+                    aBox.appendChild(pinBtn);
+                });
+                box.appendChild(qRow);
+                box.appendChild(aBox);
+            });
+            igModal.classList.add('open');
+        }
+        document.getElementById('interrogate-close').addEventListener('click', () => igModal.classList.remove('open'));
+        igModal.addEventListener('click', e => { if (e.target === igModal) igModal.classList.remove('open'); });
+
+        // ============================================================
+        //  EVIDENCE MODAL
+        // ============================================================
+        const evModal = document.getElementById('evidence-modal');
+        let currentEvidence = null;
+
+        function openEvidence(item) {
+            currentEvidence = item;
+            document.getElementById('ev-fileno').textContent = item.fileno;
+            document.getElementById('ev-title').textContent = item.title;
+            const sceneEl = document.getElementById('ev-scene');
+            if (item.scene) {
+                sceneEl.style.display = 'block';
+                document.getElementById('docBlur').textContent = item.sceneText || '...';
+                document.getElementById('docSharp').textContent = item.sceneText || '...';
+                document.getElementById('docSharp').style.clipPath = 'circle(0px at 0px 0px)';
+                document.getElementById('lensRing').style.display = 'none';
+            } else {
+                sceneEl.style.display = 'none';
+            }
+            const body = document.getElementById('ev-body');
+            body.textContent = item.desc;
+            evModal.classList.add('open');
+        }
+        document.getElementById('evidence-close').addEventListener('click', () => evModal.classList.remove('open'));
+        evModal.addEventListener('click', e => { if (e.target === evModal) evModal.classList.remove('open'); });
+        document.getElementById('ev-pin-btn').addEventListener('click', () => {
+            if (currentEvidence) pinItem(currentEvidence.title, currentEvidence.sub);
+        });
+
+        // Magnifier
+        const magCon = document.getElementById('ev-scene');
+        const docSharp = document.getElementById('docSharp');
+        const lensRing = document.getElementById('lensRing');
+        magCon.addEventListener('mousemove', e => {
+            const rect = magCon.getBoundingClientRect();
+            const x = e.clientX - rect.left,
+                y = e.clientY - rect.top;
+            docSharp.style.clipPath = 'circle(55px at ' + x + 'px ' + y + 'px)';
+            lensRing.style.display = 'block';
+            lensRing.style.left = x + 'px';
+            lensRing.style.top = y + 'px';
+        });
+        magCon.addEventListener('mouseleave', () => {
+            docSharp.style.clipPath = 'circle(0px at 0px 0px)';
+            lensRing.style.display = 'none';
+        });
+
+        // ============================================================
+        //  CORKBOARD
+        // ============================================================
+        const board = document.getElementById('board');
+        const svg = document.getElementById('board-svg');
+
+        function pinItem(title, sub) {
+            pinCounter++;
+            const id = 'pc' + pinCounter;
+            const card = document.createElement('div');
+            card.className = 'pin-card';
+            card.id = id;
+            const bw = board.clientWidth,
+                bh = board.clientHeight;
+            card.style.left = (20 + Math.random() * Math.max(20, bw - 180)) + 'px';
+            card.style.top = (60 + Math.random() * Math.max(20, bh - 140)) + 'px';
+            card.innerHTML = `<div class="pin-dot"></div><div class="pin-card-title">${title}</div><div class="pin-card-sub">${sub}</div>`;
+            card.addEventListener('pointerdown', startDrag);
+            card.addEventListener('click', () => { if (connectMode) handleConnectClick(card); });
+            board.appendChild(card);
+            showToast('«' + title + '» به تخته پین شد');
+        }
+
+        function startDrag(e) {
+            if (connectMode) return;
+            const card = e.currentTarget;
+            const startX = e.clientX,
+                startY = e.clientY;
+            const origLeft = parseFloat(card.style.left),
+                origTop = parseFloat(card.style.top);
+            const boardRect = board.getBoundingClientRect();
+            card.setPointerCapture(e.pointerId);
+
+            function onMove(ev) {
+                const dx = ev.clientX - startX,
+                    dy = ev.clientY - startY;
+                const newLeft = Math.max(0, Math.min(origLeft + dx, boardRect.width - 155));
+                const newTop = Math.max(0, Math.min(origTop + dy, boardRect.height - 80));
+                card.style.left = newLeft + 'px';
+                card.style.top = newTop + 'px';
+                redrawThreads();
+            }
+
+            function onUp() { card.removeEventListener('pointermove', onMove);
+                card.removeEventListener('pointerup', onUp); }
+            card.addEventListener('pointermove', onMove);
+            card.addEventListener('pointerup', onUp);
+        }
+
+        function handleConnectClick(card) {
+            if (!selectedForConnect) { selectedForConnect = card;
+                card.classList.add('selected'); } else if (selectedForConnect === card) { card.classList.remove('selected');
+                selectedForConnect = null; } else {
+                connections.push([selectedForConnect.id, card.id]);
+                selectedForConnect.classList.remove('selected');
+                selectedForConnect = null;
+                redrawThreads();
+                showToast('سرنخ‌ها با نخ قرمز وصل شدند');
+            }
+        }
+
+        function redrawThreads() {
+            svg.innerHTML = '';
+            connections.forEach(pair => {
+                const c1 = document.getElementById(pair[0]),
+                    c2 = document.getElementById(pair[1]);
+                if (!c1 || !c2) return;
+                const x1 = parseFloat(c1.style.left) + 12,
+                    y1 = parseFloat(c1.style.top) + 12;
+                const x2 = parseFloat(c2.style.left) + 12,
+                    y2 = parseFloat(c2.style.top) + 12;
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x1);
+                line.setAttribute('y1', y1);
+                line.setAttribute('x2', x2);
+                line.setAttribute('y2', y2);
+                line.setAttribute('stroke', '#b83e42');
+                line.setAttribute('stroke-width', '2');
+                line.setAttribute('stroke-dasharray', '4,2');
+                svg.appendChild(line);
+            });
+        }
+
+        document.getElementById('connect-toggle').addEventListener('click', function() {
+            connectMode = !connectMode;
+            this.classList.toggle('active', connectMode);
+            if (!connectMode && selectedForConnect) { selectedForConnect.classList.remove('selected');
+                selectedForConnect = null; }
+            showToast(connectMode ? 'حالت وصل کردن فعال شد (روی ۲ کارت کلیک کنید)' : 'حالت جابه‌جایی فعال شد');
+        });
+
+        // Flashlight
+        const flashOverlay = document.getElementById('flash-overlay');
+        let flashActive = false;
+        document.getElementById('flash-toggle').addEventListener('click', function() {
+            flashActive = !flashActive;
+            this.classList.toggle('active', flashActive);
+            flashOverlay.classList.toggle('on', flashActive);
+        });
+        board.addEventListener('mousemove', e => {
+            if (!flashActive) return;
+            const rect = board.getBoundingClientRect();
+            flashOverlay.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
+            flashOverlay.style.setProperty('--my', (e.clientY - rect.top) + 'px');
+        });
+
+        // Screenshot
+        document.getElementById('shot-btn').addEventListener('click', function() {
+            if (typeof html2canvas === 'undefined') { showToast('خطا: کتابخانه‌ی اسکرین‌شات بارگذاری نشده'); return; }
+            html2canvas(board).then(canvas => {
+                const a = document.createElement('a');
+                a.download = 'darkfile-board.png';
+                a.href = canvas.toDataURL();
+                a.click();
+                showToast('اسکرین‌شات ذخیره شد');
+            }).catch(() => showToast('خطا در گرفتن اسکرین‌شات'));
+        });
+
+        // ============================================================
+        //  HINTS
+        // ============================================================
+        document.getElementById('hint-btn').addEventListener('click', function() {
+            if (hintsUsed >= 3) return;
+            const log = document.getElementById('hint-log');
+            const div = document.createElement('div');
+            div.textContent = '💡 راهنمایی ' + toFa(hintsUsed + 1) + ': ' + hintsData[hintsUsed];
+            log.appendChild(div);
+            document.getElementById('hd' + (hintsUsed + 1)).classList.add('used');
+            hintsUsed++;
+            currentScore = Math.max(0, Math.round(currentScore * 0.85));
+            updateScoreDisplay();
+            if (hintsUsed >= 3) this.disabled = true;
+            showToast('راهنمایی ' + toFa(hintsUsed) + ' دریافت شد (−۱۵٪ امتیاز)');
+        });
+
+        // ============================================================
+        //  ACCUSATION
+        // ============================================================
+
+        // مدیریت انتخاب انگیزه
+        document.querySelectorAll('.motive-opt').forEach(opt => {
+            opt.addEventListener('click', function(e) {
+                if (e.target.tagName === 'INPUT') return;
+                const radio = this.querySelector('input[type="radio"]');
+                if (radio) {
+                    radio.checked = true;
+                    document.querySelectorAll('.motive-opt').forEach(o => {
+                        o.style.borderColor = 'var(--line)';
+                        o.style.background = 'var(--bg2)';
+                    });
+                    this.style.borderColor = 'var(--gold)';
+                    this.style.background = 'rgba(209,161,58,0.1)';
+                    checkAccusationReady();
+                }
+            });
+        });
+
+        // مدیریت انتخاب مدارک
+        document.querySelectorAll('.evidence-opt').forEach(opt => {
+            opt.addEventListener('click', function(e) {
+                if (e.target.tagName === 'INPUT') return;
+                const cb = this.querySelector('input[type="checkbox"]');
+                if (cb) {
+                    cb.checked = !cb.checked;
+                    if (cb.checked) {
+                        this.style.borderColor = 'var(--gold)';
+                        this.style.background = 'rgba(209,161,58,0.08)';
+                    } else {
+                        this.style.borderColor = 'var(--line)';
+                        this.style.background = 'var(--bg2)';
+                    }
+                    updateEvidenceCount();
+                    checkAccusationReady();
+                }
+            });
+            const cb = opt.querySelector('input[type="checkbox"]');
+            if (cb) {
+                cb.addEventListener('change', function() {
+                    const parent = this.closest('.evidence-opt');
+                    if (this.checked) {
+                        parent.style.borderColor = 'var(--gold)';
+                        parent.style.background = 'rgba(209,161,58,0.08)';
+                    } else {
+                        parent.style.borderColor = 'var(--line)';
+                        parent.style.background = 'var(--bg2)';
+                    }
+                    updateEvidenceCount();
+                    checkAccusationReady();
+                });
+            }
+        });
+
+        function updateEvidenceCount() {
+            const checked = document.querySelectorAll('input[name="evidence"]:checked').length;
+            document.getElementById('evidence-count').textContent =
+                `${checked} مدرک انتخاب شده (حداقل ۲ مورد نیاز است)`;
+        }
+
+        function checkAccusationReady() {
+            const suspectSelected = document.querySelector('.suspect-opt.selected') !== null;
+            const motiveSelected = document.querySelector('input[name="motive"]:checked') !== null;
+            const evidenceCount = document.querySelectorAll('input[name="evidence"]:checked').length;
+            const ready = suspectSelected && motiveSelected && evidenceCount >= 2;
+            document.getElementById('accuse-btn').disabled = !ready;
+            return ready;
+        }
+
+        // دکمه اعلام نتیجه
+        document.getElementById('accuse-btn').addEventListener('click', async function() {
+            if (cooldownActive) {
+                showToast('لطفاً چند ثانیه صبر کنید');
+                return;
+            }
+
+            const sel = document.querySelector('.suspect-opt.selected');
+            if (!sel) { showToast('لطفاً یک متهم را انتخاب کنید'); return; }
+            const suspectId = sel.dataset.id;
+
+            const motiveEl = document.querySelector('input[name="motive"]:checked');
+            if (!motiveEl) { showToast('لطفاً انگیزه را انتخاب کنید'); return; }
+            const motiveId = motiveEl.value;
+
+            const evidenceEls = document.querySelectorAll('input[name="evidence"]:checked');
+            if (evidenceEls.length < 2) { showToast('حداقل دو مدرک انتخاب کنید'); return; }
+            const evidenceIds = Array.from(evidenceEls).map(el => el.value);
+
+            const elapsedMs = startTime ? (Date.now() - startTime) : 0;
+
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) {
+                showToast('لطفاً ابتدا وارد حساب خود شوید');
+                return;
+            }
+
+            const submitBtn = document.getElementById('accuse-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'در حال بررسی...';
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/validate-accusation`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                    },
+                    body: JSON.stringify({
+                        caseId: 'clock-case',
+                        suspect: suspectId,
+                        motive: motiveId,
+                        evidence: evidenceIds,
+                        hintsUsed: hintsUsed,
+                        wrongAttempts: wrongGuesses,
+                        elapsedMs: elapsedMs
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.status === 429) {
+                    const retrySec = result.retryAfterSec || 60;
+                    showToast(`تعداد تلاش زیاد! ${retrySec} ثانیه صبر کنید.`);
+                    cooldownActive = true;
+                    setTimeout(() => { cooldownActive = false; }, retrySec * 1000);
+                    return;
+                }
+
+                if (response.status !== 200 || result.error) {
+                    showToast(result.message || 'خطا در ارتباط با سرور');
+                    return;
+                }
+
+                if (result.correct) {
+                    currentScore = result.score;
+                    document.getElementById('tbScore').textContent = toFa(currentScore);
+
+                    // به‌روزرسانی پروفایل برای دریافت total_score جدید
+                    if (session) {
+                        const refreshed = await refreshProfile(session.user.id);
+                        if (refreshed) {
+                            updateIdCardScore(refreshed.total_score || 0);
+                        }
+                    }
+
+                    showResult(true, result);
+                } else {
+                    wrongGuesses++;
+                    const penalty = result.penalty || 60;
+                    currentScore = Math.max(0, currentScore - penalty);
+                    document.getElementById('tbScore').textContent = toFa(currentScore);
+                    const inline = document.getElementById('result-inline');
+                    inline.className = 'result-inline show wrong';
+                    inline.textContent = result.message || 'اتهام درست نبود. دوباره بررسی کنید.';
+                    cooldownActive = true;
+                    setTimeout(() => { cooldownActive = false; }, 3000);
+                }
+            } catch (err) {
+                showToast('خطای شبکه: ' + err.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'اعلام نتیجه پرونده';
+                checkAccusationReady();
+            }
+        });
+
+        // ============================================================
+        //  RESULT
+        // ============================================================
+        function showResult(success, data) {
+            const resModal = document.getElementById('result-overlay');
+            const resDesc = document.getElementById('result-desc');
+            const breakdown = document.getElementById('score-breakdown');
+
+            if (success) {
+                let narrativeText = data.narrative ||
+                    `قاتل پرونده <strong>کامران (شاگرد حجره)</strong> است!
+        او ادعا کرد ساعت موقوفه را روز چهارشنبه ساعت 08:00 صبح کوک کامل کرده و ساعت 36 ساعت کارکرد دارد. طبق محاسبه ریاضی، ساعت باید رأس <strong>ساعت 20:00 پنج‌شنبه</strong> متوقف می‌شد. اما عقربه‌ها روی <strong>ساعت 20:45</strong> ایستاده بودند!
+        این تناقض 45 دقیقه‌ای ثابت می‌کند کامران دیشب با کلید زاپاسی که داشت پس از رفتن رحیم وارد حجره شده، استاد را به قتل رسانده، دفترچه بدهی‌هایش را سرقت کرده و برای متهم کردن رحیم، زمان ساعت را دستکاری کرده است.`;
+
+                narrativeText = narrativeText.replace(/\n/g, '<br>');
+                resDesc.innerHTML = narrativeText;
+
+                const hintPenalty = Math.round(1000 - data.score - wrongGuesses * 150);
+                breakdown.innerHTML = `
+                    <div class="row"><span class="label">امتیاز پایه پرونده:</span><span class="value">1000</span></div>
+                    <div class="row"><span class="label">جریمه راهنمایی (${hintsUsed} مورد):</span><span class="value">−${Math.max(0, hintPenalty)}</span></div>
+                    <div class="row"><span class="label">اشتباه در حدس (${wrongGuesses} مورد):</span><span class="value">−${wrongGuesses * 150}</span></div>
+                    <div class="row"><span class="label">مدارک درست انتخاب‌شده:</span><span class="value">${data.correctPicked || 0} از 3</span></div>
+                    <div class="row"><span class="label">مدارک اشتباه انتخاب‌شده:</span><span class="value">${data.wrongPicked || 0}</span></div>
+                    <div class="total"><span class="label">🏆 امتیاز نهایی شما:</span><span class="value">${data.score}</span></div>
+                `;
+            }
+            resModal.classList.add('open');
+        }
+
+        // بستن مودال نتیجه
+        document.getElementById('close-result-btn').addEventListener('click', function() {
+            document.getElementById('result-overlay').classList.remove('open');
+        });
+
+        // ============================================================
+        //  TOAST
+        // ============================================================
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2600);
+        }
+
+        // ============================================================
+        //  INIT
+        // ============================================================
+        updateScoreDisplay();
+
+        setTimeout(() => {
+            if (document.getElementById('mainPage').classList.contains('show')) {
+                pinItem('ساعت موقوفه روی ۲۰:۴۵', 'بررسی تکنسین: کوک کامل ۳۶ ساعت');
+                pinItem('فنجان چای با اثر انگشت رحیم', 'سم‌شناسی منفی');
+            }
+        }, 1200);
+    </script>
+</body>
+</html>

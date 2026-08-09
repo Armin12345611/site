@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پرونده: رمزِ سِن — پرونده جنایی هکری در پاریس | DarkFile</title>
+    <meta name="description" content="پرونده‌ی جنایی هکری DarkFile در پاریس. مهندس ارشد امنیت بلاک‌چین یک صرافی کریپتوی فرانسوی ناپدید شده — با دیکد واقعی Base64 و ROT13 مسیر رمزگذاری‌شده‌اش رو دنبال کن و پول‌شویی میلیونی رو لو بده.">
+    <meta property="og:title" content="پرونده: رمزِ سِن — DarkFile">
+    <meta property="og:description" content="یک پرونده‌ی هکری واقعی و تعاملی در پاریس. رمزگشایی Base64 و ROT13، لاگ سرور مشکوک، و یک مهندس امنیت که خیلی چیزها می‌دونست.">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #0E1116;
+            --ink-2: #151A22;
+            --panel: #1B212B;
+            --panel-2: #212836;
+            --brass: #B08D46;
+            --brass-light: #D9BD7C;
+            --text-light: #EDE7D8;
+            --text-dim: #9AA0AC;
+            --text-faint: #5C6270;
+            --text-dark: #241F16;
+            --cyber: #B08D46;
+            --cyber-2: #E8C77E;
+            --cyber-dim: #2A2115;
+            --err: #A6362B;
+            --err-light: #E5776B;
+            --warn: #D9BD7C;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background: var(--ink);
+            color: var(--text-light);
+            font-family: 'Vazirmatn', sans-serif;
+            line-height: 1.8;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+            direction: ltr;
+            unicode-bidi: isolate;
+        }
+        /* ---------------- DARKFILE BRAND HEADER/FOOTER ---------------- */
+        .df-topbar {
+            position: relative; z-index: 40;
+            background: rgba(14,17,22,0.92); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(176,141,70,0.15);
+        }
+        .df-topbar .wrap {
+            max-width: 1200px; margin: 0 auto; padding: 0 24px;
+            height: 64px; display: flex; align-items: center; justify-content: space-between;
+        }
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo svg { width: 28px; height: 28px; flex-shrink: 0; }
+        .logo .word { font-weight: 900; letter-spacing: .5px; font-size: 16px; font-family: 'Vazirmatn', sans-serif; color: var(--text-light); }
+        .logo .word b { color: var(--err-light); }
+        .df-topbar-tag { font-size: 12px; color: var(--brass-light); letter-spacing: 1px; }
+        .auth-chip {
+            display: flex; align-items: center; gap: 10px;
+        }
+        .auth-chip .btn { padding: 9px 18px; font-size: 12.5px; }
+        .detective-chip {
+            display: none; align-items: center; gap: 8px; font-size: 12.5px; color: var(--brass-light);
+            background: rgba(176,141,70,0.08); border: 1px solid rgba(176,141,70,0.25); border-radius: 20px; padding: 7px 16px;
+        }
+        .detective-chip.show { display: flex; }
+        .detective-chip b { color: var(--text-light); }
+
+        /* ---------------- AUTH MODAL ---------------- */
+        .modal-bg {
+            position: fixed; inset: 0; z-index: 100; background: rgba(5,6,9,0.88); backdrop-filter: blur(6px);
+            display: none; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-bg.open { display: flex; }
+        .auth-modal {
+            width: 100%; max-width: 420px; background: var(--panel); border: 1px solid rgba(176,141,70,0.25);
+            border-radius: 10px; padding: 32px 28px; box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+        }
+        .auth-modal h3 { font-size: 19px; font-weight: 800; margin-bottom: 6px; color: var(--text-light); }
+        .auth-modal .auth-sub { font-size: 12.5px; color: var(--text-dim); margin-bottom: 22px; }
+        .auth-modal input, .auth-modal select {
+            width: 100%; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px;
+            padding: 12px 14px; color: var(--text-light); font-family: inherit; font-size: 13.5px; margin-bottom: 10px;
+        }
+        .auth-modal input:focus, .auth-modal select:focus { outline: none; border-color: var(--brass); }
+        .auth-extra { display: none; }
+        .auth-extra.show { display: block; }
+        .auth-modal .btn { width: 100%; margin-top: 6px; }
+        .auth-err { display: none; color: var(--err-light); font-size: 12px; margin-top: 10px; line-height: 1.7; }
+        .auth-err.show { display: block; }
+        .auth-switch { text-align: center; font-size: 12.5px; color: var(--text-dim); margin-top: 16px; cursor: pointer; }
+        .auth-switch b { color: var(--brass-light); }
+        .auth-close { position: absolute; top: 14px; left: 14px; background: none; border: none; color: var(--text-faint); font-size: 18px; cursor: pointer; }
+        .df-footer {
+            text-align: center; padding: 40px 20px 50px; color: var(--text-faint); font-size: 12.5px;
+            border-top: 1px solid rgba(176,141,70,0.1);
+        }
+        .df-footer .logo { justify-content: center; margin-bottom: 10px; }
+        a {
+            color: inherit;
+        }
+        ::selection {
+            background: var(--cyber);
+            color: var(--ink);
+        }
+
+        button:focus-visible,
+        input:focus-visible,
+        .btn:focus-visible {
+            outline: 2px solid var(--cyber);
+            outline-offset: 3px;
+        }
+
+        #rain-ambient {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+
+        .wrap {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ============ HUD ============ */
+        #hud {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 50;
+            background: rgba(19, 23, 30, 0.88);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(232, 199, 126, 0.25);
+            border-radius: 8px;
+            padding: 12px 16px;
+            min-width: 210px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+            transition: opacity .4s;
+        }
+        #hud.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .hud-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            direction: ltr;
+            text-align: left;
+        }
+        .hud-row+.hud-row {
+            margin-top: 8px;
+        }
+        .hud-label {
+            color: var(--text-faint);
+            letter-spacing: 0.5px;
+        }
+        .hud-value {
+            color: var(--cyber);
+            font-weight: 700;
+            font-size: 14px;
+        }
+        .hud-value.pulse {
+            animation: pulseScore .5s ease;
+        }
+        @keyframes pulseScore {
+            0% {
+                transform: scale(1.35);
+                color: var(--cyber-2);
+            }
+            100% {
+                transform: scale(1);
+                color: var(--cyber);
+            }
+        }
+        .hud-dots {
+            display: flex;
+            gap: 6px;
+        }
+        .hud-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .hud-dot.done {
+            background: var(--cyber);
+            border-color: var(--cyber);
+            box-shadow: 0 0 8px rgba(232, 199, 126, 0.7);
+        }
+        .hud-bar-track {
+            margin-top: 6px;
+            height: 5px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+        .hud-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--cyber-dim), var(--cyber));
+            transition: width .6s ease;
+        }
+
+        #log-toggle {
+            margin-top: 10px;
+            width: 100%;
+            background: none;
+            border: 1px dashed rgba(232, 199, 126, 0.3);
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            padding: 5px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #log-toggle:hover {
+            color: var(--cyber);
+            border-color: var(--cyber);
+        }
+        #activity-log {
+            margin-top: 8px;
+            max-height: 130px;
+            overflow-y: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10.5px;
+            color: var(--text-faint);
+            direction: ltr;
+            text-align: left;
+            display: none;
+        }
+        #activity-log.open {
+            display: block;
+        }
+        #activity-log div {
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        #toast-zone {
+            position: fixed;
+            bottom: 20px;
+            left: 16px;
+            z-index: 60;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            background: var(--panel);
+            border: 1px solid var(--cyber);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 13px;
+            max-width: 280px;
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5);
+            animation: toastIn .35s ease;
+        }
+        .toast b {
+            color: var(--cyber);
+            display: block;
+            margin-bottom: 2px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+        @keyframes toastIn {
+            from {
+                transform: translateY(14px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* ============ HERO ============ */
+        .hero {
+            position: relative;
+            padding: 120px 0 80px;
+            overflow: hidden;
+        }
+        #rain-hero {
+            position: absolute;
+            inset: 0;
+            opacity: 0.30;
+            z-index: 0;
+        }
+        .hero-inner {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+        .case-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: var(--cyber);
+            border: 1px solid var(--cyber-dim);
+            background: rgba(232, 199, 126, 0.06);
+            border-radius: 999px;
+            padding: 6px 16px;
+            margin-bottom: 26px;
+        }
+        .case-tag .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--cyber);
+            animation: blink 1.4s infinite;
+        }
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .2;
+            }
+        }
+        h1.case-title {
+            font-size: 40px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+            position: relative;
+            display: inline-block;
+        }
+        .glitch {
+            position: relative;
+        }
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+        }
+        .glitch::before {
+            color: var(--err-light);
+            clip-path: inset(0 0 55% 0);
+            animation: glitchTop 3.4s infinite linear;
+        }
+        .glitch::after {
+            color: var(--cyber-2);
+            clip-path: inset(55% 0 0 0);
+            animation: glitchBot 3.7s infinite linear;
+        }
+        @keyframes glitchTop {
+            0%,
+            88%,
+            100% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+            89% {
+                transform: translate(-3px, -1px);
+                opacity: .8;
+            }
+            91% {
+                transform: translate(3px, 1px);
+                opacity: .8;
+            }
+            93% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+        }
+        @keyframes glitchBot {
+            0%,
+            90%,
+            100% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+            91% {
+                transform: translate(3px, 1px);
+                opacity: .8;
+            }
+            93% {
+                transform: translate(-2px, -1px);
+                opacity: .8;
+            }
+            95% {
+                transform: translate(0, 0);
+                opacity: 0;
+            }
+        }
+        .hero-desc {
+            color: var(--text-dim);
+            font-size: 15.5px;
+            max-width: 560px;
+            margin: 0 auto 40px;
+        }
+        .terminal-box {
+            background: var(--ink-2);
+            border: 1px solid rgba(232, 199, 126, 0.22);
+            border-radius: 8px;
+            padding: 26px 26px 22px;
+            max-width: 620px;
+            margin: 0 auto 34px;
+            text-align: right;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        .terminal-box::before {
+            content: "● ● ●";
+            position: absolute;
+            top: 10px;
+            right: 16px;
+            font-size: 9px;
+            color: var(--text-faint);
+            letter-spacing: 3px;
+        }
+        #boot-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--cyber);
+            white-space: pre-wrap;
+            min-height: 170px;
+            direction: ltr;
+            text-align: left;
+            unicode-bidi: isolate;
+            line-height: 1.9;
+        }
+        #boot-text .fa-line {
+            direction: rtl;
+            text-align: right;
+            unicode-bidi: isolate;
+            display: block;
+            color: var(--text-light);
+            font-family: 'Vazirmatn', sans-serif;
+            margin-bottom: 2px;
+        }
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background: var(--cyber);
+            vertical-align: middle;
+            animation: blink .9s steps(1) infinite;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 13px 28px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: transform .15s, background .2s, border-color .2s, opacity .2s;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        .btn-cyber {
+            background: var(--cyber);
+            color: var(--text-dark);
+        }
+        .btn-cyber:hover {
+            background: var(--cyber-2);
+        }
+        .btn-cyber:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-ghost {
+            border-color: rgba(237, 231, 216, 0.25);
+            color: var(--text-light);
+            background: none;
+        }
+        .btn-ghost:hover {
+            border-color: var(--cyber);
+            color: var(--cyber);
+        }
+        .btn-sm {
+            padding: 9px 18px;
+            font-size: 12.5px;
+        }
+
+        /* ============ SECTIONS ============ */
+        section.block {
+            padding: 70px 0;
+            position: relative;
+        }
+        section.block.hidden {
+            display: none;
+        }
+        .section-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--brass-light);
+            margin-bottom: 12px;
+            display: block;
+        }
+        h2.block-title {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 14px;
+        }
+        .block-desc {
+            color: var(--text-dim);
+            font-size: 15px;
+            margin-bottom: 30px;
+            max-width: 640px;
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 8px;
+            padding: 26px;
+            position: relative;
+            overflow: hidden;
+        }
+        .panel+.panel {
+            margin-top: 18px;
+        }
+        .panel-locked {
+            opacity: 0.35;
+            filter: grayscale(0.6);
+            pointer-events: none;
+        }
+        .panel-locked .lock-badge {
+            display: flex !important;
+        }
+        .lock-badge {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(14, 17, 22, 0.55);
+            border-radius: 8px;
+            z-index: 5;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-faint);
+            text-align: center;
+            padding: 20px;
+            backdrop-filter: blur(2px);
+        }
+        .lock-icon {
+            font-size: 22px;
+        }
+
+        .mentor-msg {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+        .mentor-avatar {
+            flex: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--cyber-dim);
+            border: 1px solid var(--cyber);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            color: var(--cyber);
+            font-size: 13px;
+        }
+        .mentor-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--cyber);
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        .mentor-text {
+            color: var(--text-light);
+            font-size: 14.5px;
+        }
+        .mentor-text .mono {
+            background: rgba(232, 199, 126, 0.08);
+            padding: 1px 6px;
+            border-radius: 4px;
+            color: var(--cyber-2);
+        }
+
+        .tool-tabs {
+            display: flex;
+            gap: 8px;
+            margin: 22px 0 12px;
+        }
+        .tool-tab {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            padding: 7px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .tool-tab.active {
+            border-color: var(--cyber);
+            color: var(--cyber);
+            background: rgba(232, 199, 126, 0.06);
+        }
+        .tool-pane {
+            display: none;
+        }
+        .tool-pane.active {
+            display: block;
+        }
+        textarea,
+        input[type=text] {
+            width: 100%;
+            background: var(--ink-2);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 6px;
+            color: var(--text-light);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            padding: 12px 14px;
+            direction: ltr;
+            text-align: left;
+        }
+        textarea:focus,
+        input[type=text]:focus {
+            border-color: var(--cyber);
+            outline: none;
+        }
+        .tool-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .tool-out {
+            margin-top: 10px;
+            background: var(--ink-2);
+            border: 1px dashed rgba(232, 199, 126, 0.3);
+            border-radius: 6px;
+            padding: 12px 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--cyber-2);
+            min-height: 20px;
+            direction: ltr;
+            text-align: left;
+            word-break: break-all;
+        }
+
+        .memo {
+            background: var(--ink-2);
+            border-right: 3px solid var(--brass);
+            border-radius: 4px;
+            padding: 18px 20px;
+            font-size: 14px;
+            color: var(--text-dim);
+            margin-bottom: 20px;
+        }
+        .memo .memo-head {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-faint);
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+            direction: ltr;
+            text-align: left;
+        }
+        .code-line {
+            display: block;
+            background: rgba(232, 199, 126, 0.07);
+            color: var(--cyber-2);
+            padding: 10px 14px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 13px;
+            word-break: break-all;
+        }
+
+        .answer-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+        }
+        .answer-row input {
+            flex: 1;
+            min-width: 220px;
+        }
+        .feedback {
+            margin-top: 14px;
+            font-size: 13.5px;
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 20px;
+        }
+        .feedback.ok {
+            color: var(--cyber);
+        }
+        .feedback.bad {
+            color: var(--err-light);
+        }
+        .shake {
+            animation: shake .4s;
+        }
+        @keyframes shake {
+            10%,
+            90% {
+                transform: translateX(-2px);
+            }
+            20%,
+            80% {
+                transform: translateX(4px);
+            }
+            30%,
+            50%,
+            70% {
+                transform: translateX(-7px);
+            }
+            40%,
+            60% {
+                transform: translateX(7px);
+            }
+        }
+
+        .hint-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .hint-text {
+            display: none;
+            background: rgba(217, 189, 124, 0.08);
+            border: 1px dashed var(--brass);
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: var(--brass-light);
+            flex-basis: 100%;
+        }
+        .hint-text.show {
+            display: block;
+        }
+
+        .log-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            direction: ltr;
+        }
+        .log-table th,
+        .log-table td {
+            padding: 9px 10px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-dim);
+        }
+        .log-table th {
+            color: var(--text-faint);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            font-size: 11px;
+        }
+        .log-table tr:hover td {
+            color: var(--text-light);
+        }
+
+        #result {
+            text-align: center;
+        }
+        .badge-ring {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--cyber);
+            box-shadow: 0 0 30px rgba(232, 199, 126, 0.35);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 30px;
+            font-weight: 800;
+            color: var(--cyber);
+            background: var(--cyber-dim);
+        }
+        .badge-name {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--cyber-2);
+            margin-bottom: 6px;
+        }
+        .badge-sub {
+            color: var(--text-dim);
+            font-size: 13.5px;
+            margin-bottom: 30px;
+        }
+        .score-breakdown {
+            max-width: 380px;
+            margin: 0 auto 30px;
+            text-align: left;
+            direction: ltr;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            background: var(--ink-2);
+            border-radius: 8px;
+            padding: 20px 24px;
+        }
+        .score-breakdown div {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-dim);
+        }
+        .score-breakdown div.total {
+            color: var(--cyber);
+            font-weight: 700;
+            border-bottom: none;
+            padding-top: 10px;
+        }
+        .epilogue {
+            max-width: 600px;
+            margin: 0 auto 30px;
+            color: var(--text-dim);
+            font-size: 14.5px;
+        }
+
+        footer.mini {
+            padding: 50px 0 80px;
+            text-align: center;
+            color: var(--text-faint);
+            font-size: 12px;
+        }
+
+        @media (max-width:640px) {
+            #hud {
+                position: sticky;
+                top: 0;
+                left: auto;
+                margin: 0 -24px 20px;
+                border-radius: 0;
+                width: calc(100% + 48px);
+            }
+            h1.case-title {
+                font-size: 30px;
+            }
+            .hero {
+                padding: 90px 0 60px;
+            }
+        }
+        @media (prefers-reduced-motion:reduce) {
+            .case-tag .dot,
+            .cursor {
+                animation: none;
+            }
+            .glitch::before,
+            .glitch::after {
+                animation: none;
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="df-topbar">
+        <div class="wrap">
+            <a class="logo" href="index.html">
+                <svg viewBox="0 0 40 40" fill="none">
+                    <defs>
+                        <radialGradient id="darkSpace" cx="50%" cy="45%" r="65%">
+                            <stop offset="0%" stop-color="#2b2f4a"/>
+                            <stop offset="100%" stop-color="#0a0b14"/>
+                        </radialGradient>
+                    </defs>
+                    <mask id="keyhole">
+                        <rect width="40" height="40" fill="white"/>
+                        <circle cx="20" cy="15" r="7" fill="black"/>
+                        <path d="M15 21 L25 21 L29 34 L11 34 Z" fill="black"/>
+                    </mask>
+                    <rect width="40" height="40" rx="8" fill="url(#darkSpace)" mask="url(#keyhole)"/>
+                    <circle cx="12" cy="10" r=".7" fill="#e9c67a"/>
+                    <circle cx="28" cy="8" r=".5" fill="#e9c67a"/>
+                    <circle cx="30" cy="16" r=".6" fill="#e9c67a"/>
+                    <circle cx="20" cy="15" r="6.3" fill="none" stroke="#8a1f2b" stroke-width="1.1"/>
+                </svg>
+                <span class="word">Dark<b>File</b></span>
+            </a>
+            <div class="df-topbar-tag mono">FILE #PAR-11 · PARIS · HACK DIVISION</div>
+            <div class="auth-chip">
+                <div class="detective-chip" id="detectiveChip">🕵️ <b id="detectiveName"></b></div>
+                <button class="btn btn-ghost btn-sm" id="authOpenBtn">ورود / ثبت‌نام</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- AUTH MODAL -->
+    <div class="modal-bg" id="authModal">
+        <div class="auth-modal" style="position:relative;">
+            <button class="auth-close" id="authCloseBtn">✕</button>
+            <h3 id="authTitle">ورود به DarkFile</h3>
+            <div class="auth-sub" id="authSub">برای شروع پرونده و ذخیره‌ی امتیاز، وارد حساب کارآگاهی‌تان شوید</div>
+            <div class="auth-extra" id="authExtraNames">
+                <input type="text" id="authFirstName" placeholder="نام">
+                <input type="text" id="authLastName" placeholder="نام خانوادگی">
+            </div>
+            <div class="auth-extra" id="authExtraGender">
+                <select id="authGender">
+                    <option value="">جنسیت (برای پروفایل)</option>
+                    <option value="male">مرد</option>
+                    <option value="female">زن</option>
+                </select>
+            </div>
+            <input type="email" id="authEmail" placeholder="ایمیل" autocomplete="off">
+            <input type="password" id="authPass" placeholder="رمز عبور (حداقل ۶ کاراکتر)" autocomplete="off">
+            <button class="btn btn-cyber" id="authSubmitBtn">ورود</button>
+            <div class="auth-err" id="authErr"></div>
+            <div class="auth-switch" id="authSwitch">حساب ندارید؟ <b>ثبت‌نام کنید</b></div>
+        </div>
+    </div>
+
+    <canvas id="rain-ambient"></canvas>
+
+    <!-- HUD -->
+    <div id="hud" class="hidden">
+        <div class="hud-row"><span class="hud-label">SCORE</span><span class="hud-value" id="hud-score">1000</span></div>
+        <div class="hud-row"><span class="hud-label">HINTS_LEFT</span><span class="hud-value" id="hud-hints">3/3</span></div>
+        <div class="hud-row"><span class="hud-label">TIME</span><span class="hud-value" id="hud-time">00:00</span></div>
+        <div class="hud-row">
+            <span class="hud-label">STAGE</span>
+            <span class="hud-dots">
+                <span class="hud-dot" id="dot-1"></span>
+                <span class="hud-dot" id="dot-2"></span>
+                <span class="hud-dot" id="dot-3"></span>
+            </span>
+        </div>
+        <div class="hud-bar-track"><div class="hud-bar-fill" id="hud-bar"></div></div>
+        <button id="log-toggle">[ نمایش لاگ فعالیت ]</button>
+        <div id="activity-log"></div>
+    </div>
+
+    <div id="toast-zone"></div>
+
+    <!-- HERO -->
+    <section class="hero">
+        <canvas id="rain-hero"></canvas>
+        <div class="wrap hero-inner">
+            <span class="case-tag"><span class="dot"></span>پرونده هکری &middot; پاریس </span>
+            <h1 class="case-title glitch" data-text="پرونده: رمزِ سِن">پرونده: رمزِ سِن</h1>
+            <p class="hero-desc">چهار روز پیش، مهندس ارشد امنیت بلاک‌چین صرافی کریپتویی «سولستیس کاپیتال» در لا دفانسِ پاریس، بدون خبر ناپدید شد — درست وسط تحقیقاتی که خودش شروع کرده بود. آخرین ردی که از خودش به‌جا گذاشته، یک مسیر رمزگذاری‌شده‌ست — و ظاهراً فقط یک نفر می‌تونه بازش کنه. تو.</p>
+            <div class="terminal-box">
+                <div id="boot-text"></div>
+            </div>
+            <button class="btn btn-cyber" id="start-btn">شروع نفوذ ›</button>
+        </div>
+    </section>
+
+    <!-- TUTORIAL -->
+    <section class="block hidden" id="tutorial">
+        <div class="wrap">
+            <span class="section-tag">پیام دریافتی &middot; فرستنده: مینویی</span>
+            <h2 class="block-title">آموزش: قبل از شروع، اینا رو یاد بگیر</h2>
+            <div class="panel">
+                <div class="mentor-msg">
+                    <div class="mentor-avatar">M</div>
+                    <div>
+                        <div class="mentor-name">مینویی // اتصال ناشناس از پاریس</div>
+                        <p class="mentor-text">
+                            هرچی که الودی جا گذاشته، ساده رمزنگاری شده — نه برای اینکه غیرقابل‌شکستن باشه، بلکه فقط برای اینکه یه آدم عادی نتونه تصادفی بخوندش. دو تا ابزار کافیه:
+                            <br><br>
+                            ۱） <span class="mono">Base64</span> — یه روش استاندارده که متن رو به یه رشته‌ی حروف و عدد تبدیل می‌کنه. مثلاً کلمه‌ی <span class="mono">Hello</span> میشه <span class="mono">SGVsbG8=</span>. کاملاً برگشت‌پذیره؛ کافیه دیکد کنی.
+                            <br><br>
+                            ۲） <span class="mono">ROT13</span> (رمز سزار) — هر حرف رو ۱۳ تا تو الفبا جابه‌جا می‌کنه. مثلاً <span class="mono">HELLO</span> میشه <span class="mono">URYYB</span>. نکته‌ی باحالش اینه که اگه دوباره همون کارو روی نتیجه انجام بدی، برمی‌گرده به حالت اول.
+                            <br><br>
+                            از ابزار زیر برای تمرین استفاده کن. توی پرونده هم دقیقاً همین دو تا لازمت میشه.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="tool-tabs">
+                    <button class="tool-tab active" data-tab="b64">Base64</button>
+                    <button class="tool-tab" data-tab="rot">ROT13</button>
+                </div>
+
+                <div class="tool-pane active" id="pane-b64">
+                    <textarea id="b64-input" rows="2" placeholder="متن یا کد رو اینجا بذار...">SGVsbG8=</textarea>
+                    <div class="tool-row">
+                        <button class="btn btn-ghost btn-sm" id="b64-decode">دیکد کن ›</button>
+                        <button class="btn btn-ghost btn-sm" id="b64-encode">انکد کن ›</button>
+                    </div>
+                    <div class="tool-out" id="b64-out">نتیجه اینجا نشون داده میشه...</div>
+                </div>
+
+                <div class="tool-pane" id="pane-rot">
+                    <textarea id="rot-input" rows="2" placeholder="متن یا کد رو اینجا بذار...">URYYB</textarea>
+                    <div class="tool-row">
+                        <button class="btn btn-ghost btn-sm" id="rot-run">اعمال ROT13 ›</button>
+                    </div>
+                    <div class="tool-out" id="rot-out">نتیجه اینجا نشون داده میشه...</div>
+                </div>
+
+                <div style="margin-top:26px; text-align:left;">
+                    <button class="btn btn-cyber" id="tutorial-next">وارد ترمینال بشو ›</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STAGE 1 -->
+    <section class="block hidden" id="stage1">
+        <div class="wrap">
+            <span class="section-tag">مرحله ۱ از ۳</span>
+            <h2 class="block-title">دروازه‌ی ورود</h2>
+            <p class="block-desc">این یک ایمیل داخلیه که الودی قبل از ناپدید شدنش برای خودش فوروارد کرده بود. توی امضای پایینش یه چیز عجیب هست.</p>
+            <div class="panel">
+                <div class="memo">
+                    <div class="memo-head">FROM: e.fontaine@solstice-capital.fr &nbsp;|&nbsp; SUBJECT: Sauvegarde mensuelle — pour moi seulement</div>
+                    بچه‌ها گزارش پول‌شویی رو دیدم، خیلی جدی‌تر از چیزیه که فکر می‌کردم. راستی یادم باشه کد کارمندی‌مو عوض کنم، این یکی رو دیگه همه‌جا استفاده کردم و این‌بار حتی دوبار قایمش کردم.
+                    <span class="code-line mono">ID_SIGNATURE: UlV4UFJFbEZMVEl5TkRjPQ==</span>
+                </div>
+                <div class="answer-row">
+                    <input type="text" id="s1-input" placeholder="کد دسترسی رو اینجا وارد کن..." autocomplete="off">
+                    <button class="btn btn-cyber" id="s1-submit">ورود ›</button>
+                </div>
+                <div class="feedback" id="s1-feedback"></div>
+                <div class="hint-row">
+                    <button class="btn btn-ghost btn-sm" id="s1-hint">استفاده از راهنمایی (۱ از ۳ باقی‌مانده)</button>
+                </div>
+                <div class="hint-text" id="s1-hint-text">این رشته دو بار پشت سر هم با Base64 انکد شده. یه بار دیکدش کن — نتیجه هنوز عجیبه؟ همون نتیجه رو دوباره بریز تو ابزار دیکدر.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STAGE 2 -->
+    <section class="block hidden" id="stage2">
+        <div class="wrap">
+            <span class="section-tag">مرحله ۲ از ۳</span>
+            <h2 class="block-title">لاگ سرور دسترسی</h2>
+            <p class="block-desc">تو حالا وارد سیستم داخلی «سولستیس کاپیتال» شدی. طبق سند فنی شرکت، IP ثابت هر کارمند همیشه بین <span class="mono">10.77.3.09</span> تا <span class="mono">10.77.3.31</span>‌ست. این آخرین ۱۰ ثبت ورود به سرور کیف‌پول‌های مشتریانه — یکی از ردیف‌ها این قانون رو زیر پا گذاشته.</p>
+            <div class="panel panel-locked" id="stage2-panel">
+                <div class="lock-badge"><span class="lock-icon">🔒</span>ابتدا مرحله‌ی ۱ رو حل کن</div>
+                <table class="log-table">
+                    <thead><tr><th>TIME</th><th>IP</th><th>USER</th><th>ACTION</th></tr></thead>
+                    <tbody>
+                        <tr><td>08:52:10</td><td>10.77.3.14</td><td>e.fontaine</td><td>login_success</td></tr>
+                        <tr><td>09:20:33</td><td>10.77.3.22</td><td>r.dubois</td><td>view_client_report</td></tr>
+                        <tr><td>10:04:47</td><td>10.77.3.14</td><td>e.fontaine</td><td>view_internal_doc</td></tr>
+                        <tr><td>11:18:02</td><td>10.77.3.31</td><td>c.moreau</td><td>login_success</td></tr>
+                        <tr><td>13:55:19</td><td>10.77.3.31</td><td>c.moreau</td><td>approve_transfer</td></tr>
+                        <tr><td>14:30:41</td><td>10.77.3.09</td><td>l.bernard</td><td>logout</td></tr>
+                        <tr><td>03:11:56</td><td>10.77.3.44</td><td>c.moreau</td><td>login_success</td></tr>
+                        <tr><td>03:14:22</td><td>10.77.3.44</td><td>c.moreau</td><td>view_internal_doc</td></tr>
+                        <tr><td>16:47:28</td><td>10.77.3.14</td><td>e.fontaine</td><td>view_internal_doc</td></tr>
+                        <tr><td>17:29:53</td><td>10.77.3.22</td><td>r.dubois</td><td>logout</td></tr>
+                    </tbody>
+                </table>
+                <div class="answer-row">
+                    <input type="text" id="s2-input" placeholder="IP مشکوک رو وارد کن..." autocomplete="off">
+                    <button class="btn btn-cyber" id="s2-submit">ثبت گزارش ›</button>
+                </div>
+                <div class="feedback" id="s2-feedback"></div>
+                <div class="hint-row">
+                    <button class="btn btn-ghost btn-sm" id="s2-hint">استفاده از راهنمایی</button>
+                </div>
+                <div class="hint-text" id="s2-hint-text">همه‌ی IP ها با <span class="mono">10.77.3.</span> شروع می‌شن، پس ظاهرشون یکسانه. عدد آخر رو با بازه‌ی مجاز (۰۹ تا ۳۱) مقایسه کن — یکی از ردیف‌ها با یوزرنیمِ یه کارمند واقعی، از یه عدد بیرون از این بازه لاگین کرده.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STAGE 3 -->
+    <section class="block hidden" id="stage3">
+        <div class="wrap">
+            <span class="section-tag">مرحله ۳ از ۳</span>
+            <h2 class="block-title">آخرین یادداشت الودی</h2>
+            <p class="block-desc">این یادداشت رو توی پوشه‌ی شخصی‌ش پیدا کردی؛ با همون رمز قدیمی که از دانشگاه با خودش داشت نوشته شده.</p>
+            <div class="panel panel-locked" id="stage3-panel">
+                <div class="lock-badge"><span class="lock-icon">🔒</span>ابتدا مرحله‌ی ۲ رو حل کن</div>
+                <div class="memo">
+                    <div class="memo-head">NOTE.txt — last modified 4 days ago</div>
+                    اگه یه روز گم شدم، دنبال چیزی بگرد که همه‌ی مدارک پول‌شویی توش ثبت شده. جاش رو این‌بار با رمز قدیمی‌مون می‌نویسم، ولی برعکس — دقیقاً همون‌جوری که همیشه شوخیش رو می‌کردیم:
+                    <span class="code-line mono">ABLY-41-RATVFABP</span>
+                </div>
+                <div class="answer-row">
+                    <input type="text" id="s3-input" placeholder="مکان رمزگشایی‌شده رو وارد کن..." autocomplete="off">
+                    <button class="btn btn-cyber" id="s3-submit">تایید نهایی ›</button>
+                </div>
+                <div class="feedback" id="s3-feedback"></div>
+                <div class="hint-row">
+                    <button class="btn btn-ghost btn-sm" id="s3-hint">استفاده از راهنمایی</button>
+                </div>
+                <div class="hint-text" id="s3-hint-text">اول متن رو با ROT13 دیکد کن. نتیجه هنوز بی‌معنیه — چون این‌بار قبل از رمزنگاری، کل رشته برعکس نوشته شده. نتیجه‌ی ROT13 رو از آخر به اول بخون.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RESULT -->
+    <section class="block hidden" id="result">
+        <div class="wrap">
+            <div class="badge-ring" id="badge-ring">A</div>
+            <div class="badge-name" id="badge-name">کارآگاه دیجیتال</div>
+            <div class="badge-sub" id="badge-sub">پرونده با موفقیت بسته شد</div>
+            <p class="epilogue">کنسرژِ گارِ لیون تأیید می‌کنه: کمدِ شماره‌ی ۱۴، دقیقاً همون‌جایی که الودی قبل از ناپدید شدنش یک هارد رمزگذاری‌شده با کل مسیر تراکنش‌های کیف‌پول‌های جعلی رو مخفی کرده بود. مدرک حالا دست توئه؛ باقی راه به خود الودی برمی‌گرده... اگه هنوز جایی باشه که بشه پیداش کرد.</p>
+            <div class="score-breakdown">
+                <div><span>BASE_SCORE</span><span>1000</span></div>
+                <div><span>HINTS_USED (−)</span><span id="rb-hints">0</span></div>
+                <div><span>WRONG_ATTEMPTS (−)</span><span id="rb-mistakes">0</span></div>
+                <div><span>TIME</span><span id="rb-time">00:00</span></div>
+                <div class="total"><span>FINAL_SCORE</span><span id="rb-final">1000</span></div>
+            </div>
+            <button class="btn btn-ghost" id="reset-btn">بازگشت به صفحه‌ی اصلی</button>
+        </div>
+    </section>
+
+    <footer class="df-footer">
+        <div class="logo">
+            <svg viewBox="0 0 40 40" fill="none" style="width:22px;height:22px;">
+                <mask id="keyhole2">
+                    <rect width="40" height="40" fill="white"/>
+                    <circle cx="20" cy="15" r="7" fill="black"/>
+                    <path d="M15 21 L25 21 L29 34 L11 34 Z" fill="black"/>
+                </mask>
+                <rect width="40" height="40" rx="8" fill="#171a2c" mask="url(#keyhole2)"/>
+            </svg>
+            <span class="word">Dark<b>File</b></span>
+        </div>
+        DarkFile &middot; پرونده هکری در پاریس — رویداد محدود
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script>
+        (function() {
+            "use strict";
+            var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            /* ---------- Digital rain ---------- */
+            function setupRain(canvas, opts) {
+                if (!canvas) return;
+                var ctx = canvas.getContext('2d');
+                var cols, drops;
+                var chars = "01アイウエオカキクケコ$#&%ABCDEF0123456789";
+                var fontSize = opts.fontSize || 14;
+
+                function resize() {
+                    canvas.width = canvas.offsetWidth || window.innerWidth;
+                    canvas.height = canvas.offsetHeight || window.innerHeight;
+                    cols = Math.floor(canvas.width / fontSize);
+                    drops = new Array(cols).fill(1);
+                }
+                resize();
+                window.addEventListener('resize', resize);
+                if (reduceMotion) {
+                    ctx.fillStyle = opts.bg || '#0E1116';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    return;
+                }
+
+                function draw() {
+                    ctx.fillStyle = opts.trail || 'rgba(14,17,22,0.08)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = opts.color || 'rgba(232,199,126,0.6)';
+                    ctx.font = fontSize + "px monospace";
+                    for (var i = 0; i < drops.length; i++) {
+                        var text = chars[Math.floor(Math.random() * chars.length)];
+                        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                        drops[i]++;
+                    }
+                    requestAnimationFrame(draw);
+                }
+                draw();
+            }
+            setupRain(document.getElementById('rain-ambient'), { fontSize: 14, color: 'rgba(176,141,70,0.55)',
+                trail: 'rgba(14,17,22,0.08)', bg: '#0E1116' });
+            setupRain(document.getElementById('rain-hero'), { fontSize: 15, color: 'rgba(232,199,126,0.8)',
+                trail: 'rgba(14,17,22,0.12)', bg: '#0E1116' });
+            document.getElementById('rain-hero').style.width = '100%';
+            document.getElementById('rain-hero').style.height = '100%';
+            document.getElementById('rain-ambient').style.width = '100%';
+            document.getElementById('rain-ambient').style.height = '100%';
+
+            /* ---------- Boot typing ---------- */
+            var bootLines = [
+                { fa: true, text: "[ در حال اتصال به یک VPN فرانسوی... ]" },
+                { fa: true, text: "اتصال برقرار شد — سرور: پاریس." },
+                { fa: true, text: "مهندس ارشد امنیت بلاک‌چین «سولستیس کاپیتال» چهار روزه ناپدید شده." },
+                { fa: true, text: "آخرین چیزی که جا گذاشته، یه مسیر رمزگذاری‌شده‌ست، درست وسط تحقیقات پول‌شویی." },
+                { fa: true, text: "یکی باید بازش کنه. اون یکی، تویی." }
+            ];
+            var bootEl = document.getElementById('boot-text');
+
+            function typeBoot(cb) {
+                var li = 0;
+
+                function nextLine() {
+                    if (li >= bootLines.length) { if (cb) cb(); return; }
+                    var line = bootLines[li];
+                    var div = document.createElement('div');
+                    div.className = 'fa-line';
+                    bootEl.appendChild(div);
+                    var ci = 0,
+                        txt = line.text;
+                    if (reduceMotion) { div.textContent = txt;
+                        li++;
+                        nextLine(); return; }
+                    var iv = setInterval(function() {
+                        div.textContent = txt.slice(0, ci + 1);
+                        ci++;
+                        if (ci >= txt.length) { clearInterval(iv);
+                            li++;
+                            setTimeout(nextLine, 260); }
+                    }, 18);
+                }
+                nextLine();
+            }
+            typeBoot();
+
+            /* ---------- Supabase / Auth / Profile ---------- */
+            const SUPABASE_URL = "https://uohetpzmscuqdiwibqci.supabase.co";
+            const SUPABASE_ANON_KEY = "sb_publishable_CukVAlNn7Nvrx5v_gu7atg_JDcw2dzW";
+            const CASE_ID = "seine-cipher-case";
+            const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            function genBadgeNumber() {
+                var y = new Date().getFullYear();
+                var rand = Math.floor(10000 + Math.random() * 89999);
+                return 'DF-' + y + '-' + rand;
+            }
+
+            function savePendingProfile(fn, ln, gender) {
+                localStorage.setItem('df_pending_profile', JSON.stringify({ first_name: fn, last_name: ln, gender: gender }));
+            }
+            function popPendingProfile() {
+                var raw = localStorage.getItem('df_pending_profile');
+                if (!raw) return null;
+                try { return JSON.parse(raw); } catch (e) { return null; }
+            }
+
+            async function ensureProfile(user) {
+                var { data: existing } = await sb.from('profiles').select().eq('id', user.id).maybeSingle();
+                if (existing) return existing;
+                var pending = popPendingProfile();
+                if (!pending) return null;
+                var { data, error } = await sb.from('profiles').upsert({
+                    id: user.id,
+                    first_name: pending.first_name,
+                    last_name: pending.last_name,
+                    gender: pending.gender,
+                    badge_number: genBadgeNumber(),
+                    total_score: 0
+                }, { onConflict: 'id' }).select().single();
+                if (error) { console.error('profile insert failed:', error); return null; }
+                localStorage.removeItem('df_pending_profile');
+                return data;
+            }
+
+            async function updateProfileScore(userId, newScore) {
+                var { error } = await sb.from('profiles').update({ total_score: newScore }).eq('id', userId);
+                if (error) console.error('update profile score failed:', error);
+            }
+
+            function setHeaderDetective(profile) {
+                if (!profile) return;
+                document.getElementById('detectiveChip').classList.add('show');
+                document.getElementById('detectiveName').textContent = profile.first_name + ' ' + profile.last_name + ' — ' + profile.badge_number;
+                document.getElementById('authOpenBtn').style.display = 'none';
+            }
+
+            var authMode = 'signin';
+            var authModal = document.getElementById('authModal');
+            var authErr = document.getElementById('authErr');
+            var authSwitch = document.getElementById('authSwitch');
+            var authSubmitBtn = document.getElementById('authSubmitBtn');
+            var authTitle = document.getElementById('authTitle');
+            var authSub = document.getElementById('authSub');
+            var authExtraNames = document.getElementById('authExtraNames');
+            var authExtraGender = document.getElementById('authExtraGender');
+
+            function applyAuthMode() {
+                var isSignup = authMode === 'signup';
+                authExtraNames.classList.toggle('show', isSignup);
+                authExtraGender.classList.toggle('show', isSignup);
+                authTitle.textContent = isSignup ? 'ساخت پرونده‌ی کارآگاهی' : 'ورود به DarkFile';
+                authSub.textContent = isSignup ? 'اطلاعاتت برای صدور کارت شناسایی کارآگاهی لازمه' : 'برای شروع پرونده و ذخیره‌ی امتیاز، وارد حساب کارآگاهی‌تان شوید';
+                authSubmitBtn.textContent = isSignup ? 'ثبت‌نام و شروع' : 'ورود';
+                authSwitch.innerHTML = isSignup ? 'قبلاً ثبت‌نام کرده‌اید؟ <b>وارد شوید</b>' : 'حساب ندارید؟ <b>ثبت‌نام کنید</b>';
+            }
+            applyAuthMode();
+
+            function openAuthModal() { authModal.classList.add('open'); }
+            function closeAuthModal() { authModal.classList.remove('open'); }
+            document.getElementById('authOpenBtn').addEventListener('click', openAuthModal);
+            document.getElementById('authCloseBtn').addEventListener('click', closeAuthModal);
+            authModal.addEventListener('click', function(e) { if (e.target === authModal) closeAuthModal(); });
+            authSwitch.addEventListener('click', function() {
+                authMode = authMode === 'signin' ? 'signup' : 'signin';
+                applyAuthMode();
+                authErr.classList.remove('show');
+            });
+
+            authSubmitBtn.addEventListener('click', async function() {
+                var email = document.getElementById('authEmail').value.trim();
+                var pass = document.getElementById('authPass').value;
+                authErr.classList.remove('show');
+                if (!email || pass.length < 6) {
+                    authErr.textContent = 'ایمیل معتبر و رمز حداقل ۶ کاراکتری وارد کنید.';
+                    authErr.classList.add('show');
+                    return;
+                }
+                if (authMode === 'signup') {
+                    var fn = document.getElementById('authFirstName').value.trim();
+                    var ln = document.getElementById('authLastName').value.trim();
+                    var gender = document.getElementById('authGender').value;
+                    if (!fn || !ln) {
+                        authErr.textContent = 'نام و نام خانوادگی را وارد کنید.';
+                        authErr.classList.add('show');
+                        return;
+                    }
+                    if (!gender) {
+                        authErr.textContent = 'جنسیت رو برای پروفایل انتخاب کن.';
+                        authErr.classList.add('show');
+                        return;
+                    }
+                    savePendingProfile(fn, ln, gender);
+                }
+                authSubmitBtn.disabled = true;
+                authSubmitBtn.textContent = 'لطفاً صبر کنید...';
+                try {
+                    var fn2 = authMode === 'signin' ? sb.auth.signInWithPassword({ email: email, password: pass }) : sb.auth.signUp({ email: email, password: pass });
+                    var { data, error } = await fn2;
+                    authSubmitBtn.disabled = false;
+                    applyAuthMode();
+                    if (error) {
+                        authErr.textContent = error.message;
+                        authErr.classList.add('show');
+                        return;
+                    }
+                    if (authMode === 'signup' && !data.session) {
+                        authErr.textContent = 'حساب ساخته شد — ایمیلتان را برای تأیید بررسی کنید، سپس وارد شوید.';
+                        authErr.classList.add('show');
+                        authMode = 'signin';
+                        applyAuthMode();
+                        return;
+                    }
+                    await sb.from('case_progress').upsert({ user_id: data.user.id, case_id: CASE_ID }, { onConflict: 'user_id,case_id', ignoreDuplicates: true });
+                    var profile = await ensureProfile(data.user);
+                    if (profile) setHeaderDetective(profile);
+                    closeAuthModal();
+                    if (pendingStart) { pendingStart = false; beginCase(); }
+                } catch (err) {
+                    authSubmitBtn.disabled = false;
+                    applyAuthMode();
+                    authErr.textContent = 'خطای شبکه. دوباره تلاش کنید.';
+                    authErr.classList.add('show');
+                }
+            });
+
+            (async function checkSession() {
+                var { data: { session } } = await sb.auth.getSession();
+                if (session) {
+                    var profile = await ensureProfile(session.user);
+                    if (profile) setHeaderDetective(profile);
+                }
+            })();
+
+            /* ---------- Game state ---------- */
+            var BASE_SCORE = 1000;
+            var HINT_PENALTIES = [0.10, 0.15, 0.20];
+            var MISTAKE_PENALTY = Math.round(BASE_SCORE * 0.03);
+            var state = {
+                score: BASE_SCORE,
+                hintsUsed: 0,
+                mistakes: { 1: 0, 2: 0, 3: 0 },
+                solved: { 1: false, 2: false, 3: false },
+                startTime: null,
+                timerHandle: null
+            };
+
+            function norm(str) { return (str || '').replace(/[\s\-_]/g, '').toUpperCase(); }
+
+            function logActivity(msg) {
+                var log = document.getElementById('activity-log');
+                var d = document.createElement('div');
+                var t = new Date();
+                var ts = String(t.getHours()).padStart(2, '0') + ':' + String(t.getMinutes()).padStart(2, '0') + ':' + String(t
+                    .getSeconds()).padStart(2, '0');
+                d.textContent = '[' + ts + '] ' + msg;
+                log.appendChild(d);
+                log.scrollTop = log.scrollHeight;
+            }
+
+            function toast(title, body) {
+                var zone = document.getElementById('toast-zone');
+                var el = document.createElement('div');
+                el.className = 'toast';
+                el.innerHTML = '<b>' + title + '</b>' + body;
+                zone.appendChild(el);
+                setTimeout(function() {
+                    el.style.opacity = '0';
+                    el.style.transition = 'opacity .4s';
+                    setTimeout(function() { el.remove(); }, 400);
+                }, 3800);
+            }
+
+            function updateHUD(pulse) {
+                var scoreEl = document.getElementById('hud-score');
+                scoreEl.textContent = state.score;
+                if (pulse) { scoreEl.classList.remove('pulse');
+                    void scoreEl.offsetWidth;
+                    scoreEl.classList.add('pulse'); }
+                document.getElementById('hud-hints').textContent = (3 - state.hintsUsed) + '/3';
+                var solvedCount = Object.values(state.solved).filter(Boolean).length;
+                document.getElementById('hud-bar').style.width = (solvedCount / 3 * 100) + '%';
+                [1, 2, 3].forEach(function(n) {
+                    document.getElementById('dot-' + n).classList.toggle('done', state.solved[n]);
+                });
+            }
+
+            function startTimer() {
+                state.startTime = Date.now();
+                state.timerHandle = setInterval(function() {
+                    var s = Math.floor((Date.now() - state.startTime) / 1000);
+                    var mm = String(Math.floor(s / 60)).padStart(2, '0');
+                    var ss = String(s % 60).padStart(2, '0');
+                    document.getElementById('hud-time').textContent = mm + ':' + ss;
+                }, 1000);
+            }
+
+            function stopTimer() { if (state.timerHandle) clearInterval(state.timerHandle); }
+
+            function elapsedStr() {
+                if (!state.startTime) return '00:00';
+                var s = Math.floor((Date.now() - state.startTime) / 1000);
+                return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+            }
+
+            /* ---------- Tutorial tools ---------- */
+            document.querySelectorAll('.tool-tab').forEach(function(tab) {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.tool-tab').forEach(function(t) { t.classList.remove('active'); });
+                    document.querySelectorAll('.tool-pane').forEach(function(p) { p.classList.remove('active'); });
+                    tab.classList.add('active');
+                    document.getElementById('pane-' + tab.dataset.tab).classList.add('active');
+                });
+            });
+            document.getElementById('b64-decode').addEventListener('click', function() {
+                var out = document.getElementById('b64-out');
+                try { out.textContent = decodeURIComponent(escape(atob(document.getElementById('b64-input').value
+                    .trim()))); } catch (e) { out.textContent = 'رشته معتبر base64 نیست.'; }
+            });
+            document.getElementById('b64-encode').addEventListener('click', function() {
+                var out = document.getElementById('b64-out');
+                try { out.textContent = btoa(unescape(encodeURIComponent(document.getElementById('b64-input').value)));
+                } catch (e) { out.textContent = 'خطا در انکد کردن.'; }
+            });
+
+            function rot13(str) {
+                return str.replace(/[a-zA-Z]/g, function(c) {
+                    var base = c <= 'Z' ? 65 : 97;
+                    return String.fromCharCode((c.charCodeAt(0) - base + 13) % 26 + base);
+                });
+            }
+            document.getElementById('rot-run').addEventListener('click', function() {
+                document.getElementById('rot-out').textContent = rot13(document.getElementById('rot-input').value);
+            });
+
+            /* ---------- Flow control ---------- */
+            function beginCase() {
+                document.getElementById('start-btn').disabled = true;
+                document.getElementById('hud').classList.remove('hidden');
+                startTimer();
+                updateHUD();
+                var tutorial = document.getElementById('tutorial');
+                tutorial.classList.remove('hidden');
+                tutorial.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+                logActivity('اتصال به شبکه برقرار شد. تایمر شروع شد.');
+            }
+
+            var pendingStart = false;
+            document.getElementById('start-btn').addEventListener('click', async function() {
+                var { data: { session } } = await sb.auth.getSession();
+                if (!session) {
+                    pendingStart = true;
+                    openAuthModal();
+                    return;
+                }
+                beginCase();
+            });
+
+            document.getElementById('tutorial-next').addEventListener('click', function() {
+                var s1 = document.getElementById('stage1');
+                s1.classList.remove('hidden');
+                s1.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+            });
+
+            document.getElementById('log-toggle').addEventListener('click', function() {
+                var log = document.getElementById('activity-log');
+                log.classList.toggle('open');
+                this.textContent = log.classList.contains('open') ? '[ مخفی کردن لاگ فعالیت ]' :
+                '[ نمایش لاگ فعالیت ]';
+            });
+
+            /* ---------- Stage helpers ---------- */
+            function wrongAttempt(stageNum, feedbackEl, panelEl) {
+                state.mistakes[stageNum]++;
+                state.score = Math.max(0, state.score - MISTAKE_PENALTY);
+                updateHUD(true);
+                feedbackEl.textContent = '❌ نادرست. دوباره تلاش کن. (−' + MISTAKE_PENALTY + ' امتیاز)';
+                feedbackEl.className = 'feedback bad';
+                if (panelEl) {
+                    panelEl.classList.add('shake');
+                    setTimeout(function() { panelEl.classList.remove('shake'); }, 400);
+                }
+                logActivity('پاسخ نادرست در مرحله ' + stageNum + ' (−' + MISTAKE_PENALTY + ')');
+            }
+
+            function correctAttempt(stageNum, feedbackEl, nextStageId) {
+                state.solved[stageNum] = true;
+                updateHUD();
+                feedbackEl.textContent = '✔ درسته. مرحله باز شد.';
+                feedbackEl.className = 'feedback ok';
+                logActivity('مرحله ' + stageNum + ' حل شد.');
+                toast('مرحله ' + stageNum + ' حل شد', state.mistakes[stageNum] === 0 ? 'بدون هیچ اشتباهی — عالی بود.' :
+                    'ادامه بده.');
+
+                if (nextStageId) {
+                    // Unlock the next stage panel
+                    var nextPanel = document.getElementById(nextStageId + '-panel');
+                    if (nextPanel) {
+                        nextPanel.classList.remove('panel-locked');
+                    } else {
+                        // fallback: try selector
+                        var panelFallback = document.querySelector('#' + nextStageId + ' .panel');
+                        if (panelFallback) panelFallback.classList.remove('panel-locked');
+                    }
+
+                    // Show the next stage section
+                    var nextSection = document.getElementById(nextStageId);
+                    if (nextSection) {
+                        nextSection.classList.remove('hidden');
+                        setTimeout(function() {
+                            nextSection.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+                        }, 500);
+                    } else {
+                        // fallback: log error and try to find by selector
+                        logActivity('⚠️ بخش ' + nextStageId + ' پیدا نشد!');
+                        var sectionFallback = document.querySelector('#' + nextStageId);
+                        if (sectionFallback) {
+                            sectionFallback.classList.remove('hidden');
+                            setTimeout(function() {
+                                sectionFallback.scrollIntoView({ behavior: reduceMotion ? 'auto' :
+                                    'smooth' });
+                            }, 500);
+                        }
+                    }
+                } else {
+                    finishCase();
+                }
+            }
+
+            function setupHint(btnId, textId, stageNum) {
+                var btn = document.getElementById(btnId);
+                btn.addEventListener('click', function() {
+                    if (state.hintsUsed >= 3) return;
+                    var penalty = Math.round(BASE_SCORE * HINT_PENALTIES[state.hintsUsed]);
+                    state.score = Math.max(0, state.score - penalty);
+                    state.hintsUsed++;
+                    updateHUD(true);
+                    document.getElementById(textId).classList.add('show');
+                    btn.disabled = true;
+                    btn.textContent = 'راهنمایی استفاده شد (−' + penalty + ' امتیاز)';
+                    logActivity('راهنمایی مرحله ' + stageNum + ' گرفته شد (−' + penalty + ')');
+                    toast('راهنمایی فعال شد', 'امتیاز ' + penalty + ' واحد کم شد.');
+                    if (state.hintsUsed >= 3) {
+                        document.querySelectorAll('.hint-row .btn').forEach(function(b) {
+                            if (!b.disabled) { b.disabled = true;
+                                b.textContent = 'راهنمایی‌ها تمام شد'; }
+                        });
+                    }
+                });
+            }
+            setupHint('s1-hint', 's1-hint-text', 1);
+            setupHint('s2-hint', 's2-hint-text', 2);
+            setupHint('s3-hint', 's3-hint-text', 3);
+
+            /* ---------- Stage 1 ---------- */
+            document.getElementById('s1-submit').addEventListener('click', function() {
+                var val = document.getElementById('s1-input').value;
+                var fb = document.getElementById('s1-feedback');
+                var panel = document.querySelector('#stage1 .panel');
+                if (norm(val) === norm('ELODIE-2247')) {
+                    correctAttempt(1, fb, 'stage2');
+                } else {
+                    wrongAttempt(1, fb, panel);
+                }
+            });
+            document.getElementById('s1-input').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('s1-submit').click();
+            });
+
+            /* ---------- Stage 2 ---------- */
+            document.getElementById('s2-submit').addEventListener('click', function() {
+                var val = document.getElementById('s2-input').value;
+                var fb = document.getElementById('s2-feedback');
+                var panel = document.getElementById('stage2-panel');
+                if (norm(val) === norm('10.77.3.44')) {
+                    correctAttempt(2, fb, 'stage3');
+                } else {
+                    wrongAttempt(2, fb, panel);
+                }
+            });
+            document.getElementById('s2-input').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('s2-submit').click();
+            });
+
+            /* ---------- Stage 3 ---------- */
+            document.getElementById('s3-submit').addEventListener('click', function() {
+                var val = document.getElementById('s3-input').value;
+                var fb = document.getElementById('s3-feedback');
+                var panel = document.getElementById('stage3-panel');
+                if (norm(val) === norm('CONSIGNE-14-LYON')) {
+                    correctAttempt(3, fb, null);
+                } else {
+                    wrongAttempt(3, fb, panel);
+                }
+            });
+            document.getElementById('s3-input').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('s3-submit').click();
+            });
+
+            /* ---------- Finish ---------- */
+            function finishCase() {
+                stopTimer();
+                var totalHintPenalty = 0;
+                for (var i = 0; i < state.hintsUsed; i++) totalHintPenalty += Math.round(BASE_SCORE * HINT_PENALTIES[i]);
+                var totalMistakes = state.mistakes[1] + state.mistakes[2] + state.mistakes[3];
+                var totalMistakePenalty = totalMistakes * MISTAKE_PENALTY;
+
+                document.getElementById('rb-hints').textContent = totalHintPenalty;
+                document.getElementById('rb-mistakes').textContent = totalMistakePenalty;
+                document.getElementById('rb-time').textContent = elapsedStr();
+                document.getElementById('rb-final').textContent = state.score;
+
+                var pct = state.score / BASE_SCORE * 100;
+                var ring = document.getElementById('badge-ring');
+                var name = document.getElementById('badge-name');
+                var sub = document.getElementById('badge-sub');
+                if (pct >= 90) { ring.textContent = 'S';
+                    name.textContent = 'رمزگشای بی‌نقص'; } else if (pct >= 75) { ring.textContent = 'A';
+                    name.textContent = 'ردیاب حرفه‌ای'; } else if (pct >= 55) { ring.textContent = 'B';
+                    name.textContent = 'کارآگاه دیجیتال'; } else { ring.textContent = 'C';
+                    name.textContent = 'تازه‌کار نفوذ'; }
+                sub.textContent = 'پرونده با امتیاز ' + state.score + ' از ' + BASE_SCORE + ' بسته شد';
+
+                if (state.hintsUsed === 0 && totalMistakes === 0) {
+                    setTimeout(function() { toast('دستاورد ویژه 🏆', 'نفوذ بی‌نقص — بدون راهنمایی و بدون اشتباه!'); },
+                    600);
+                }
+
+                var res = document.getElementById('result');
+                res.classList.remove('hidden');
+                setTimeout(function() { res.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' }); }, 500);
+                document.getElementById('hud').classList.add('hidden');
+
+                saveResultToServer(totalMistakes);
+            }
+
+            async function saveResultToServer(totalMistakes) {
+                var { data: { session } } = await sb.auth.getSession();
+                if (!session) return; // نباید پیش بیاد چون ورود شرط شروع پرونده‌ست
+                try {
+                    await sb.from('case_progress').upsert({
+                        user_id: session.user.id,
+                        case_id: CASE_ID,
+                        solved: true,
+                        score: state.score,
+                        hints_used: state.hintsUsed,
+                        wrong_attempts: totalMistakes,
+                        updated_at: new Date().toISOString()
+                    }, { onConflict: 'user_id,case_id' });
+                    await updateProfileScore(session.user.id, state.score);
+                } catch (e) {
+                    console.error('save result failed:', e);
+                }
+            }
+
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                window.location.href = 'index.html';
+            });
+
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>پوکر | DarkFile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --bg:#0d0f1a; --panel:#1c2036; --panel2:#232847;
+  --gold:#d1a13a; --gold-light:#e9c67a;
+  --blood:#8a1f2b; --blood-light:#b83e42;
+  --text:#ece6d6; --text-dim:#9391a3; --line:rgba(255,255,255,.08);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{background:var(--bg); color:var(--text); font-family:'Vazirmatn',sans-serif; min-height:100vh;
+  display:flex; align-items:center; justify-content:center; padding:24px;}
+.wrap{max-width:440px; width:100%;}
+.card{background:linear-gradient(180deg,var(--panel2),var(--panel)); border:1px solid rgba(209,161,58,.2);
+  border-radius:16px; padding:32px 28px; box-shadow:0 24px 60px rgba(0,0,0,.5);}
+.logo{text-align:center; font-weight:900; font-size:20px; margin-bottom:6px;}
+.logo b{color:var(--blood-light);}
+.sub{text-align:center; color:var(--text-dim); font-size:13px; margin-bottom:26px;}
+label{display:block; font-size:12.5px; color:var(--text-dim); margin:14px 0 6px;}
+input{width:100%; background:#14172a; border:1px solid var(--line); color:var(--text); border-radius:8px;
+  padding:11px 14px; font-size:14px; font-family:inherit; outline:none;}
+input:focus{border-color:var(--gold);}
+.btn{width:100%; margin-top:18px; padding:12px; border-radius:8px; border:none; font-weight:700; font-size:14px;
+  cursor:pointer; font-family:inherit; transition:transform .15s;}
+.btn:hover{transform:translateY(-1px);}
+.btn-gold{background:var(--gold); color:#241d09;}
+.btn-ghost{background:transparent; border:1px solid var(--line); color:var(--text);}
+.err{color:var(--blood-light); font-size:12.5px; margin-top:12px; display:none;}
+.err.show{display:block;}
+.hint{font-size:11.5px; color:var(--text-dim); margin-top:8px; line-height:1.7;}
+.divider{display:flex; align-items:center; gap:10px; margin:22px 0; color:var(--text-dim); font-size:11.5px;}
+.divider::before,.divider::after{content:''; flex:1; height:1px; background:var(--line);}
+.linkbox{background:#14172a; border:1px dashed var(--gold); border-radius:8px; padding:12px 14px; font-size:13px;
+  word-break:break-all; margin-top:14px; direction:ltr; text-align:left;}
+.row{display:flex; gap:10px;}
+.row>div{flex:1;}
+.badge{display:inline-block; background:rgba(209,161,58,.15); border:1px solid var(--gold); color:var(--gold-light);
+  font-size:11px; padding:4px 10px; border-radius:999px; margin-bottom:14px;}
+.hidden{display:none !important;}
+a.plain{color:var(--gold-light);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="logo">Dark<b>File</b> Poker</div>
+    <div class="sub">میز پوکر خصوصی برای دوستان</div>
+
+    <!-- ===== لاگین ===== -->
+    <div id="authBox">
+      <label>ایمیل</label>
+      <input id="loginEmail" type="email" placeholder="you@example.com" autocomplete="email">
+      <label>رمز عبور</label>
+      <input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password">
+      <button class="btn btn-gold" id="btnLogin">ورود</button>
+      <div class="err" id="authErr"></div>
+      <div class="hint">حساب ندارید؟ اول توی <a class="plain" href="index.html">صفحه‌ی اصلی DarkFile</a> ثبت‌نام کنید، بعد برگردید همینجا وارد شوید.</div>
+    </div>
+
+    <!-- ===== ادمین: ساخت میز ===== -->
+    <div id="adminBox" class="hidden">
+      <div class="badge">✓ شما ادمین هستید</div>
+      <label>بلایند کوچک (Small Blind)</label>
+      <input id="sbInput" type="number" value="20" min="1">
+      <label>موجودی شروع هر بازیکن</label>
+      <input id="stackInput" type="number" value="4000" min="100">
+      <div class="hint">بلایند بزرگ خودکار ۲ برابر بلایند کوچک می‌شه. ظرفیت میز ثابت روی <b>۶ نفر</b> است — هر صندلی خالی موقع شروع بازی با بات پر می‌شود.</div>
+      <button class="btn btn-gold" id="btnCreate">ساخت میز جدید</button>
+      <div id="createdBox" class="hidden">
+        <div class="linkbox" id="roomLink"></div>
+        <button class="btn btn-ghost" id="btnCopy">کپی لینک دعوت</button>
+        <button class="btn btn-gold" id="btnGo">ورود به میز</button>
+      </div>
+      <div class="err" id="adminErr"></div>
+    </div>
+
+    <!-- ===== غیر ادمین: پیوستن با کد ===== -->
+    <div id="joinBox" class="hidden">
+      <div class="hint" style="margin-top:0;">فقط ادمین می‌تونه میز جدید بسازه. اگه لینک یا کد دعوت داری، اینجا وارد کن:</div>
+      <label>کد یا لینک اتاق</label>
+      <input id="joinCode" type="text" placeholder="مثلاً AB12CD یا کل لینک">
+      <button class="btn btn-gold" id="btnJoin">پیوستن به میز</button>
+      <div class="err" id="joinErr"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://uohetpzmscuqdiwibqci.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_CukVAlNn7Nvrx5v_gu7atg_JDcw2dzW';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function showErr(id, msg){ const e=document.getElementById(id); e.textContent=msg; e.classList.add('show'); }
+
+function genCode(){
+  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let s=''; for(let i=0;i<6;i++) s+=chars[Math.floor(Math.random()*chars.length)];
+  return s;
+}
+
+async function afterLogin(user){
+  document.getElementById('authBox').classList.add('hidden');
+  const { data: profile } = await sb.from('profiles').select('is_admin').eq('id', user.id).maybeSingle();
+  if(profile && profile.is_admin){
+    document.getElementById('adminBox').classList.remove('hidden');
+  } else {
+    document.getElementById('joinBox').classList.remove('hidden');
+  }
+}
+
+document.getElementById('btnLogin').addEventListener('click', async ()=>{
+  document.getElementById('authErr').classList.remove('show');
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  if(!email || !pass){ showErr('authErr','ایمیل و رمز رو وارد کنید.'); return; }
+  const { data, error } = await sb.auth.signInWithPassword({email, password:pass});
+  if(error){ showErr('authErr', error.message); return; }
+  afterLogin(data.user);
+});
+
+document.getElementById('btnCreate').addEventListener('click', async ()=>{
+  document.getElementById('adminErr').classList.remove('show');
+  const sbAmt = Math.max(1, parseInt(document.getElementById('sbInput').value)||20);
+  const stack = Math.max(100, parseInt(document.getElementById('stackInput').value)||4000);
+  const { data:{ user } } = await sb.auth.getUser();
+  if(!user){ showErr('adminErr','ابتدا وارد شوید.'); return; }
+
+  const code = genCode();
+  const { data: room, error } = await sb.from('poker_rooms').insert({
+    code, admin_id:user.id, capacity:6, small_blind:sbAmt, big_blind:sbAmt*2, starting_stack:stack, status:'waiting'
+  }).select().single();
+  if(error){ showErr('adminErr', 'خطا در ساخت میز: '+error.message); return; }
+
+  const { data: profile } = await sb.from('profiles').select('first_name,last_name').eq('id', user.id).maybeSingle();
+  const myName = profile ? `${profile.first_name} ${profile.last_name}` : 'ادمین';
+
+  const seatRows = Array.from({length:6}, (_,i)=> i===0
+    ? { room_id: room.id, seat_no:0, player_id:user.id, is_bot:false, display_name: myName }
+    : { room_id: room.id, seat_no:i, player_id:null, is_bot:false, display_name:null }
+  );
+  const { error: seatErr } = await sb.from('poker_seats').insert(seatRows);
+  if(seatErr){ showErr('adminErr', 'خطا در ساخت صندلی‌ها: '+seatErr.message); return; }
+
+  const { error: stateErr } = await sb.from('poker_state').insert({ room_id: room.id, hand_number:0, data:{stage:'idle'} });
+  if(stateErr){ showErr('adminErr', 'خطا در ساخت وضعیت میز: '+stateErr.message); return; }
+
+  const link = location.origin + location.pathname.replace('poker-lobby.html','poker-room.html') + '?room=' + code;
+  document.getElementById('roomLink').textContent = link;
+  document.getElementById('createdBox').classList.remove('hidden');
+  document.getElementById('btnGo').onclick = ()=> location.href = link;
+  document.getElementById('btnCopy').onclick = ()=>{
+    navigator.clipboard.writeText(link);
+    document.getElementById('btnCopy').textContent='کپی شد ✓';
+  };
+});
+
+document.getElementById('btnJoin').addEventListener('click', ()=>{
+  let raw = document.getElementById('joinCode').value.trim();
+  if(!raw){ showErr('joinErr','کد یا لینک رو وارد کنید.'); return; }
+  let code = raw;
+  const m = raw.match(/room=([A-Za-z0-9]+)/);
+  if(m) code = m[1];
+  location.href = 'poker-room.html?room=' + encodeURIComponent(code.toUpperCase());
+});
+
+(async ()=>{
+  const { data:{ session } } = await sb.auth.getSession();
+  if(session) afterLogin(session.user);
+})();
+</script>
+</body>
+</html>

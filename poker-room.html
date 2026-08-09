@@ -1,0 +1,1947 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>میز پوکر | تگزاس هولدم</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&family=Yellowtail&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* ===== لابی / اتصال ===== */
+.net-overlay{position:fixed; inset:0; z-index:200; background:rgba(5,6,5,.92); display:flex; align-items:center; justify-content:center; padding:20px;}
+.net-overlay.hidden{display:none;}
+.net-card{max-width:440px; width:100%; background:linear-gradient(180deg,#161f19,#0c1a13); border:1px solid rgba(217,178,76,.3); border-radius:16px; padding:30px 26px; box-shadow:0 24px 60px rgba(0,0,0,.6); color:var(--text-soft, #d8d2bf); font-family:var(--font-fa);}
+.net-card h2{color:var(--gold-bright,#f5da8a); font-size:18px; margin-bottom:14px;}
+.net-card p{font-size:13px; color:var(--text-dim,#938e7c); line-height:1.9; margin-bottom:10px;}
+.net-card input{width:100%; background:#0d100c; border:1px solid rgba(217,178,76,.25); color:#eee; border-radius:8px; padding:10px 13px; font-size:14px; font-family:inherit; margin-bottom:10px;}
+.net-card .btn{width:100%; margin-top:6px;}
+.net-err{color:#e07a72; font-size:12.5px; margin-top:8px;}
+.seat-list{margin:14px 0; display:flex; flex-direction:column; gap:6px;}
+.seat-list .row{display:flex; align-items:center; justify-content:space-between; background:rgba(217,178,76,.06); border:1px solid rgba(217,178,76,.15); border-radius:8px; padding:8px 12px; font-size:12.5px;}
+.seat-list .row.empty{opacity:.5;}
+.room-chip{display:inline-flex; align-items:center; gap:6px; font-size:11px; color:var(--gold-bright,#f5da8a); border:1px solid rgba(217,178,76,.4); padding:4px 10px; border-radius:20px;}
+</style>
+<style>
+  :root{
+    --felt-dark:#062820;
+    --felt:#0c4a37;
+    --felt-light:#17724f;
+    --felt-spot:#1d8a5f;
+    --rail-dark:#140a05;
+    --rail:#3a2213;
+    --rail-light:#6b4022;
+    --rail-grain:#2a1710;
+    --gold:#d9b24c;
+    --gold-bright:#f5da8a;
+    --gold-dim:#8a7132;
+    --card-bg:#faf6ea;
+    --card-bg2:#efe7d2;
+    --card-ink:#171614;
+    --card-red:#a6262c;
+    --chip-black:#141414;
+    --chip-blue:#1f4e8c;
+    --chip-red:#8c2323;
+    --chip-green:#1f6b3a;
+    --chip-white:#d8d5cc;
+    --chip-purple:#5b2f8c;
+    --chip-gold:#c9a227;
+    --bg:#050605;
+    --panel:rgba(13,15,13,0.88);
+    --panel-border:rgba(217,178,76,0.35);
+    --text-soft:#d8d2bf;
+    --text-dim:#938e7c;
+    --danger:#b5423a;
+    --good:#4a9d6f;
+    --font-fa:'Vazirmatn', Tahoma, "Segoe UI", Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    background:
+      radial-gradient(ellipse at 50% -10%, #1e1710 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 110%, #0c0906 0%, transparent 60%),
+      var(--bg);
+    font-family: var(--font-fa);
+    color:var(--text-soft);
+    min-height:100vh;
+    overflow-x:hidden;
+    user-select:none;
+    font-feature-settings:"ss01" 1;
+  }
+  .app{
+    max-width:1440px;
+    margin:0 auto;
+    padding:14px 14px 22px;
+  }
+  .layout{
+    display:grid;
+    grid-template-columns:296px minmax(0,1fr) 296px;
+    gap:14px;
+    align-items:start;
+  }
+  .main-col{ min-width:0; }
+  .guide-col, .log-col{
+    position:sticky; top:14px;
+    max-height:calc(100vh - 28px);
+    display:flex; flex-direction:column;
+  }
+  @media (max-width:1180px){
+    .layout{ grid-template-columns:260px minmax(0,1fr); }
+    .log-col{ position:static; max-height:420px; order:2; grid-column:1 / -1; }
+    .main-col{ order:1; }
+    .guide-col{ order:3; }
+  }
+  @media (max-width:980px){
+    .layout{ grid-template-columns:1fr; }
+    .guide-col{ position:static; max-height:360px; order:3; }
+    .log-col{ position:static; max-height:360px; order:2; grid-column:auto; }
+    .main-col{ order:1; }
+  }
+
+  /* ===== HEADER ===== */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:8px 16px; margin-bottom:10px;
+    background:var(--panel);
+    border:1px solid var(--panel-border);
+    border-radius:14px;
+  }
+  .brand{display:flex; align-items:center; gap:10px;}
+  .brand-mark{
+    width:34px;height:34px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--gold-bright), var(--gold) 55%, var(--gold-dim) 100%);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:900;color:#241608;font-size:16px;
+    box-shadow:0 0 0 2px #1a1410, 0 2px 6px rgba(0,0,0,.5);
+  }
+  .brand h1{font-size:18px;margin:0;letter-spacing:.2px;color:var(--gold-bright);font-weight:800;text-shadow:0 1px 0 rgba(0,0,0,.5);}
+  .brand small{display:block;font-size:10.5px;color:var(--text-dim);letter-spacing:.3px;}
+  .meta-stats{display:flex; gap:18px; font-size:12px; color:var(--text-dim);}
+  .meta-stats b{color:var(--gold-bright); font-size:13px;}
+  .rng-badge{
+    display:flex;align-items:center;gap:6px;font-size:11px;color:var(--good);
+    border:1px solid rgba(74,157,111,.4); padding:4px 9px; border-radius:20px;
+    background:rgba(74,157,111,.08);
+  }
+  .rng-dot{width:6px;height:6px;border-radius:50%;background:var(--good);box-shadow:0 0 6px var(--good);}
+
+  /* ===== TABLE ===== */
+  .table-wrap{
+    position:relative;
+    width:100%;
+    aspect-ratio:16/10.2;
+    margin:10px 0 16px;
+  }
+  .rail{
+    position:absolute; inset:0;
+    border-radius:50%/45%;
+    background:
+      repeating-linear-gradient(95deg, rgba(0,0,0,.14) 0px, rgba(0,0,0,0) 2px, rgba(0,0,0,0) 5px, rgba(0,0,0,.1) 7px),
+      radial-gradient(ellipse at 30% 15%, rgba(255,255,255,.10), transparent 45%),
+      linear-gradient(160deg, var(--rail-light), var(--rail) 42%, var(--rail-dark) 100%);
+    box-shadow: inset 0 0 50px rgba(0,0,0,.65), inset 0 2px 3px rgba(255,255,255,.08), 0 20px 46px rgba(0,0,0,.6), 0 0 0 1px rgba(217,178,76,.15);
+  }
+  .rail::after{
+    content:"";
+    position:absolute; inset:5.4%;
+    border-radius:50%/45%;
+    border:2px solid rgba(217,178,76,.5);
+    box-shadow:0 0 0 1px rgba(0,0,0,.4), inset 0 0 14px rgba(217,178,76,.12);
+    pointer-events:none;
+  }
+  .felt{
+    position:absolute; inset:3.4% 3.4%;
+    border-radius:50%/45%;
+    background:
+      repeating-linear-gradient(45deg, rgba(255,255,255,.012) 0px, rgba(255,255,255,.012) 2px, transparent 2px, transparent 5px),
+      radial-gradient(ellipse at 50% 32%, var(--felt-spot) 0%, var(--felt-light) 30%, var(--felt) 60%, var(--felt-dark) 100%);
+    box-shadow: inset 0 0 70px rgba(0,0,0,.6), inset 0 0 3px rgba(217,178,76,.4), inset 0 30px 60px rgba(0,0,0,.25);
+    border:1px solid rgba(217,178,76,.25);
+  }
+  .felt::before{
+    content:"";
+    position:absolute; inset:9%;
+    border-radius:50%/45%;
+    border:1px dashed rgba(217,178,76,.18);
+  }
+  .felt-logo{
+    position:absolute; top:15.5%; left:50%; transform:translateX(-50%);
+    font-size:10.5px; letter-spacing:3px; color:rgba(217,178,76,.32);
+    font-weight:700; text-transform:uppercase; text-align:center;
+    text-shadow:0 1px 0 rgba(0,0,0,.4);
+  }
+  .felt-logo .script{
+    display:block; font-family:'Yellowtail',cursive; font-size:24px; letter-spacing:0;
+    color:rgba(217,178,76,.4); text-transform:none; margin-top:2px;
+  }
+
+  .center-area{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    display:flex; flex-direction:column; align-items:center; gap:10px;
+    width:70%;
+  }
+  .pot-display{
+    display:flex; align-items:center; gap:8px;
+    background:rgba(0,0,0,.35); border:1px solid rgba(217,178,76,.4);
+    padding:5px 16px; border-radius:20px; font-size:13px;
+    box-shadow:0 2px 10px rgba(0,0,0,.4);
+  }
+  .pot-display b{color:var(--gold-bright); font-size:15px;}
+  .table-spotlight{
+    position:absolute; top:-8%; left:50%; transform:translateX(-50%);
+    width:60%; height:70%;
+    background:radial-gradient(ellipse at 50% 0%, rgba(255,244,214,.10), transparent 68%);
+    pointer-events:none; z-index:1;
+  }
+  .community{
+    display:flex; gap:7px; min-height:70px; align-items:center; justify-content:center;
+  }
+  .stage-label{
+    font-size:10.5px; letter-spacing:2px; color:var(--text-dim); text-transform:uppercase;
+  }
+
+  /* Cards */
+  .card{
+    width:46px; height:66px; border-radius:7px;
+    background:linear-gradient(160deg, var(--card-bg), var(--card-bg2));
+    display:flex; align-items:center; justify-content:center;
+    font-weight:800; line-height:1;
+    box-shadow:0 3px 7px rgba(0,0,0,.55), 0 1px 0 rgba(255,255,255,.5) inset, 0 0 0 1px rgba(0,0,0,.18);
+    position:relative;
+    animation:dealIn .38s cubic-bezier(.2,.7,.3,1);
+    flex-shrink:0;
+    border:1px solid rgba(0,0,0,.08);
+  }
+  .card.small{width:36px;height:52px;}
+  .card.red{color:var(--card-red);}
+  .card.black{color:var(--card-ink);}
+  .card .idx{
+    position:absolute; top:3px; left:4px; font-size:12px; text-align:center; line-height:1.05;
+  }
+  .card .idx .suit{display:block; font-size:11px; margin-top:-1px;}
+  .card .idx.br{ top:auto; left:auto; bottom:3px; right:4px; transform:rotate(180deg); }
+  .card .pip{ font-size:20px; opacity:.9; }
+  .card.small .idx{font-size:9.5px; top:2px; left:3px;}
+  .card.small .idx .suit{font-size:8.5px;}
+  .card.small .idx.br{bottom:2px; right:3px; top:auto; left:auto;}
+  .card.small .pip{font-size:15px;}
+  .card.back{
+    background:
+      repeating-linear-gradient(45deg, #1a3f66, #1a3f66 4px, #163656 4px, #163656 8px);
+    border:2px solid var(--gold-dim);
+    box-shadow:0 3px 7px rgba(0,0,0,.55), 0 0 0 1px rgba(0,0,0,.18);
+  }
+  .card.back::before{
+    content:""; position:absolute; inset:3px; border:1px solid rgba(217,178,76,.35); border-radius:4px;
+  }
+  .card.back::after{
+    content:"♠"; color:rgba(217,178,76,.55); font-size:18px;
+  }
+  .card.small.back::after{font-size:13px;}
+  @keyframes dealIn{
+    0%{opacity:0; transform:translateY(-22px) scale(.7) rotate(-10deg);}
+    60%{opacity:1; transform:translateY(3px) scale(1.04) rotate(1deg);}
+    100%{opacity:1; transform:translateY(0) scale(1) rotate(0);}
+  }
+
+  /* Seats */
+  .seat{
+    position:absolute; transform:translate(-50%,-50%);
+    width:118px; display:flex; flex-direction:column; align-items:center; gap:4px;
+    transition:filter .2s;
+  }
+  .seat.folded{filter:grayscale(.8) opacity(.55); opacity:.55;}
+  .seat-cards{display:flex; gap:3px; height:54px; margin-bottom:2px;}
+  .seat-box{
+    background:linear-gradient(180deg, rgba(20,22,19,.88), rgba(6,7,6,.9));
+    border:1px solid rgba(217,178,76,.25);
+    border-radius:11px; padding:6px 9px;
+    display:flex; flex-direction:column; align-items:center; gap:1px;
+    min-width:96px; position:relative;
+    box-shadow:0 4px 10px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.04);
+    transition:border-color .3s, box-shadow .3s;
+  }
+  .seat.active{ z-index:6; transition:filter .2s, transform .25s; transform:scale(1.07); }
+  .seat.active .seat-box{
+    border-color:var(--gold-bright);
+    border-width:2px;
+    box-shadow:0 0 0 3px rgba(240,212,122,.35), 0 0 26px rgba(240,212,122,.6), 0 6px 16px rgba(0,0,0,.45);
+    animation:activePulse 1.1s ease-in-out infinite;
+  }
+  .seat.active .seat-name{ color:var(--gold-bright); }
+  @keyframes activePulse{
+    0%,100%{box-shadow:0 0 0 3px rgba(240,212,122,.3), 0 0 18px rgba(240,212,122,.4);}
+    50%{box-shadow:0 0 0 4px rgba(240,212,122,.55), 0 0 30px rgba(240,212,122,.7);}
+  }
+  .seat-turn-indicator{
+    position:absolute; top:-24px; left:50%; transform:translateX(-50%);
+    font-size:15px; animation:turnBounce .9s ease-in-out infinite;
+    filter:drop-shadow(0 0 6px rgba(240,212,122,.85));
+    z-index:7;
+  }
+  @keyframes turnBounce{
+    0%,100%{transform:translateX(-50%) translateY(0);}
+    50%{transform:translateX(-50%) translateY(-5px);}
+  }
+  .seat-name{font-size:11.5px; font-weight:700; color:var(--text-soft); display:flex; align-items:center; gap:4px;}
+  .seat-name .ava{font-size:13px;}
+  .seat-stack{font-size:12px; color:var(--gold-bright); font-weight:700; letter-spacing:.2px;}
+  .seat-winline{
+    font-size:9.5px; color:var(--good); font-weight:700; margin-top:1px; text-align:center; line-height:1.3;
+  }
+  .seat-badge{
+    position:absolute; top:-9px; left:-9px;
+    background:var(--gold); color:#241608; font-size:9px; font-weight:900;
+    width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 1px 4px rgba(0,0,0,.5);
+  }
+  .seat-tag{
+    position:absolute; top:-9px; right:-9px;
+    background:#1a1410; border:1px solid var(--gold-dim); color:var(--gold-bright);
+    font-size:8.5px; font-weight:800; padding:1px 5px; border-radius:8px;
+    letter-spacing:.4px;
+  }
+  .seat-tag.sb{ border-color:rgba(74,157,111,.6); color:var(--good); }
+  .seat-tag.bb{ border-color:rgba(181,66,58,.6); color:#e08a80; }
+  .seat-status{
+    font-size:9.5px; padding:1px 7px; border-radius:8px; margin-top:1px; font-weight:700; letter-spacing:.3px;
+  }
+  .status-folded{background:rgba(181,66,58,.18); color:#e08a80;}
+  .status-allin{background:rgba(217,178,76,.2); color:var(--gold-bright); animation:allinFlash 1s ease-in-out infinite;}
+  @keyframes allinFlash{0%,100%{opacity:1;} 50%{opacity:.55;}}
+  .status-thinking{background:rgba(74,157,111,.18); color:var(--good);}
+  .status-thinking::after{
+    content:''; display:inline-block; width:1em; text-align:left;
+    animation:thinkingDots 1.1s steps(4,end) infinite;
+  }
+  @keyframes thinkingDots{
+    0%{content:'';} 25%{content:'.';} 50%{content:'..';} 75%{content:'...';} 100%{content:'';}
+  }
+  .bet-chip{
+    display:flex; align-items:center; gap:5px;
+    font-size:10.5px; background:rgba(0,0,0,.45); border:1px solid var(--gold-dim);
+    color:var(--gold-bright); font-weight:800; padding:2px 8px 2px 5px; border-radius:10px; margin-top:2px;
+  }
+  /* ===== REALISTIC CASINO CHIPS ===== */
+  .chip-pile{ display:flex; flex-direction:column-reverse; align-items:center; }
+  .poker-chip{
+    width:16px; height:16px; border-radius:50%; margin-top:-11px;
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+    border:2px dashed rgba(255,255,255,.6);
+    box-shadow:0 2px 2px rgba(0,0,0,.55), inset 0 1px 1px rgba(255,255,255,.35), inset 0 -2px 2px rgba(0,0,0,.35);
+  }
+  .poker-chip:first-child{ margin-top:0; }
+  .poker-chip::after{
+    content:""; position:absolute; inset:3px; border-radius:50%;
+    border:1px solid rgba(255,255,255,.28);
+  }
+  .chip-v1{ background:radial-gradient(circle at 35% 30%, #f2f0e8, var(--chip-white) 55%, #8f8c82 100%); }
+  .chip-v5{ background:radial-gradient(circle at 35% 30%, #e2554f, var(--chip-red) 60%, #4a0f10 100%); }
+  .chip-v25{ background:radial-gradient(circle at 35% 30%, #3fae6f, var(--chip-green) 60%, #0d3a1e 100%); }
+  .chip-v100{ background:radial-gradient(circle at 35% 30%, #3a3a3a, var(--chip-black) 65%, #000 100%); }
+  .chip-v500{ background:radial-gradient(circle at 35% 30%, #9d6fd1, var(--chip-purple) 60%, #24123a 100%); }
+  .chip-v1000{ background:radial-gradient(circle at 35% 30%, var(--gold-bright), var(--chip-gold) 55%, #6e5613 100%); }
+  .chip-mini{ width:12px; height:12px; margin-top:-8px; border:1.5px dashed rgba(255,255,255,.55); }
+
+  /* Pot: a loose cluster of chips scattered like a real table pot */
+  .pot-chips{ position:relative; height:44px; width:110px; }
+  .pot-chips .cluster{ position:absolute; display:flex; flex-direction:column-reverse; align-items:center; }
+  .pot-chips .poker-chip{ width:19px; height:19px; margin-top:-13px; }
+
+  .seat-pos-0{top:93%; left:50%;}
+  .seat-pos-1{top:68%; left:6%;}
+  .seat-pos-2{top:14%; left:20%;}
+  .seat-pos-3{top:14%; left:80%;}
+  .seat-pos-4{top:68%; left:94%;}
+
+  /* winner glow */
+  .seat.winner .seat-box{
+    border-color:var(--good); box-shadow:0 0 0 2px rgba(74,157,111,.4), 0 0 22px rgba(74,157,111,.5);
+    animation:pulseWin 1s ease infinite alternate;
+  }
+  @keyframes pulseWin{from{box-shadow:0 0 0 2px rgba(74,157,111,.35), 0 0 14px rgba(74,157,111,.4);} to{box-shadow:0 0 0 3px rgba(74,157,111,.6), 0 0 26px rgba(74,157,111,.7);}}
+
+  /* ===== BOTTOM PANEL ===== */
+  .lower{
+    display:block;
+  }
+
+  .controls{
+    background:var(--panel); border:1px solid var(--panel-border); border-radius:14px;
+    padding:14px 16px;
+  }
+  .my-hand-row{
+    display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;
+  }
+  .my-cards{display:flex; gap:6px;}
+  .hand-hint{font-size:12px; color:var(--text-dim);}
+  .hand-hint b{color:var(--gold-bright);}
+
+  .action-row{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+  .btn{
+    border:1px solid rgba(217,178,76,.4); background:linear-gradient(180deg,#1c1a14,#12110d);
+    color:var(--text-soft); padding:11px 18px; border-radius:10px; font-size:13.5px; font-weight:700;
+    cursor:pointer; transition:.15s; letter-spacing:.2px;
+  }
+  .btn:hover:not(:disabled){transform:translateY(-1px); border-color:var(--gold-bright); box-shadow:0 4px 14px rgba(217,178,76,.18);}
+  .btn:disabled{opacity:.35; cursor:not-allowed;}
+  .btn.fold{border-color:rgba(181,66,58,.5); color:#e08a80;}
+  .btn.call{border-color:rgba(74,157,111,.5); color:#8fd6ac;}
+  .btn.raise{background:linear-gradient(180deg,var(--gold-bright),var(--gold)); color:#241608; border-color:var(--gold-bright);}
+  .btn.allin{background:linear-gradient(180deg,#c0483f,#8f2f28); color:#fff; border-color:#c0483f;}
+  .btn.ghost{background:transparent;}
+  .btn.small{padding:6px 11px; font-size:11.5px; font-weight:600;}
+
+  .raise-panel{
+    display:flex; align-items:center; gap:10px; margin-top:12px; flex-wrap:wrap;
+  }
+  .raise-panel input[type=range]{flex:1; min-width:140px; accent-color:var(--gold);}
+  .raise-amount{
+    font-weight:800; color:var(--gold-bright); min-width:70px; text-align:center;
+    background:rgba(0,0,0,.35); border-radius:8px; padding:6px 8px; font-size:13px;
+  }
+  .quick-bets{display:flex; gap:6px;}
+
+  .newhand-bar{display:flex; justify-content:center; margin-top:10px;}
+
+  .side-panel{
+    background:var(--panel); border:1px solid var(--panel-border); border-radius:14px;
+    padding:12px 14px; display:flex; flex-direction:column; max-height:420px;
+  }
+  .log-col .side-panel{ max-height:none; flex:1; min-height:0; }
+  .side-panel-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:2px;}
+  .side-panel h3{margin:0 0 2px; font-size:12.5px; color:var(--gold-bright); letter-spacing:1px; text-transform:uppercase; display:flex; align-items:center; gap:6px;}
+  .side-panel .sub{font-size:10.5px; color:var(--text-dim); margin-bottom:8px;}
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--danger);box-shadow:0 0 6px var(--danger); animation:liveDotBlink 1.2s ease-in-out infinite; flex-shrink:0;}
+  @keyframes liveDotBlink{0%,100%{opacity:1;} 50%{opacity:.35;}}
+  .log{overflow-y:auto; flex:1; min-height:0; display:flex; flex-direction:column; gap:5px; font-size:12px; padding-left:4px;}
+  .log-entry{color:var(--text-soft); border-bottom:1px solid rgba(255,255,255,.05); padding-bottom:4px; animation:logIn .25s ease;}
+  .log-entry:first-child{color:var(--gold-bright);}
+  .log-entry b{color:var(--gold-bright);}
+  .log-entry.win{color:#8fd6ac;}
+  .log-entry.sys{color:var(--text-dim); font-style:italic;}
+  @keyframes logIn{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:translateY(0);}}
+  .log::-webkit-scrollbar{width:6px;}
+  .log::-webkit-scrollbar-thumb{background:var(--gold-dim); border-radius:3px;}
+
+  /* overlay */
+  .overlay{
+    position:fixed; inset:0; background:rgba(4,4,5,.72); backdrop-filter:blur(3px);
+    display:none; align-items:center; justify-content:center; z-index:50;
+  }
+  .overlay.show{display:flex;}
+  .overlay-card{
+    background:linear-gradient(180deg,#16130e,#0e0c09); border:1px solid var(--gold-dim);
+    border-radius:16px; padding:26px 30px; max-width:420px; text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,.6);
+  }
+  .overlay-card h2{color:var(--gold-bright); margin:0 0 8px; font-size:20px;}
+  .overlay-card p{color:var(--text-soft); font-size:13.5px; line-height:1.8; margin:0 0 16px;}
+
+  .shuffle-overlay{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap:10px; color:var(--gold-bright); font-size:13px; letter-spacing:1px;
+    background:rgba(6,20,15,.55); border-radius:50%/45%; opacity:0; pointer-events:none; transition:opacity .2s;
+    z-index:5;
+  }
+  .shuffle-overlay.show{opacity:1;}
+  .shuffle-cards{display:flex; gap:-8px;}
+  .shuffle-cards .card{margin-right:-18px; animation:shuffleSpin 0.6s ease-in-out infinite alternate;}
+  .shuffle-cards .card:nth-child(2){animation-delay:.1s;}
+  .shuffle-cards .card:nth-child(3){animation-delay:.2s;}
+  .shuffle-cards .card:nth-child(4){animation-delay:.3s;}
+  @keyframes shuffleSpin{from{transform:translateY(0) rotate(-4deg);} to{transform:translateY(-8px) rotate(4deg);}}
+
+  .footer-note{text-align:center; font-size:10.5px; color:var(--text-dim); margin-top:14px; line-height:1.9;}
+  .footer-note a{color:var(--gold-dim);}
+
+  /* ===== HAND RANKING GUIDE (always-on sidebar) ===== */
+  .guide-panel{
+    background:linear-gradient(180deg, #16130d, #0c0a07 60%);
+    border:1px solid var(--panel-border);
+    border-radius:14px;
+    box-shadow:0 10px 30px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.03);
+    display:flex; flex-direction:column;
+    overflow:hidden;
+    height:100%;
+  }
+  .guide-head{
+    display:flex; align-items:center; gap:10px;
+    padding:14px 16px 10px;
+    background:linear-gradient(90deg, rgba(217,178,76,.14), rgba(217,178,76,.03));
+    border-bottom:1px solid rgba(217,178,76,.2);
+  }
+  .guide-head-icon{
+    flex-shrink:0; width:32px; height:32px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--gold-bright), var(--gold) 55%, var(--gold-dim) 100%);
+    display:flex; align-items:center; justify-content:center; font-size:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,.5), 0 0 0 2px rgba(0,0,0,.2);
+  }
+  .guide-head h3{ margin:0; font-size:14.5px; color:var(--gold-bright); font-weight:800; }
+  .guide-sub{ padding:8px 16px 12px; font-size:11px; color:var(--text-dim); border-bottom:1px solid rgba(217,178,76,.15); }
+  .guide-list{ overflow-y:auto; flex:1; padding:10px 12px 16px; }
+  .guide-list::-webkit-scrollbar{width:6px;}
+  .guide-list::-webkit-scrollbar-thumb{background:var(--gold-dim); border-radius:3px;}
+
+  .guide-row{
+    display:flex; gap:9px; align-items:flex-start;
+    background:linear-gradient(180deg, rgba(23,114,79,.18), rgba(23,114,79,.03));
+    border:1px solid rgba(217,178,76,.18); border-radius:12px;
+    padding:9px 10px; margin-bottom:8px;
+    transition:border-color .2s;
+  }
+  .guide-row:hover{ border-color:rgba(217,178,76,.4); }
+  .guide-rank{
+    flex-shrink:0; width:22px; height:22px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--gold-bright), var(--gold) 60%, var(--gold-dim));
+    color:#241608; font-weight:900; font-size:11px;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 2px 4px rgba(0,0,0,.4);
+  }
+  .guide-info{ flex:1; min-width:0; }
+  .guide-title{ font-size:12.5px; font-weight:800; color:var(--text-soft); display:flex; align-items:baseline; gap:6px; flex-wrap:wrap; }
+  .guide-en{ font-size:9.5px; font-weight:600; color:var(--text-dim); letter-spacing:.3px; }
+  .guide-desc{ font-size:10.8px; color:var(--text-dim); margin-top:3px; line-height:1.65; }
+  .guide-tie{ font-size:10px; color:var(--good); margin-top:5px; line-height:1.6; background:rgba(74,157,111,.1); border-inline-start:2px solid var(--good); padding:4px 7px; border-radius:4px; }
+  .guide-tie b{ color:var(--gold-bright); font-weight:700; }
+  .guide-odds{ font-size:9px; color:var(--gold-dim); margin-top:5px; }
+  .guide-cards{ display:flex; gap:3px; margin-top:7px; flex-wrap:wrap; }
+
+  .mcard{
+    width:23px; height:32px; border-radius:4px;
+    background:linear-gradient(160deg, var(--card-bg), var(--card-bg2));
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-weight:800; line-height:1; font-size:9px;
+    box-shadow:0 1px 3px rgba(0,0,0,.5), 0 0 0 1px rgba(0,0,0,.15);
+    flex-shrink:0;
+  }
+  .mcard span{ font-size:9px; }
+  .mcard b{ font-size:10.5px; font-weight:700; margin-top:2px; }
+  .mcard.red{ color:var(--card-red); }
+  .mcard.black{ color:var(--card-ink); }
+</style>
+</head>
+<body>
+
+<!-- ===== لاگین / اتصال به اتاق ===== -->
+<div class="net-overlay" id="loginOverlay">
+  <div class="net-card">
+    <h2>ورود به میز</h2>
+    <p>برای نشستن سر میز باید وارد حساب DarkFile خودتون بشید.</p>
+    <input id="loginEmail" type="email" placeholder="ایمیل">
+    <input id="loginPass" type="password" placeholder="رمز عبور">
+    <button class="btn raise" id="btnNetLogin">ورود</button>
+    <div class="net-err" id="loginErr"></div>
+  </div>
+</div>
+
+<div class="net-overlay hidden" id="lobbyOverlay">
+  <div class="net-card">
+    <h2 id="lobbyTitle">در انتظار شروع بازی...</h2>
+    <p id="lobbySub">صندلی‌ها رو ببین — وقتی همه آماده بودن، ادمین بازی رو شروع می‌کنه.</p>
+    <div class="seat-list" id="lobbySeatList"></div>
+    <button class="btn raise" id="btnStartGame" style="display:none;">شروع بازی ▶ (صندلی‌های خالی با بات پر می‌شن)</button>
+    <div class="net-err" id="lobbyErr"></div>
+  </div>
+</div>
+
+<div class="net-overlay hidden" id="fatalOverlay">
+  <div class="net-card">
+    <h2>❌ مشکلی پیش اومد</h2>
+    <p id="fatalMsg"></p>
+  </div>
+</div>
+
+<div class="app">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">♠</div>
+      <div>
+        <h1>میز طلایی</h1>
+        <small>تگزاس هولدم — بدون تقلب، شافل واقعاً رندوم</small>
+      </div>
+    </div>
+    <div class="meta-stats">
+      <div>دست شماره <b id="handNo">1</b></div>
+      <div>بلایند <b id="blindLevel">10 / 20</b></div>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="room-chip">🔑 <span id="roomCodeChip">—</span></div>
+      <div class="rng-badge"><span class="rng-dot"></span> crypto RNG فعال</div>
+    </div>
+  </div>
+
+  <div class="layout">
+
+    <div class="guide-col">
+      <div class="guide-panel" id="guidePanel">
+        <div class="guide-head">
+          <span class="guide-head-icon">📖</span>
+          <h3>رتبه‌بندی دست‌های پوکر</h3>
+        </div>
+        <div class="guide-sub">از قوی‌ترین تا ضعیف‌ترین — همیشه در دسترس، حتی وسط بازی</div>
+        <div class="guide-list" id="guideList"></div>
+      </div>
+    </div>
+
+    <div class="main-col">
+      <div class="table-wrap" id="tableWrap">
+        <div class="rail"></div>
+        <div class="felt">
+          <div class="felt-logo">TEXAS HOLD'EM<span class="script">Golden Table</span></div>
+          <div class="table-spotlight"></div>
+          <div class="shuffle-overlay" id="shuffleOverlay">
+            <div class="shuffle-cards">
+              <div class="card back small"></div><div class="card back small"></div><div class="card back small"></div><div class="card back small"></div>
+            </div>
+            <div id="shuffleText">در حال به‌هم‌زدن ۵۲ کارت با RNG رمزنگاری‌شده...</div>
+          </div>
+        </div>
+        <div class="center-area">
+          <div class="stage-label" id="stageLabel">پری‌فلاپ</div>
+          <div class="community" id="community"></div>
+          <div class="pot-display">پات: <b id="potAmt">0</b></div>
+          <div class="pot-chips" id="potChips"></div>
+        </div>
+        <div id="seats"></div>
+      </div>
+
+      <div class="lower">
+        <div class="controls">
+          <div class="my-hand-row">
+            <div class="my-cards" id="myCards"></div>
+            <div class="hand-hint" id="handHint">منتظر شروع دست...</div>
+          </div>
+          <div class="action-row" id="actionRow">
+            <button class="btn fold" id="btnFold" disabled>فولد</button>
+            <button class="btn call" id="btnCallCheck" disabled>چک</button>
+            <button class="btn raise" id="btnRaise" disabled>رِیز</button>
+            <button class="btn allin" id="btnAllin" disabled>آل‌این</button>
+          </div>
+          <div class="raise-panel" id="raisePanel" style="display:none;">
+            <div class="quick-bets">
+              <button class="btn small ghost" id="bet12">۱/۲ پات</button>
+              <button class="btn small ghost" id="betPot">پات</button>
+            </div>
+            <input type="range" id="raiseSlider" min="0" max="100" value="0">
+            <div class="raise-amount" id="raiseAmt">0</div>
+            <button class="btn raise small" id="confirmRaise">تایید رِیز</button>
+          </div>
+          <div class="newhand-bar">
+            <button class="btn raise" id="btnNewHand" style="display:none;">شروع دست بعدی ▶</button>
+            <button class="btn ghost" id="btnRestart" style="display:none;">بازی جدید از اول ↺</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-note">
+        شافل کارت‌ها با <b>crypto.getRandomValues</b> (تصادفی‌ساز رمزنگاری مرورگر) انجام می‌شود — نه Math.random ساده — تا هیچ الگوی قابل پیش‌بینی یا دستکاری‌ای وجود نداشته باشد.<br>
+        ربات‌ها فقط به کارت‌های خودشان و اطلاعات عمومی میز دسترسی دارند و هرگز کارت‌های شما را «نمی‌بینند».
+      </div>
+    </div>
+
+    <div class="log-col">
+      <div class="side-panel" style="flex:1;">
+        <div class="side-panel-head">
+          <h3><span class="live-dot"></span>روایت زنده‌ی دست</h3>
+        </div>
+        <div class="sub">تازه‌ترین اتفاق، بالای لیست ثبت می‌شود</div>
+        <div class="log" id="log"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="overlay-card">
+    <h2 id="overlayTitle">🏆 پایان بازی</h2>
+    <p id="overlayText"></p>
+
+    <button class="btn raise" id="overlayBtn">باشه</button>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   HAND RANKING GUIDE
+   ========================================================= */
+const HAND_GUIDE = [
+  { rank:1, title:'رویال فلاش', sub:'Royal Flush', odds:'حدود ۱ در ۶۴۹٬۷۴۰ دست',
+    desc:'پنج کارت آ، ک، ک، ج و ۱۰ که همه از یک خال باشند. نایاب‌ترین و قدرتمندترین دست ممکن در پوکر و همیشه برنده‌ی مطلق است.',
+    tie:'اگر دو نفر هم‌زمان رویال فلاش داشته باشند (عملاً غیرممکن مگر با کارت‌های مشترک روی میز)، پات به‌طور مساوی بین آن‌ها تقسیم می‌شود.',
+    cards:[{r:'A',s:'♣'},{r:'K',s:'♣'},{r:'Q',s:'♣'},{r:'J',s:'♣'},{r:'10',s:'♣'}] },
+  { rank:2, title:'استریت فلاش', sub:'Straight Flush', odds:'حدود ۱ در ۷۲٬۱۹۲ دست',
+    desc:'پنج کارت پشت‌سرهم (مثلاً ۶ تا ۱۰) که همه از یک خال باشند. رویال فلاش در واقع بالاترین نوع استریت فلاش است.',
+    tie:'بین دو استریت فلاش، هرکدام که بالاترین کارتش (کارت انتهای استریت) بزرگ‌تر باشد برنده است.',
+    cards:[{r:'6',s:'♣'},{r:'7',s:'♣'},{r:'8',s:'♣'},{r:'9',s:'♣'},{r:'10',s:'♣'}] },
+  { rank:3, title:'کاره', sub:'Four of a Kind', odds:'حدود ۱ در ۴٬۱۶۵ دست',
+    desc:'چهار کارت با رنک کاملاً یکسان (مثلاً هر چهار ۹) به‌علاوه‌ی یک کارت پنجم به‌عنوان کیکر.',
+    tie:'اول رنک چهارتایی مقایسه می‌شود؛ اگر برابر بود (که تقریباً غیرممکنه)، کیکر پنجم تعیین‌کننده است.',
+    cards:[{r:'9',s:'♥'},{r:'9',s:'♦'},{r:'9',s:'♠'},{r:'9',s:'♣'},{r:'7',s:'♦'}] },
+  { rank:4, title:'فول‌هاوس', sub:'Full House', odds:'حدود ۱ در ۶۹۴ دست',
+    desc:'ترکیب یک سه‌تایی و یک جفت در همان پنج کارت — مثل «سه‌تا ۱۰ فول روی ۷».',
+    tie:'ابتدا رنک سه‌تایی مقایسه می‌شود (سه‌تایی بزرگ‌تر برنده است)؛ اگر سه‌تایی‌ها برابر بودند، رنک جفت تعیین‌کننده خواهد بود.',
+    cards:[{r:'10',s:'♥'},{r:'10',s:'♣'},{r:'10',s:'♥'},{r:'7',s:'♣'},{r:'7',s:'♦'}] },
+  { rank:5, title:'فلاش', sub:'Flush', odds:'حدود ۱ در ۵۰۹ دست',
+    desc:'پنج کارت هم‌خال، بدون در نظر گرفتن ترتیب پشت‌سرهم بودن رنک‌ها.',
+    tie:'کارت‌های هر دو فلاش از بالاترین تا پایین‌ترین با هم مقایسه می‌شوند؛ اولین رنک بزرگ‌تر برنده را مشخص می‌کند.',
+    cards:[{r:'2',s:'♦'},{r:'4',s:'♦'},{r:'6',s:'♦'},{r:'9',s:'♦'},{r:'10',s:'♦'}] },
+  { rank:6, title:'استریت', sub:'Straight', odds:'حدود ۱ در ۲۵۵ دست',
+    desc:'پنج کارت پشت‌سرهم با خال‌های مختلف — مثل ۲،۳،۴،۵،۶.',
+    tie:'بالاترین کارت انتهای استریت تعیین‌کننده است. آ می‌تواند هم بالای شاه (A-K-Q-J-10) و هم زیر ۲ (A-2-3-4-5) بیاید.',
+    cards:[{r:'2',s:'♠'},{r:'3',s:'♣'},{r:'4',s:'♥'},{r:'5',s:'♠'},{r:'6',s:'♥'}] },
+  { rank:7, title:'سه‌تایی', sub:'Three of a Kind', odds:'حدود ۱ در ۴۷ دست',
+    desc:'سه کارت با رنک یکسان به‌علاوه‌ی دو کارت اضافه (کیکر) که با هم جفت یا سه‌تایی نمی‌سازند.',
+    tie:'ابتدا رنک سه‌تایی مقایسه می‌شود؛ در صورت تساوی، دو کیکر باقیمانده به ترتیب از بزرگ به کوچک مقایسه می‌شوند.',
+    cards:[{r:'9',s:'♦'},{r:'9',s:'♠'},{r:'9',s:'♣'},{r:'7',s:'♣'},{r:'A',s:'♦'}] },
+  { rank:8, title:'دو جفت', sub:'Two Pair', odds:'حدود ۱ در ۲۱ دست',
+    desc:'دو جفت متفاوت (مثلاً جفت ۱۰ و جفت ۲) به‌علاوه‌ی یک کارت پنجم به‌عنوان کیکر.',
+    tie:'اول جفت بالاتر مقایسه می‌شود، سپس جفت پایین‌تر، و در آخر کیکر پنجم تعیین‌کننده‌ی برنده‌ی نهایی است.',
+    cards:[{r:'10',s:'♠'},{r:'10',s:'♦'},{r:'2',s:'♦'},{r:'2',s:'♠'},{r:'8',s:'♠'}] },
+  { rank:9, title:'یک جفت', sub:'One Pair', odds:'حدود ۱ در ۲.۴ دست (خیلی رایج)',
+    desc:'دو کارت با رنک یکسان به‌علاوه‌ی سه کارت اضافه که هیچ ترکیب دیگری نمی‌سازند.',
+    tie:'اول رنک جفت مقایسه می‌شود؛ اگر برابر بود، سه کیکر باقیمانده یکی‌یکی از بزرگ به کوچک بررسی می‌شوند.',
+    cards:[{r:'5',s:'♠'},{r:'5',s:'♣'},{r:'9',s:'♦'},{r:'6',s:'♠'},{r:'8',s:'♥'}] },
+  { rank:10, title:'کارت بالا', sub:'High Card', odds:'حدود ۱ در ۲ دست (رایج‌ترین حالت)',
+    desc:'وقتی هیچ‌کدام از ترکیب‌های بالا شکل نگرفته باشد، ارزش دست فقط بر اساس بالاترین کارت‌ها سنجیده می‌شود.',
+    tie:'هر پنج کارت هر دو نفر از بالاترین تا پایین‌ترین با هم مقایسه می‌شوند؛ اولین کارتی که بزرگ‌تر باشد برنده را مشخص می‌کند.',
+    cards:[{r:'10',s:'♣'},{r:'8',s:'♦'},{r:'6',s:'♦'},{r:'4',s:'♦'},{r:'2',s:'♠'}] },
+];
+
+function miniCardHtml(c){
+  const isRed = c.s==='♥'||c.s==='♦';
+  return `<div class="mcard ${isRed?'red':'black'}"><span>${c.r}</span><b>${c.s}</b></div>`;
+}
+
+function buildGuide(){
+  const list = document.getElementById('guideList');
+  list.innerHTML = HAND_GUIDE.map(h=>`
+    <div class="guide-row">
+      <div class="guide-rank">${h.rank}</div>
+      <div class="guide-info">
+        <div class="guide-title">${h.title} <span class="guide-en">${h.sub}</span></div>
+        <div class="guide-desc">${h.desc}</div>
+        <div class="guide-cards">${h.cards.map(miniCardHtml).join('')}</div>
+        <div class="guide-tie"><b>قانون تساوی:</b> ${h.tie}</div>
+        <div class="guide-odds">📊 احتمال تقریبی: ${h.odds}</div>
+      </div>
+    </div>
+  `).join('');
+}
+buildGuide();
+</script>
+
+<script>
+/* =========================================================
+   ENGINE: DECK / RNG / EVALUATOR
+   ========================================================= */
+const SUITS = ['♠','♥','♦','♣'];
+const RANKS = [2,3,4,5,6,7,8,9,10,11,12,13,14];
+const RANK_LABEL = {14:'A',13:'K',12:'Q',11:'J',10:'10'};
+const RANK_FA = {14:'آس',13:'شاه',12:'ملکه',11:'سرباز'};
+function rankLabel(r){ return RANK_LABEL[r] || String(r); }
+function rankFa(r){ return RANK_FA[r] || String(r); }
+
+function freshDeck(){
+  const d=[];
+  for(const s of SUITS) for(const r of RANKS) d.push({suit:s, rank:r});
+  return d;
+}
+// Cryptographically secure Fisher-Yates shuffle — real randomness, not riggable.
+function secureShuffle(deck){
+  for(let i=deck.length-1;i>0;i--){
+    const buf = new Uint32Array(1);
+    crypto.getRandomValues(buf);
+    const j = buf[0] % (i+1);
+    [deck[i],deck[j]] = [deck[j],deck[i]];
+  }
+  return deck;
+}
+
+function combos5(cards7){
+  const res=[]; const n=cards7.length;
+  for(let a=0;a<n;a++)for(let b=a+1;b<n;b++)for(let c=b+1;c<n;c++)for(let d=c+1;d<n;d++)for(let e=d+1;e<n;e++){
+    res.push([cards7[a],cards7[b],cards7[c],cards7[d],cards7[e]]);
+  }
+  return res;
+}
+function evaluate5(cards){
+  const ranks = cards.map(c=>c.rank).sort((a,b)=>b-a);
+  const suits = cards.map(c=>c.suit);
+  const isFlush = suits.every(s=>s===suits[0]);
+  const counts={};
+  ranks.forEach(r=>counts[r]=(counts[r]||0)+1);
+  const groups = Object.entries(counts).map(([r,c])=>({r:+r,c})).sort((a,b)=> b.c-a.c || b.r-a.r);
+  let uniq=[...new Set(ranks)];
+  let isStraight=false, straightHigh=0;
+  if(uniq.length>=5){
+    let arr = uniq.slice();
+    if(arr.includes(14)) arr.push(1);
+    arr = [...new Set(arr)].sort((a,b)=>b-a);
+    for(let i=0;i<=arr.length-5;i++){
+      if(arr[i]-arr[i+4]===4){ isStraight=true; straightHigh=arr[i]; break; }
+    }
+  }
+  if(isStraight && isFlush) return [8, straightHigh];
+  if(groups[0].c===4){ const k=groups.find(g=>g.c===1).r; return [7, groups[0].r, k]; }
+  if(groups[0].c===3 && groups[1] && groups[1].c>=2) return [6, groups[0].r, groups[1].r];
+  if(isFlush) return [5, ...ranks];
+  if(isStraight) return [4, straightHigh];
+  if(groups[0].c===3){ const ks=groups.filter(g=>g.c===1).map(g=>g.r).sort((a,b)=>b-a); return [3, groups[0].r, ...ks]; }
+  if(groups[0].c===2 && groups[1] && groups[1].c===2){
+    const pr=[groups[0].r,groups[1].r].sort((a,b)=>b-a);
+    const k=groups.find(g=>g.c===1).r;
+    return [2, pr[0], pr[1], k];
+  }
+  if(groups[0].c===2){ const ks=groups.filter(g=>g.c===1).map(g=>g.r).sort((a,b)=>b-a); return [1, groups[0].r, ...ks]; }
+  return [0, ...ranks];
+}
+function cmpScore(a,b){
+  const len=Math.max(a.length,b.length);
+  for(let i=0;i<len;i++){
+    const av = a[i]===undefined?-1:a[i];
+    const bv = b[i]===undefined?-1:b[i];
+    if(av!==bv) return av-bv;
+  }
+  return 0;
+}
+function evaluate7(cards7){
+  let best=null;
+  for(const combo of combos5(cards7)){
+    const sc = evaluate5(combo);
+    if(!best || cmpScore(sc,best.score)>0) best={score:sc, cards:combo};
+  }
+  return best;
+}
+function describeHand(score){
+  const c=score[0];
+  switch(c){
+    case 8: return score[1]===14 ? 'رویال فلاش 👑' : ('استریت فلاش تا '+rankFa(score[1]));
+    case 7: return 'کاره '+rankFa(score[1]);
+    case 6: return 'فول‌هاوس ('+rankFa(score[1])+' فول '+rankFa(score[2])+')';
+    case 5: return 'فلاش (بالاترین '+rankFa(score[1])+')';
+    case 4: return 'استریت تا '+rankFa(score[1]);
+    case 3: return 'سه‌تایی '+rankFa(score[1]);
+    case 2: return 'دو جفت: '+rankFa(score[1])+' و '+rankFa(score[2]);
+    case 1: return 'یک جفت '+rankFa(score[1]);
+    default: return 'کارت بالا: '+rankFa(score[1]);
+  }
+}
+
+// preflop Chen-formula style strength (0..1)
+function chenScore(cards){
+  const r1=cards[0].rank, r2=cards[1].rank;
+  const hi=Math.max(r1,r2), lo=Math.min(r1,r2);
+  const pmap={14:10,13:8,12:7,11:6,10:5};
+  let pts = pmap[hi] || hi/2;
+  if(r1===r2) pts = Math.max(pts*2,5);
+  if(cards[0].suit===cards[1].suit) pts+=2;
+  if(r1!==r2){
+    const gap = hi-lo-1;
+    if(gap===0) pts+=0;
+    else if(gap===1) pts-=1;
+    else if(gap===2) pts-=2;
+    else if(gap===3) pts-=4;
+    else pts-=5;
+    if(gap<=1 && hi<12) pts+=1;
+  }
+  return Math.max(0,Math.min(20,pts))/20;
+}
+function detectDraws(cards){
+  let val=0;
+  const suitCount={};
+  cards.forEach(c=>suitCount[c.suit]=(suitCount[c.suit]||0)+1);
+  if(Object.values(suitCount).some(v=>v===4)) val+=0.55;
+  const ranks=[...new Set(cards.map(c=>c.rank))].sort((a,b)=>a-b);
+  let maxRun=1,cur=1;
+  for(let i=1;i<ranks.length;i++){
+    if(ranks[i]===ranks[i-1]+1){cur++; maxRun=Math.max(maxRun,cur);}
+    else if(ranks[i]!==ranks[i-1]) cur=1;
+  }
+  if(maxRun>=4) val+=0.45; else if(maxRun===3) val+=0.15;
+  return Math.min(1,val);
+}
+
+/* =========================================================
+   NETWORKING / MULTIPLAYER
+   ========================================================= */
+const SUPABASE_URL = 'https://uohetpzmscuqdiwibqci.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_CukVAlNn7Nvrx5v_gu7atg_JDcw2dzW';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const AVA_POOL = ['🗿','👑','🧮','🤪','🕵️','🎩','🐺','🦊'];
+const BOT_NAME_POOL = [
+  {name:'رکس «صخره»', aggression:0.22, bluffFreq:0.05, callLoose:0.05},
+  {name:'ویکا «ملکه بلاف»', aggression:0.82, bluffFreq:0.38, callLoose:0.20},
+  {name:'سام «ماشین‌حساب»', aggression:0.5, bluffFreq:0.14, callLoose:0.10},
+  {name:'تامی «دیوانه»', aggression:0.9, bluffFreq:0.42, callLoose:0.30},
+  {name:'نیکا «سرد»', aggression:0.35, bluffFreq:0.10, callLoose:0.08},
+  {name:'آرمین «شارک»', aggression:0.65, bluffFreq:0.22, callLoose:0.15},
+];
+
+const ROOM_CODE = new URLSearchParams(location.search).get('room');
+let ROOM = null, IS_ADMIN = false, MY_SEAT = -1, MY_UID = null;
+let myHoleCards = [];
+let pendingResolvers = {};
+let G = null;
+
+function fatal(msg){
+  document.getElementById('fatalMsg').textContent = msg;
+  document.getElementById('fatalOverlay').classList.remove('hidden');
+  document.getElementById('lobbyOverlay').classList.add('hidden');
+  document.getElementById('loginOverlay').classList.add('hidden');
+}
+
+function newGameState(seatRows){
+  const humanPersona = {name:'شما', aggression:0, bluffFreq:0, callLoose:0};
+  const players = seatRows.map((s,i)=>({
+    id:i, seat_no:i,
+    name: s.is_bot ? s.display_name : (s.display_name || 'بازیکن'),
+    ava: s.is_bot ? (s._ava||'🧑') : '🧑',
+    isUser: (i===0), // فقط صندلی ادمین به‌صورت محلی با دکمه بازی می‌کند
+    isBot: !!s.is_bot,
+    isRemoteHuman: !s.is_bot && i!==0,
+    playerId: s.player_id,
+    persona: s.is_bot ? s._persona : humanPersona,
+    stack: ROOM.starting_stack, holeCards:[], folded:false, allIn:false, busted:false,
+    bet:0, totalContributed:0, actedThisRound:false,
+  }));
+  return {
+    players,
+    deck:[], community:[], pot:0,
+    dealerIndex:0, currentBet:0, minRaise:ROOM.big_blind,
+    sb:ROOM.small_blind, bb:ROOM.big_blind, handNumber:0, stage:'idle',
+    resolveHumanAction:null, currentPlayerIndex:-1,
+  };
+}
+
+function log(msg, cls){
+  const el=document.getElementById('log');
+  const div=document.createElement('div');
+  div.className='log-entry'+(cls?(' '+cls):'');
+  div.innerHTML=msg;
+  // newest event goes to the very top of the list, and we always
+  // snap the scroll position back to the top so the new line is
+  // guaranteed to be visible (fixes the old "shows stale entry" bug).
+  el.insertBefore(div, el.firstChild);
+  el.scrollTop=0;
+}
+function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+function cardHtml(card, size){
+  const isRed = card.suit==='♥'||card.suit==='♦';
+  const r = rankLabel(card.rank);
+  return `<div class="card ${isRed?'red':'black'} ${size||''}">
+    <div class="idx tl">${r}<span class="suit">${card.suit}</span></div>
+    <div class="pip">${card.suit}</div>
+    <div class="idx br">${r}<span class="suit">${card.suit}</span></div>
+  </div>`;
+}
+function backHtml(size){ return `<div class="card back ${size||''}"></div>`; }
+
+/* ---- realistic casino chip visuals ---- */
+function chipDenomClass(v){
+  if(v>=500) return 'chip-v1000';
+  if(v>=200) return 'chip-v500';
+  if(v>=75) return 'chip-v100';
+  if(v>=20) return 'chip-v25';
+  if(v>=5) return 'chip-v5';
+  return 'chip-v1';
+}
+function chipPileHtml(amount, mini){
+  if(amount<=0) return '';
+  const cls = chipDenomClass(amount);
+  const count = Math.min(5, Math.max(1, Math.round(Math.log2(amount/Math.max(1,G.bb)+1))+1));
+  const chips = Array.from({length:count}).map(()=>`<div class="poker-chip ${cls}${mini?' chip-mini':''}"></div>`).join('');
+  return `<div class="chip-pile">${chips}</div>`;
+}
+function potChipsHtml(amount){
+  if(amount<=0) return '';
+  const spots = ['46%','58%','38%'];
+  const piles = Math.min(3, Math.max(1, Math.ceil(amount/(Math.max(1,G.bb)*6))));
+  let html='';
+  for(let i=0;i<piles;i++){
+    html += `<div class="cluster" style="left:${spots[i%spots.length]};bottom:${i*2}px;">${chipPileHtml(Math.round(amount/piles))}</div>`;
+  }
+  return html;
+}
+/* ---- table position labels (SB/BB), dealer already shown via badge ---- */
+function positionLabel(idx){
+  if(!G.players || G.stage==='idle' || G.players[idx].busted) return null;
+  const order = orderedActivePlayerIndexes(G.dealerIndex);
+  const pos = order.indexOf(idx);
+  if(pos===1) return {t:'SB', cls:'sb'};
+  if(pos===2) return {t:'BB', cls:'bb'};
+  return null;
+}
+
+function render(){
+  document.getElementById('handNo').textContent = G.handNumber;
+  document.getElementById('blindLevel').textContent = `${G.sb} / ${G.bb}`;
+  document.getElementById('potAmt').textContent = G.pot;
+  const stageNames={preflop:'پری‌فلاپ', flop:'فلاپ', turn:'ترن', river:'ریور', showdown:'شوداون'};
+  document.getElementById('stageLabel').textContent = stageNames[G.stage]||'';
+
+  document.getElementById('community').innerHTML = G.community.map(c=>cardHtml(c)).join('') ||
+    `<div style="font-size:11px;color:var(--text-dim);">هنوز کارتی رو نشده</div>`;
+
+  const seatsEl = document.getElementById('seats');
+  seatsEl.innerHTML='';
+  G.players.forEach((p,idx)=>{
+    const seat=document.createElement('div');
+    seat.className='seat seat-pos-'+idx;
+    if(p.folded||p.busted) seat.classList.add('folded');
+    if(idx===G.currentPlayerIndex && !p.folded && !p.busted) seat.classList.add('active');
+    if(p.showWinner) seat.classList.add('winner');
+
+    let cardsHtml='';
+    if(p.busted){
+      cardsHtml='';
+    } else if(idx===MY_SEAT){
+      cardsHtml = p.holeCards.map(c=>cardHtml(c,'small')).join('');
+    } else if(G.stage==='showdown' && !p.folded){
+      cardsHtml = p.holeCards.map(c=>cardHtml(c,'small')).join('');
+    } else if(p.holeCards.length){
+      cardsHtml = backHtml('small')+backHtml('small');
+    }
+
+    let statusHtml='';
+    if(p.busted) statusHtml=`<div class="seat-status status-folded">حذف شد</div>`;
+    else if(p.folded) statusHtml=`<div class="seat-status status-folded">فولد</div>`;
+    else if(p.allIn) statusHtml=`<div class="seat-status status-allin">آل‌این</div>`;
+    else if(idx===G.currentPlayerIndex && idx!==MY_SEAT) statusHtml=`<div class="seat-status status-thinking">در حال فکر...</div>`;
+
+    const dealerBadge = idx===G.dealerIndex ? `<div class="seat-badge">D</div>` : '';
+    const posInfo = positionLabel(idx);
+    const posTagHtml = posInfo ? `<div class="seat-tag ${posInfo.cls}">${posInfo.t}</div>` : '';
+    const betChip = (p.bet>0 && !p.busted) ? `<div class="bet-chip">${chipPileHtml(p.bet, true)}<span>${p.bet}</span></div>` : '';
+    const winDesc = p._evalDesc || (p.eval && p.eval.score ? describeHand(p.eval.score) : '');
+    const winLine = (p.showWinner && winDesc) ? `<div class="seat-winline">🏆 ${winDesc}</div>` : '';
+    const isActingNow = idx===G.currentPlayerIndex && !p.folded && !p.busted;
+    const turnIndicator = isActingNow ? `<div class="seat-turn-indicator">🔻</div>` : '';
+
+    seat.innerHTML = `
+      ${turnIndicator}
+      <div class="seat-cards">${cardsHtml}</div>
+      <div class="seat-box">
+        ${dealerBadge}
+        ${posTagHtml}
+        <div class="seat-name"><span class="ava">${p.ava}</span>${p.name}</div>
+        <div class="seat-stack">${p.busted? '—' : p.stack+' چیپ'}</div>
+        ${betChip}
+        ${statusHtml}
+        ${winLine}
+      </div>`;
+    seatsEl.appendChild(seat);
+  });
+  document.getElementById('potChips').innerHTML = potChipsHtml(G.pot);
+
+  // user hand + hint
+  const me = G.players[MY_SEAT];
+  document.getElementById('myCards').innerHTML = me.busted ? '' : me.holeCards.map(c=>cardHtml(c)).join('');
+  const hintEl = document.getElementById('handHint');
+  if(!me.busted && me.holeCards.length===2 && G.stage!=='idle'){
+    if(G.community.length>=3){
+      const ev = evaluate7([...me.holeCards, ...G.community]);
+      hintEl.innerHTML = `دست شما: <b>${describeHand(ev.score)}</b>`;
+    } else {
+      hintEl.innerHTML = `قدرت اولیه: <b>${Math.round(chenScore(me.holeCards)*100)}٪</b>`;
+    }
+  }
+
+  updateControls();
+  document.getElementById('roomCodeChip').textContent = ROOM_CODE || '—';
+  if(IS_ADMIN) pushStateToDB();
+}
+
+/* =========================================================
+   همگام‌سازی با سرور (Supabase)
+   ========================================================= */
+function serializeState(){
+  return {
+    stage:G.stage, community:G.community, pot:G.pot, dealerIndex:G.dealerIndex,
+    currentBet:G.currentBet, minRaise:G.minRaise, sb:G.sb, bb:G.bb,
+    currentPlayerIndex:G.currentPlayerIndex, firstToAct:G.firstToAct, handNumber:G.handNumber,
+    players: G.players.map(p=>({
+      seat_no:p.seat_no, name:p.name, ava:p.ava, isBot:!!p.isBot,
+      stack:p.stack, folded:p.folded, allIn:p.allIn, busted:p.busted, bet:p.bet,
+      showWinner:!!p.showWinner, hasCards: p.holeCards.length>0,
+      revealCards: (G.stage==='showdown' && !p.folded && !p.busted) ? p.holeCards : null,
+      evalDesc: (p.showWinner && p.eval) ? describeHand(p.eval.score) : null,
+    }))
+  };
+}
+let _pushTimer=null;
+function pushStateToDB(){
+  if(!ROOM) return;
+  clearTimeout(_pushTimer);
+  _pushTimer = setTimeout(()=>{
+    sb.from('poker_state').update({ hand_number:G.handNumber, data: serializeState(), updated_at:new Date().toISOString() })
+      .eq('room_id', ROOM.id).then(()=>{});
+  }, 60);
+}
+
+function applyNetworkState(data){
+  if(!data || !data.players) return;
+  G = G || {};
+  G.stage=data.stage; G.community=data.community||[]; G.pot=data.pot||0; G.dealerIndex=data.dealerIndex||0;
+  G.currentBet=data.currentBet||0; G.minRaise=data.minRaise||ROOM.big_blind;
+  G.sb=data.sb||ROOM.small_blind; G.bb=data.bb||ROOM.big_blind;
+  G.currentPlayerIndex = (typeof data.currentPlayerIndex==='number')?data.currentPlayerIndex:-1;
+  G.handNumber = data.handNumber||0;
+  G.players = data.players.map((p,idx)=>{
+    let holeCards=[];
+    if(p.revealCards) holeCards = p.revealCards;
+    else if(idx===MY_SEAT && myHoleCards.length) holeCards = myHoleCards;
+    else if(p.hasCards) holeCards = [{},{}]; // فقط برای نمایش پشت کارت
+    return {
+      id:idx, seat_no:p.seat_no, name:p.name, ava:p.ava, isBot:p.isBot,
+      stack:p.stack, folded:p.folded, allIn:p.allIn, busted:p.busted, bet:p.bet,
+      showWinner:p.showWinner, holeCards, eval: p.evalDesc?{score:[0]}:null, _evalDesc:p.evalDesc,
+    };
+  });
+  render();
+}
+
+function updateControls(){
+  const me = G.players[MY_SEAT];
+  const myTurn = MY_SEAT>=0 && G.currentPlayerIndex===MY_SEAT && !me.folded && !me.busted && !me.allIn;
+  document.getElementById('btnFold').disabled = !myTurn;
+  document.getElementById('btnCallCheck').disabled = !myTurn;
+  document.getElementById('btnRaise').disabled = !myTurn || (me.stack<=0);
+  document.getElementById('btnAllin').disabled = !myTurn;
+
+  const toCall = G.currentBet - me.bet;
+  const callBtn = document.getElementById('btnCallCheck');
+  callBtn.textContent = toCall>0 ? `کال (${Math.min(toCall,me.stack)})` : 'چک';
+
+  if(!myTurn){
+    document.getElementById('raisePanel').style.display='none';
+  }
+}
+
+/* =========================================================
+   BETTING HELPERS
+   ========================================================= */
+function activeSeats(){ return G.players.filter(p=>!p.busted); }
+function contestants(){ return G.players.filter(p=>!p.folded && !p.busted); }
+function actionable(){ return G.players.filter(p=>!p.folded && !p.busted && !p.allIn); }
+function nextIndex(i){
+  let n=(i+1)%G.players.length;
+  let guard=0;
+  while((G.players[n].folded || G.players[n].busted) && guard<10){ n=(n+1)%G.players.length; guard++; }
+  return n;
+}
+function nextActiveDealerIndex(from){
+  let n=(from+1)%G.players.length; let guard=0;
+  while(G.players[n].busted && guard<10){ n=(n+1)%G.players.length; guard++; }
+  return n;
+}
+
+/* ---- broadcast-style flavor commentary ---- */
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+const FOLD_FLAVOR = [
+  'یه نگاه دیگه به کارتاش انداخت و بی‌خیال شد',
+  'با اخم کارتاشو داد کنار به دیلر',
+  'تصمیم گرفت این دست رو نجنگه و کنار کشید',
+  'حساب و کتاب کرد و فولد رو ترجیح داد',
+  'ریسک این دست رو نپذیرفت',
+];
+const CHECK_FLAVOR = [
+  'بدون فشار، نوبت رو رد کرد',
+  'با خیال راحت چک کرد',
+  'ترجیح داد فعلاً ریسک نکنه و منتظر بمونه',
+  'کارتاشو نگه داشت و توپ رو پاس داد',
+];
+const CALL_FLAVOR_CALM = [
+  'با احتیاط و بعد از کمی مکث دنبال کرد',
+  'حساب پات‌آدز رو کرد و کال داد',
+  'با خونسردی همراه بقیه شد',
+];
+const CALL_FLAVOR_HOT = [
+  'بدون معطلی چیپ‌ها رو هل داد وسط',
+  'با اطمینان کامل کال داد',
+  'انگار منتظر همین لحظه بود',
+];
+const RAISE_FLAVOR_CALM = [
+  'یه رِیز حساب‌شده و امن زد',
+  'با فشار ملایم شرط رو بالا برد',
+  'آروم ولی مطمئن، رِیز کرد',
+];
+const RAISE_FLAVOR_HOT = [
+  'با اعتماد‌به‌نفس زیاد چیپ‌ها رو کوبید وسط میز',
+  'فشار سنگینی به حریف‌ها آورد',
+  'برق نگاهش عوض شد و رِیز محکمی زد',
+  'میز رو با یه رِیز بزرگ لرزوند',
+];
+const ALLIN_FLAVOR = [
+  'دل رو زد به دریا و همه‌چیزشو گذاشت وسط',
+  'بدون ترس، تمام چیپ‌هاشو هل داد جلو',
+  'لحظه‌ی سرنوشت‌ساز — همه یا هیچ!',
+  'میز یه لحظه ساکت شد؛ آل‌این رفت',
+];
+function personaHeat(p){ return (p.persona && p.persona.aggression) || 0.3; }
+function bestHandCardsText(evalObj){
+  if(!evalObj || !evalObj.cards) return '';
+  return evalObj.cards.map(c=>rankLabel(c.rank)+c.suit).join(' ');
+}
+
+function postBlind(p, amt){
+  const pay = Math.min(amt, p.stack);
+  p.stack -= pay; p.bet += pay; p.totalContributed += pay; G.pot += pay;
+  if(p.stack===0) p.allIn=true;
+  return pay;
+}
+
+function applyAction(p, action){
+  if(action.type==='fold'){
+    p.folded=true;
+    log(`🂠 <b>${p.name}</b> فولد کرد — ${pick(FOLD_FLAVOR)}`);
+  } else if(action.type==='check'){
+    log(`✋ <b>${p.name}</b> چک کرد — ${pick(CHECK_FLAVOR)}`);
+  } else if(action.type==='call'){
+    const toCall = Math.min(G.currentBet - p.bet, p.stack);
+    p.stack -= toCall; p.bet += toCall; p.totalContributed += toCall; G.pot += toCall;
+    const wasAllin = p.stack===0;
+    if(wasAllin) p.allIn=true;
+    if(wasAllin){
+      log(`🔥 <b>${p.name}</b> کال کرد و همون‌جا آل‌این شد — ${toCall} چیپ گذاشت (مجموع شرط: ${p.bet} / پات: ${G.pot}) — ${pick(ALLIN_FLAVOR)}`, 'win');
+    } else {
+      const pool = personaHeat(p)>0.55 ? CALL_FLAVOR_HOT : CALL_FLAVOR_CALM;
+      log(`☎️ <b>${p.name}</b> کال کرد — ${toCall} چیپ گذاشت (مجموع شرط: ${p.bet} / پات الان: ${G.pot} چیپ) — ${pick(pool)}`);
+    }
+  } else if(action.type==='raise' || action.type==='allin'){
+    let amtTotal = action.toAmount; // total bet amount this street after action
+    amtTotal = Math.min(amtTotal, p.bet + p.stack);
+    const add = amtTotal - p.bet;
+    p.stack -= add; p.bet += add; p.totalContributed += add; G.pot += add;
+    const wasAllin = p.stack===0;
+    if(wasAllin) p.allIn=true;
+    if(p.bet > G.currentBet){
+      G.currentBet = p.bet;
+      G.minRaise = Math.max(G.minRaise, add);
+      // reset acted flag for others
+      G.players.forEach(pl=>{ if(pl.id!==p.id && !pl.folded && !pl.busted && !pl.allIn) pl.actedThisRound=false; });
+    }
+    if(wasAllin){
+      log(`🔥🔥 <b>${p.name}</b> ALL-IN! تمام ${p.bet} چیپش رو ریخت وسط میز (پات الان: ${G.pot} چیپ) — ${pick(ALLIN_FLAVOR)}`, 'win');
+    } else {
+      const pool = personaHeat(p)>0.55 ? RAISE_FLAVOR_HOT : RAISE_FLAVOR_CALM;
+      log(`📈 <b>${p.name}</b> رِیز کرد — شرط رو برد بالای ${p.bet} چیپ (پات الان: ${G.pot} چیپ) — ${pick(pool)}`);
+    }
+  }
+  p.actedThisRound = true;
+}
+
+function isBettingRoundComplete(){
+  const cont = contestants();
+  if(cont.length<=1) return true;
+  const acting = actionable();
+  if(acting.length===0) return true;
+  return acting.every(p=>p.actedThisRound && p.bet===G.currentBet);
+}
+
+/* AI decision */
+function aiDecide(p){
+  const stage = G.stage;
+  let strength;
+  if(stage==='preflop'){
+    strength = chenScore(p.holeCards);
+  } else {
+    const ev = evaluate7([...p.holeCards, ...G.community]);
+    let base = ev.score[0]/8;
+    base += (ev.score[1]||0)/14*0.06;
+    if(ev.score[0]<=1) base += detectDraws([...p.holeCards, ...G.community])*0.16;
+    const opp = actionable().length + G.players.filter(pl=>pl.allIn && !pl.folded && !pl.busted).length - 1;
+    base *= (1 - 0.025*Math.max(0,opp-1));
+    strength = Math.max(0,Math.min(1,base));
+  }
+  const persona = p.persona;
+  const toCall = G.currentBet - p.bet;
+  const isBluffRoll = Math.random() < persona.bluffFreq;
+  const effective = Math.min(1, strength + (isBluffRoll ? 0.28+Math.random()*0.22 : 0));
+
+  const potAfterCall = G.pot + toCall;
+  const potOdds = toCall>0 ? toCall/potAfterCall : 0;
+
+  let decision;
+  if(toCall<=0){
+    // can check
+    const betThreshold = 0.58 - persona.aggression*0.18;
+    if(effective>betThreshold && Math.random() < (0.35+persona.aggression*0.5)){
+      const sizeFrac = 0.4 + Math.random()*0.5*(0.6+persona.aggression);
+      const amt = Math.round(Math.max(G.bb, (G.pot||G.bb)*sizeFrac));
+      decision = {type:'raise', toAmount: p.bet + Math.min(amt, p.stack)};
+    } else {
+      decision = {type:'check'};
+    }
+  } else {
+    const foldThreshold = potOdds*(1.05-persona.callLoose) ;
+    if(effective < foldThreshold*0.7 && toCall > p.stack*0.02 && !(toCall<=G.bb*1.5 && Math.random()<persona.callLoose+0.15)){
+      decision = {type:'fold'};
+    } else if(effective>0.72 || (Math.random()<persona.aggression*0.45 && effective>0.42)){
+      const sizeFrac = 0.55 + Math.random()*0.65*(0.6+persona.aggression);
+      const raiseAdd = Math.max(G.minRaise, Math.round((G.pot+toCall)*sizeFrac));
+      const toAmount = G.currentBet + raiseAdd;
+      decision = {type:'raise', toAmount: Math.min(toAmount, p.bet+p.stack)};
+    } else {
+      decision = {type:'call'};
+    }
+  }
+  // convert to allin if it uses full stack
+  if(decision.type==='raise' && decision.toAmount >= p.bet + p.stack){
+    decision = {type:'allin', toAmount: p.bet+p.stack};
+  }
+  if(decision.type==='call' && toCall >= p.stack){
+    decision = {type:'allin', toAmount: p.bet+p.stack};
+  }
+  return decision;
+}
+
+function waitForUserAction(){
+  G.awaitingHuman = true;
+  render();
+  return new Promise(resolve=>{ G.resolveHumanAction = resolve; });
+}
+
+// منتظر اکشن یک بازیکن واقعی روی شبکه (نه ادمین) — از جدول poker_actions
+function waitForRemoteAction(p){
+  render(); // این باعث ارسال وضعیت به بقیه هم می‌شود (currentPlayerIndex همین صندلی است)
+  return new Promise(resolve=>{
+    let done=false;
+    const finish=(action)=>{ if(done) return; done=true; delete pendingResolvers[p.seat_no]; clearTimeout(timer); resolve(action); };
+    pendingResolvers[p.seat_no] = finish;
+    // اگه بازیکن ۴۵ ثانیه جواب نده، خودکار فولد می‌شه (یا چک اگه امکانش هست)
+    const timer = setTimeout(()=>{
+      const toCall = G.currentBet - p.bet;
+      log(`⏱️ <b>${p.name}</b> دیر کرد — به‌صورت خودکار ${toCall>0?'فولد':'چک'} شد`, 'sys');
+      finish(toCall>0 ? {type:'fold'} : {type:'check'});
+    }, 45000);
+  });
+}
+
+function canAct(){ return MY_SEAT>=0 && G && G.currentPlayerIndex===MY_SEAT; }
+
+function setupUserButtons(){
+  document.getElementById('btnFold').onclick = ()=>{
+    if(!canAct()) return;
+    finishHuman({type:'fold'});
+  };
+  document.getElementById('btnCallCheck').onclick = ()=>{
+    if(!canAct()) return;
+    const me=G.players[MY_SEAT];
+    const toCall = G.currentBet - me.bet;
+    finishHuman(toCall>0 ? {type: toCall>=me.stack?'allin':'call', toAmount: me.bet+me.stack} : {type:'check'});
+  };
+  document.getElementById('btnRaise').onclick = ()=>{
+    if(!canAct()) return;
+    const me=G.players[MY_SEAT];
+    const panel=document.getElementById('raisePanel');
+    const minTotal = Math.min(G.currentBet + G.minRaise, me.bet+me.stack);
+    const maxTotal = me.bet+me.stack;
+    const slider=document.getElementById('raiseSlider');
+    slider.min = minTotal; slider.max=Math.max(minTotal,maxTotal); slider.value=minTotal;
+    document.getElementById('raiseAmt').textContent = minTotal;
+    panel.style.display='flex';
+  };
+  document.getElementById('raiseSlider').oninput = (e)=>{
+    document.getElementById('raiseAmt').textContent = e.target.value;
+  };
+  document.getElementById('bet12').onclick=()=>{
+    if(MY_SEAT<0) return;
+    const me=G.players[MY_SEAT];
+    const val = Math.min(me.bet+me.stack, Math.max(+document.getElementById('raiseSlider').min, Math.round((G.pot)*0.5)+G.currentBet));
+    document.getElementById('raiseSlider').value=val;
+    document.getElementById('raiseAmt').textContent=val;
+  };
+  document.getElementById('betPot').onclick=()=>{
+    if(MY_SEAT<0) return;
+    const me=G.players[MY_SEAT];
+    const val = Math.min(me.bet+me.stack, Math.max(+document.getElementById('raiseSlider').min, Math.round((G.pot))+G.currentBet));
+    document.getElementById('raiseSlider').value=val;
+    document.getElementById('raiseAmt').textContent=val;
+  };
+  document.getElementById('confirmRaise').onclick=()=>{
+    if(!canAct()) return;
+    const me=G.players[MY_SEAT];
+    const val = +document.getElementById('raiseSlider').value;
+    document.getElementById('raisePanel').style.display='none';
+    finishHuman({type: val>=me.bet+me.stack ? 'allin':'raise', toAmount: val});
+  };
+  document.getElementById('btnAllin').onclick=()=>{
+    if(!canAct()) return;
+    const me=G.players[MY_SEAT];
+    document.getElementById('raisePanel').style.display='none';
+    finishHuman({type:'allin', toAmount: me.bet+me.stack});
+  };
+  document.getElementById('btnNewHand').onclick = ()=> { if(IS_ADMIN) startHand(); };
+  document.getElementById('btnRestart').onclick = ()=> { if(IS_ADMIN) fullRestart(); };
+  document.getElementById('overlayBtn').onclick = ()=>{
+    document.getElementById('overlay').classList.remove('show');
+  };
+}
+
+async function finishHuman(action){
+  document.getElementById('raisePanel').style.display='none';
+  if(IS_ADMIN){
+    const r=G.resolveHumanAction; G.resolveHumanAction=null;
+    if(r) r(action);
+  } else {
+    document.getElementById('btnFold').disabled = true;
+    document.getElementById('btnCallCheck').disabled = true;
+    document.getElementById('btnRaise').disabled = true;
+    document.getElementById('btnAllin').disabled = true;
+    await sb.from('poker_actions').insert({
+      room_id: ROOM.id, seat_no: MY_SEAT, player_id: MY_UID,
+      hand_number: G.handNumber, action_type: action.type, amount: action.toAmount||0
+    });
+  }
+}
+
+/* =========================================================
+   HAND FLOW
+   ========================================================= */
+async function bettingRound(stage){
+  G.players.forEach(p=>{ p.actedThisRound = p.folded||p.busted||p.allIn; });
+  let idx = G.firstToAct;
+  let guard=0;
+  while(!isBettingRoundComplete() && guard<200){
+    guard++;
+    const p = G.players[idx];
+    if(p.folded||p.busted||p.allIn){ idx=nextIndex(idx); continue; }
+    G.currentPlayerIndex = idx;
+    render();
+
+    let action;
+    if(p.isUser){
+      action = await waitForUserAction();
+    } else if(p.isRemoteHuman){
+      action = await waitForRemoteAction(p);
+    } else {
+      await delay(3600+Math.random()*4200);
+      action = aiDecide(p);
+    }
+    applyAction(p, action);
+    render();
+    await delay(2600);
+
+    if(contestants().length<=1){
+      return true; // ended by folds
+    }
+    idx = nextIndex(idx);
+  }
+  G.currentPlayerIndex = -1;
+  return false;
+}
+
+async function dealHole(){
+  for(let round=0;round<2;round++){
+    for(const p of G.players){
+      if(!p.busted){
+        p.holeCards.push(G.deck.pop());
+        render();
+        await delay(430);
+      }
+    }
+  }
+  // کارت‌های زیر بازیکن‌های واقعیِ راه دور رو خصوصی توی دیتابیس ذخیره کن
+  for(const p of G.players){
+    if(p.isRemoteHuman && p.holeCards.length===2){
+      sb.from('poker_hole_cards').upsert({
+        room_id: ROOM.id, seat_no: p.seat_no, hand_number: G.handNumber,
+        player_id: p.playerId, cards: p.holeCards
+      }).then(()=>{});
+    }
+  }
+}
+function dealFlop(){ G.deck.pop(); G.community.push(G.deck.pop(),G.deck.pop(),G.deck.pop()); }
+function dealOne(){ G.deck.pop(); G.community.push(G.deck.pop()); }
+
+function boardFlavor(){
+  const cs=G.community;
+  if(cs.length<3) return '';
+  const suits={}; cs.forEach(c=>suits[c.suit]=(suits[c.suit]||0)+1);
+  const maxSuit=Math.max(...Object.values(suits));
+  const ranks=[...new Set(cs.map(c=>c.rank))].sort((a,b)=>a-b);
+  let maxRun=1,cur=1;
+  for(let i=1;i<ranks.length;i++){ if(ranks[i]===ranks[i-1]+1){cur++;maxRun=Math.max(maxRun,cur);} else cur=1; }
+  const counts={}; cs.forEach(c=>counts[c.rank]=(counts[c.rank]||0)+1);
+  const paired = Object.values(counts).some(v=>v>=2);
+  if(maxSuit>=3) return 'زمینه‌ی رنگین روی میزه — احتمال فلاش رو دور نیست';
+  if(paired) return 'میز پیر شده — احتمال فول‌هاوس رو باید در نظر گرفت';
+  if(maxRun>=3) return 'کارت‌ها بهم نزدیکن — بوی استریت میاد';
+  return 'میز فعلاً خشکه و ترکیب خاصی نساخته';
+}
+function communityText(){ return G.community.map(c=>rankLabel(c.rank)+c.suit).join(' '); }
+
+function buildPots(){
+  const contribs = G.players.filter(p=>p.totalContributed>0);
+  const levels=[...new Set(contribs.map(p=>p.totalContributed))].sort((a,b)=>a-b);
+  const pots=[]; let prev=0;
+  for(const level of levels){
+    const layerPlayers = contribs.filter(p=>p.totalContributed>=level);
+    const amount = (level-prev)*layerPlayers.length;
+    const eligible = layerPlayers.filter(p=>!p.folded).map(p=>p.id);
+    if(amount>0) pots.push({amount, eligible});
+    prev=level;
+  }
+  return pots;
+}
+
+function holeCardsText(p){
+  return p.holeCards.map(c=>rankLabel(c.rank)+c.suit).join(' ');
+}
+
+async function showdownAndAward(){
+  G.stage='showdown';
+  const alive = contestants();
+  alive.forEach(p=>{ p.eval = evaluate7([...p.holeCards, ...G.community]); });
+  render();
+  await delay(2200);
+
+  log('🃏 --- شوداون --- حالا وقتشه ببینیم دست چه کسی از همه قوی‌تره', 'sys');
+  render();
+  await delay(2000);
+
+  // reveal hands one by one, like a real dealer flipping them over, slowly, building tension
+  for(const p of alive){
+    log(`${p.ava} <b>${p.name}</b> کارتاش رو رو کرد: <b>${holeCardsText(p)}</b> — با ترکیب پنج‌کارتی <b>${bestHandCardsText(p.eval)}</b> می‌سازه <b>${describeHand(p.eval.score)}</b>`);
+    render();
+    await delay(2600);
+  }
+
+  await delay(600);
+  const pots = buildPots();
+  for(const pot of pots){
+    const elig = alive.filter(p=>pot.eligible.includes(p.id));
+    if(elig.length===0) continue;
+    let bestScore = elig[0].eval.score;
+    elig.forEach(p=>{ if(cmpScore(p.eval.score,bestScore)>0) bestScore=p.eval.score; });
+    const winners = elig.filter(p=>cmpScore(p.eval.score,bestScore)===0);
+    const share = Math.floor(pot.amount/winners.length);
+    let rem = pot.amount - share*winners.length;
+    winners.forEach((w,i)=>{
+      const gain = share + (i===0?rem:0);
+      w.stack += gain;
+      w.showWinner = true;
+      if(winners.length>1){
+        log(`🤝 دست مساوی شد! پات ${pot.amount} چیپی بین <b>${w.name}</b> و بقیه برنده‌ها با <b>${describeHand(w.eval.score)}</b> مساوی تقسیم شد (+${gain} چیپ برای هرکدوم)`, 'win');
+      } else {
+        log(`🏆 <b>${w.name}</b> با یه <b>${describeHand(w.eval.score)}</b> درخشان، پات ${pot.amount} چیپی رو قاپید و با ${gain}+ چیپ رفت روی ${w.stack} چیپ!`, 'win');
+      }
+    });
+    render();
+    await delay(2400);
+  }
+
+  render();
+  await delay(5200);
+  endHandCleanup();
+}
+
+async function awardPotNoShowdown(){
+  const alive = contestants();
+  if(alive.length===1){
+    log('🏳️ همه‌ی حریف‌ها فولد کردن — دیلر داره پات رو جمع می‌کنه...', 'sys');
+    render();
+    await delay(1600);
+    const w=alive[0];
+    w.stack += G.pot;
+    w.showWinner=true;
+    log(`🏆 <b>${w.name}</b> بدون نیاز به شوداون، پات ${G.pot} چیپی رو برد و رفت روی ${w.stack} چیپ`, 'win');
+  }
+  render();
+  await delay(4400);
+  endHandCleanup();
+}
+
+function endHandCleanup(){
+  G.players.forEach(p=>{
+    p.showWinner=false;
+    p.holeCards=[];
+    p.folded=false;
+    p.allIn=false;
+    p.bet=0;
+    p.totalContributed=0;
+    if(p.stack<=0) p.busted=true;
+  });
+  G.community=[];
+  G.pot=0;
+  G.stage='idle';
+  render();
+
+  const alive = G.players.filter(pl=>!pl.busted);
+  if(alive.length<=1){
+    const champ = alive[0];
+    document.getElementById('overlayTitle').textContent = champ.isUser ? '🏆 شما قهرمان میز شدید!' : `🏆 ${champ.name} قهرمان میز شد`;
+    document.getElementById('overlayText').textContent = champ.isUser
+      ? `تبریک! شما همه حریف‌ها رو حذف کردید و با ${champ.stack} چیپ میز رو بردید.`
+      : `${champ.name} همه بازیکن‌های دیگه رو حذف کرد. برای یک دور دیگه، بازی رو از اول شروع کنید.`;
+    document.getElementById('overlay').classList.add('show');
+    document.getElementById('btnNewHand').style.display='none';
+    document.getElementById('btnRestart').style.display='inline-block';
+    if(G.players[MY_SEAT].busted){
+      log('شما از بازی حذف شدید 💀', 'sys');
+    }
+  } else {
+    document.getElementById('btnNewHand').style.display='inline-block';
+    document.getElementById('btnRestart').style.display='none';
+    if(G.players[MY_SEAT].busted){
+      document.getElementById('btnNewHand').style.display='none';
+      log('شما بدون چیپ موندید — بازی برای شما تموم شد. بقیه ادامه می‌دن یا از اول شروع کنید.', 'sys');
+      document.getElementById('btnRestart').style.display='inline-block';
+    }
+  }
+}
+
+async function startHand(){
+  document.getElementById('btnNewHand').style.display='none';
+  const alive = G.players.filter(p=>!p.busted);
+  if(alive.length<=1) return;
+
+  G.handNumber++;
+  if(G.handNumber>1 && (G.handNumber-1)%8===0){
+    G.sb = Math.round(G.sb*1.5/5)*5;
+    G.bb = G.sb*2;
+    log(`سطح بلایند افزایش یافت: ${G.sb}/${G.bb}`, 'sys');
+  }
+
+  // shuffle animation
+  const shufOverlay = document.getElementById('shuffleOverlay');
+  const shufText = document.getElementById('shuffleText');
+  shufOverlay.classList.add('show');
+  shufText.textContent = 'دیلر داره کارت‌ها رو جمع می‌کنه...';
+  await delay(900);
+  shufText.textContent = 'در حال به‌هم‌زدن ۵۲ کارت با RNG رمزنگاری‌شده...';
+  G.deck = secureShuffle(freshDeck());
+  await delay(2600);
+  shufText.textContent = 'برش آخر...';
+  await delay(700);
+  shufOverlay.classList.remove('show');
+
+  G.dealerIndex = nextActiveDealerIndex(G.dealerIndex);
+
+  G.community=[]; G.pot=0; G.currentBet=0; G.minRaise=G.bb;
+  G.players.forEach(p=>{ p.holeCards=[]; p.folded=false; p.allIn=false; p.bet=0; p.totalContributed=0; p.showWinner=false; });
+
+  G.stage='preflop';
+  log(`--- 🎲 دست شماره ${G.handNumber} شروع شد (بلایند ${G.sb}/${G.bb}) — دکمه‌ی دیلر رسید به <b>${G.players[G.dealerIndex].name}</b> ---`, 'sys');
+  render();
+  await delay(600);
+  await dealHole();
+  await delay(1700);
+
+  const order = orderedActivePlayerIndexes(G.dealerIndex);
+  // order: [dealer, ...others clockwise] but blinds are the two after dealer
+  const sbIdx = order[1] !== undefined ? order[1] : order[0];
+  const bbIdx = order[2] !== undefined ? order[2] : order[0];
+
+  postBlind(G.players[sbIdx], G.sb);
+  log(`💰 <b>${G.players[sbIdx].name}</b> (بلایند کوچک) ${G.sb} چیپ گذاشت وسط`);
+  render();
+  await delay(900);
+  postBlind(G.players[bbIdx], G.bb);
+  log(`💰 <b>${G.players[bbIdx].name}</b> (بلایند بزرگ) ${G.bb} چیپ گذاشت وسط`);
+  G.currentBet = G.bb;
+  render();
+  await delay(1200);
+
+  const firstIdx = order[3] !== undefined ? order[3] : order[0];
+  G.firstToAct = firstIdx;
+
+  await runHandStreets();
+}
+
+function orderedActivePlayerIndexes(startIdx){
+  const res=[]; let i=startIdx; let guard=0;
+  while(guard<10){
+    if(!G.players[i].busted) res.push(i);
+    i=(i+1)%G.players.length;
+    guard++;
+    if(i===startIdx) break;
+  }
+  return res;
+}
+
+async function runHandStreets(){
+  const foldedOutPre = await bettingRound('preflop');
+  if(foldedOutPre){ await awardPotNoShowdown(); return; }
+  if(await maybeRunItOut()) return;
+
+  G.stage='flop';
+  log('🂠 دیلر یه کارت رو می‌سوزونه و آماده‌ی باز کردن فلاپ می‌شه...', 'sys');
+  render();
+  await delay(1800);
+  dealFlop();
+  render();
+  await delay(500);
+  log(`🃏 فلاپ باز شد: <b>${communityText()}</b> — ${boardFlavor()}`, 'sys');
+  G.firstToAct = orderedActivePlayerIndexes(G.dealerIndex)[1] ?? orderedActivePlayerIndexes(G.dealerIndex)[0];
+  render(); await delay(3200);
+  if(actionable().length>=2){
+    const fo = await bettingRound('flop');
+    if(fo){ await awardPotNoShowdown(); return; }
+  } else { await delay(2200); }
+  if(await maybeRunItOut()) return;
+
+  G.stage='turn';
+  log('🂠 دیلر یه کارت دیگه سوزوند — نوبت ترنه...', 'sys');
+  render();
+  await delay(1800);
+  dealOne();
+  render();
+  await delay(500);
+  log(`🃏 ترن باز شد: <b>${communityText()}</b> — ${boardFlavor()}`, 'sys');
+  render(); await delay(3200);
+  if(actionable().length>=2){
+    const fo = await bettingRound('turn');
+    if(fo){ await awardPotNoShowdown(); return; }
+  } else { await delay(2200); }
+  if(await maybeRunItOut()) return;
+
+  G.stage='river';
+  log('🂠 آخرین کارت سوزونده شد — این هم از ریور، آخرین فرصت برای ساختن دست...', 'sys');
+  render();
+  await delay(1800);
+  dealOne();
+  render();
+  await delay(500);
+  log(`🃏 ریور باز شد: <b>${communityText()}</b> — ${boardFlavor()}`, 'sys');
+  render(); await delay(3200);
+  if(actionable().length>=2){
+    const fo = await bettingRound('river');
+    if(fo){ await awardPotNoShowdown(); return; }
+  } else { await delay(2200); }
+
+  await showdownAndAward();
+}
+
+// if <2 players can still act, run remaining community cards out automatically then showdown
+async function maybeRunItOut(){
+  if(contestants().length<=1){ await awardPotNoShowdown(); return true; }
+  if(actionable().length<2){
+    log('🔥 همه (یا همه به‌جز یک نفر) آل‌این هستن — بقیه‌ی کارت‌ها رو بدون شرط‌بندی بیشتر رو می‌کنیم', 'sys');
+    render();
+    await delay(1600);
+    while(G.community.length<5){
+      await delay(2800);
+      if(G.community.length===0) dealFlop(); else dealOne();
+      render();
+      log(`🃏 روی میز: <b>${communityText()}</b>`, 'sys');
+      render();
+    }
+    await delay(1200);
+    await showdownAndAward();
+    return true;
+  }
+  return false;
+}
+
+function fullRestart(){
+  document.getElementById('overlay').classList.remove('show');
+  document.getElementById('log').innerHTML='';
+  G = newGameState(CURRENT_SEATS);
+  G.handNumber = 0;
+  render();
+  document.getElementById('btnRestart').style.display='none';
+  startHand();
+}
+
+/* =========================================================
+   BOOTSTRAP: احراز هویت، اتاق، صندلی‌ها
+   ========================================================= */
+let CURRENT_SEATS = null;
+
+function showLogin(){ document.getElementById('loginOverlay').classList.remove('hidden'); }
+function hideLogin(){ document.getElementById('loginOverlay').classList.add('hidden'); }
+function showLobby(){ document.getElementById('lobbyOverlay').classList.remove('hidden'); }
+function hideLobby(){ document.getElementById('lobbyOverlay').classList.add('hidden'); }
+
+document.getElementById('btnNetLogin').addEventListener('click', async ()=>{
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginErr');
+  errEl.textContent='';
+  if(!email || !pass){ errEl.textContent='ایمیل و رمز رو وارد کنید.'; return; }
+  const { data, error } = await sb.auth.signInWithPassword({email, password:pass});
+  if(error){ errEl.textContent = error.message; return; }
+  hideLogin();
+  await bootRoom(data.user);
+});
+
+async function renderLobbySeats(seatRows){
+  const list = document.getElementById('lobbySeatList');
+  list.innerHTML = seatRows.map(s=>{
+    if(s.player_id || s.is_bot){
+      return `<div class="row"><span>صندلی ${s.seat_no+1}</span><b>${s.display_name || (s.is_bot?'بات':'؟')}</b></div>`;
+    }
+    return `<div class="row empty"><span>صندلی ${s.seat_no+1}</span><span>خالی</span></div>`;
+  }).join('');
+}
+
+async function fetchSeats(){
+  const { data } = await sb.from('poker_seats').select('*').eq('room_id', ROOM.id).order('seat_no');
+  return data || [];
+}
+
+async function claimSeatIfPossible(userId, displayName){
+  const seats = await fetchSeats();
+  const mine = seats.find(s=>s.player_id===userId);
+  if(mine) return mine.seat_no;
+  const empty = seats.filter(s=>!s.player_id && !s.is_bot).sort((a,b)=>a.seat_no-b.seat_no)[0];
+  if(!empty) return -1; // میز پر است
+  const { error } = await sb.from('poker_seats').update({ player_id:userId, display_name:displayName }).eq('room_id', ROOM.id).eq('seat_no', empty.seat_no);
+  if(error) return -1;
+  return empty.seat_no;
+}
+
+function buildBotSeatData(seatRow, poolIdx){
+  const persona = BOT_NAME_POOL[poolIdx % BOT_NAME_POOL.length];
+  return { ...seatRow, is_bot:true, display_name:persona.name, _ava: AVA_POOL[poolIdx % AVA_POOL.length], _persona: persona };
+}
+
+async function adminStartGame(){
+  document.getElementById('lobbyErr').textContent='';
+  const seats = await fetchSeats();
+  const toFill = seats.filter(s=>!s.player_id);
+  for(const s of toFill){
+    const botData = buildBotSeatData(s, s.seat_no);
+    await sb.from('poker_seats').update({ is_bot:true, display_name: botData.display_name }).eq('room_id', ROOM.id).eq('seat_no', s.seat_no);
+  }
+  await sb.from('poker_rooms').update({ status:'active' }).eq('id', ROOM.id);
+  const finalSeats = await fetchSeats();
+  CURRENT_SEATS = finalSeats.map(s=> s.is_bot ? buildBotSeatData(s, s.seat_no) : s);
+  hideLobby();
+  G = newGameState(CURRENT_SEATS);
+  setupUserButtons();
+  render();
+  log('میز آماده‌ست — دست اول داره شروع می‌شه...', 'sys');
+  subscribeAdminActions();
+  startHand();
+}
+document.getElementById('btnStartGame').addEventListener('click', adminStartGame);
+
+function subscribeAdminActions(){
+  sb.channel('actions-'+ROOM.id)
+    .on('postgres_changes', { event:'INSERT', schema:'public', table:'poker_actions', filter:`room_id=eq.${ROOM.id}` }, payload=>{
+      const row = payload.new;
+      if(!G || row.hand_number!==G.handNumber) return;
+      const resolve = pendingResolvers[row.seat_no];
+      if(!resolve) return;
+      const action = (row.action_type==='call'||row.action_type==='raise'||row.action_type==='allin')
+        ? {type:row.action_type, toAmount: row.amount}
+        : {type: row.action_type};
+      resolve(action);
+    }).subscribe();
+}
+
+function subscribeViewer(){
+  sb.channel('state-'+ROOM.id)
+    .on('postgres_changes', { event:'UPDATE', schema:'public', table:'poker_state', filter:`room_id=eq.${ROOM.id}` }, payload=>{
+      applyNetworkState(payload.new.data);
+    }).subscribe();
+  sb.channel('holecards-'+ROOM.id)
+    .on('postgres_changes', { event:'*', schema:'public', table:'poker_hole_cards', filter:`room_id=eq.${ROOM.id}` }, payload=>{
+      const row = payload.new;
+      if(row && row.seat_no===MY_SEAT){
+        myHoleCards = row.cards;
+        if(G) render();
+      }
+    }).subscribe();
+  sb.channel('room-'+ROOM.id)
+    .on('postgres_changes', { event:'UPDATE', schema:'public', table:'poker_rooms', filter:`id=eq.${ROOM.id}` }, payload=>{
+      if(payload.new.status==='active') hideLobby();
+    }).subscribe();
+}
+
+async function waitForGameStart(){
+  // منتظر می‌مونیم تا ادمین وضعیت اتاق رو active کنه؛ در همین حین لیست صندلی‌ها آپدیت می‌شه
+  sb.channel('seats-'+ROOM.id)
+    .on('postgres_changes', { event:'*', schema:'public', table:'poker_seats', filter:`room_id=eq.${ROOM.id}` }, async ()=>{
+      renderLobbySeats(await fetchSeats());
+    }).subscribe();
+  renderLobbySeats(await fetchSeats());
+}
+
+async function bootRoom(user){
+  MY_UID = user.id;
+  if(!ROOM_CODE){ fatal('لینک اتاق نامعتبره — کد اتاق پیدا نشد.'); return; }
+
+  const { data: room, error } = await sb.from('poker_rooms').select('*').eq('code', ROOM_CODE.toUpperCase()).maybeSingle();
+  if(error || !room){ fatal('اتاقی با این کد پیدا نشد. لینک رو از ادمین دوباره بگیر.'); return; }
+  ROOM = room;
+  IS_ADMIN = (room.admin_id === user.id);
+
+  const { data: profile } = await sb.from('profiles').select('first_name,last_name').eq('id', user.id).maybeSingle();
+  const myName = profile ? `${profile.first_name} ${profile.last_name}` : 'کارآگاه';
+
+  if(IS_ADMIN){
+    MY_SEAT = 0;
+    if(room.status==='waiting'){
+      document.getElementById('lobbyTitle').textContent = 'اتاق شما آماده‌ست';
+      document.getElementById('lobbySub').textContent = 'منتظر دوستات باش یا همین الان بازی رو شروع کن — صندلی‌های خالی خودکار با بات پر می‌شن.';
+      document.getElementById('btnStartGame').style.display='block';
+      showLobby();
+      await waitForGameStart();
+    } else {
+      // بازی از قبل شروع شده (مثلاً رفرش صفحه) — دوباره صحنه رو با بازیکن‌های ثبت‌شده می‌سازیم
+      const seats = await fetchSeats();
+      CURRENT_SEATS = seats.map(s=> s.is_bot ? buildBotSeatData(s, s.seat_no) : s);
+      G = newGameState(CURRENT_SEATS);
+      setupUserButtons();
+      subscribeAdminActions();
+      document.getElementById('btnNewHand').style.display='inline-block';
+      render();
+      log('دوباره وصل شدی — برای ادامه، دست بعدی رو بزن.', 'sys');
+    }
+  } else {
+    document.getElementById('btnNewHand').style.display='none';
+    document.getElementById('btnRestart').style.display='none';
+    if(room.status!=='waiting'){
+      const seats = await fetchSeats();
+      const mine = seats.find(s=>s.player_id===user.id);
+      if(!mine){ fatal('این میز از قبل شروع شده و صندلی خالی‌ای نمونده.'); return; }
+      MY_SEAT = mine.seat_no;
+    } else {
+      document.getElementById('lobbyTitle').textContent = 'منتظر شروع بازی...';
+      document.getElementById('lobbySub').textContent = 'وقتی ادمین بازی رو شروع کنه، خودکار وارد میز می‌شی.';
+      showLobby();
+      MY_SEAT = await claimSeatIfPossible(user.id, myName);
+      if(MY_SEAT===-1){ fatal('این میز پر است — همه‌ی ۶ صندلی گرفته شده.'); return; }
+      await waitForGameStart();
+      // منتظر می‌مونیم تا وضعیت اتاق active بشه
+      await new Promise(resolve=>{
+        const check = setInterval(async ()=>{
+          const { data: r } = await sb.from('poker_rooms').select('status').eq('id', ROOM.id).maybeSingle();
+          if(r && r.status==='active'){ clearInterval(check); resolve(); }
+        }, 1500);
+      });
+    }
+    hideLobby();
+    setupUserButtons();
+    G = { players: Array.from({length:6},(_,i)=>({id:i,seat_no:i,name:'—',ava:'🧑',stack:0,holeCards:[],folded:false,busted:true,bet:0})), stage:'idle', community:[], pot:0, currentPlayerIndex:-1, handNumber:0, sb:room.small_blind, bb:room.big_blind };
+    render();
+    subscribeViewer();
+    const { data: st } = await sb.from('poker_state').select('data').eq('room_id', ROOM.id).maybeSingle();
+    if(st && st.data) applyNetworkState(st.data);
+    const { data: hc } = await sb.from('poker_hole_cards').select('cards').eq('room_id', ROOM.id).eq('seat_no', MY_SEAT).order('hand_number',{ascending:false}).limit(1).maybeSingle();
+    if(hc){ myHoleCards = hc.cards; render(); }
+  }
+}
+
+(async ()=>{
+  const { data:{ session } } = await sb.auth.getSession();
+  if(session){ hideLogin(); await bootRoom(session.user); }
+  else { showLogin(); }
+})();
+</script>
+</body>
+</html>

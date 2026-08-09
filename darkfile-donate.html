@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>حمایت از DarkFile — پرونده‌ی حمایت</title>
+<meta name="description" content="با حمایت مالی از DarkFile، به ساخت پرونده‌های جنایی تازه کمک کن — از طریق درگاه پرداخت با مبلغ دلخواه یا ارز دیجیتال.">
+<meta property="og:title" content="حمایت از DarkFile">
+<meta property="og:description" content="به تیم DarkFile برای ساخت پرونده‌های بیشتر کمک کن — درگاه پرداخت یا ارز دیجیتال.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{
+  --bg:#0d0f1a; --bg2:#161a2b; --panel:#1c2036; --panel2:#232847;
+  --paper:#efe6cf; --paper-dim:#d9cdaa; --paper-shadow:#a99a6f;
+  --blood:#8a1f2b; --blood-light:#b83e42;
+  --gold:#d1a13a; --gold-light:#e9c67a;
+  --text:#ece6d6; --text-dim:#9391a3; --text-faint:#5c5a72;
+  --ok:#5f9e6f; --line:rgba(255,255,255,0.07);
+  --shadow:0 24px 70px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg); color:var(--text); font-family:'Vazirmatn',sans-serif; line-height:1.8; overflow-x:hidden;}
+.wrap{max-width:1100px; margin:0 auto; padding:0 28px;}
+a{color:inherit; text-decoration:none;}
+button{font-family:inherit;}
+body::before{content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:radial-gradient(circle at 14% 8%, rgba(138,31,43,.10), transparent 42%),
+             radial-gradient(circle at 88% 78%, rgba(209,161,58,.07), transparent 46%);}
+.grain{position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.045; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+::-webkit-scrollbar{width:8px; height:8px;}
+::-webkit-scrollbar-track{background:var(--bg); border-left:1px solid var(--line);}
+::-webkit-scrollbar-thumb{background:var(--gold); border-radius:999px; border:2px solid var(--bg);}
+*{scrollbar-width:thin; scrollbar-color:var(--gold) var(--bg);}
+
+.num{font-family:'JetBrains Mono',monospace; font-variant-numeric:tabular-nums; direction:ltr; unicode-bidi:isolate; letter-spacing:.3px;}
+.mono{font-family:'JetBrains Mono',monospace;}
+
+.logo{display:flex; align-items:center; gap:10px;}
+.logo svg{width:30px; height:30px; flex-shrink:0;}
+.logo .word{font-weight:900; letter-spacing:.5px; font-size:17px;}
+.logo .word b{color:var(--blood-light);}
+
+.nav{position:sticky; top:0; z-index:80; background:rgba(13,15,26,.9); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+.nav .wrap{display:flex; align-items:center; justify-content:space-between; height:70px; gap:20px;}
+.nav-links{display:flex; align-items:center; gap:28px; font-size:13.5px; font-weight:500; color:var(--text-dim);}
+.nav-links a:hover{color:var(--gold-light);}
+.nav-links a.active{color:var(--gold-light);}
+
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 26px; border-radius:6px; font-size:13.5px; font-weight:700; cursor:pointer; border:1px solid transparent; transition:transform .15s,background .2s,border-color .2s; font-family:inherit;}
+.btn:hover{transform:translateY(-1px);}
+.btn-gold{background:var(--gold); color:#241d09;}
+.btn-gold:hover{background:var(--gold-light);}
+.btn-ghost{background:transparent; border:1px solid var(--line); color:var(--text);}
+.btn-ghost:hover{border-color:var(--gold);}
+.btn-sm{padding:9px 18px; font-size:12.5px;}
+.btn:disabled{opacity:.5; cursor:not-allowed; transform:none;}
+
+/* hero */
+.hero{position:relative; padding:64px 0 30px; overflow:hidden;}
+.eyebrow{display:inline-flex; align-items:center; gap:10px; font-size:12px; font-weight:600; letter-spacing:0.5px; color:var(--blood-light); border:1px solid rgba(138,31,43,.5); border-radius:999px; padding:6px 16px; margin-bottom:22px;}
+.blink{width:6px; height:6px; border-radius:50%; background:var(--blood-light); animation:blink 1.6s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+h1.page-title{font-family:'Vazirmatn', sans-serif; font-size:38px; font-weight:900; line-height:1.4; margin-bottom:16px; letter-spacing:-0.5px; max-width:680px;}
+h1.page-title em{font-style:normal; color:var(--gold-light); font-weight:900;
+  background:linear-gradient(180deg, #f3d699 0%, var(--gold) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+.page-sub{font-size:14.5px; color:var(--text-dim); max-width:600px;}
+
+/* transparency file card */
+section{position:relative; z-index:1; padding:34px 0;}
+.brief-card{background:linear-gradient(180deg,var(--panel2),var(--panel)); border:1px solid rgba(209,161,58,.18); border-radius:14px; padding:30px 32px; box-shadow:var(--shadow);}
+.brief-card .lbl{font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:14px; display:block;}
+.fund-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:22px;}
+.fund-item{background:var(--bg2); border:1px solid var(--line); border-radius:10px; padding:18px 20px;}
+.fund-item .ic{font-size:20px; margin-bottom:10px;}
+.fund-item h4{font-size:13.5px; font-weight:700; margin-bottom:6px;}
+.fund-item p{font-size:11.5px; color:var(--text-faint); line-height:1.7;}
+
+/* tabs */
+.pay-tabs{display:flex; gap:10px; margin-bottom:24px; border-bottom:1px solid var(--line);}
+.pay-tab{padding:14px 4px; margin-left:26px; font-size:14px; font-weight:700; color:var(--text-faint); cursor:pointer; position:relative; border-bottom:2px solid transparent;}
+.pay-tab.active{color:var(--gold-light); border-bottom-color:var(--gold);}
+.pay-panel{display:none;}
+.pay-panel.active{display:block; animation:fadeIn .3s ease;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+/* gateway panel */
+.amount-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:22px;}
+.amount-chip{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px 10px; text-align:center; cursor:pointer; transition:border-color .15s, background .15s;}
+.amount-chip:hover{border-color:rgba(209,161,58,.4);}
+.amount-chip.sel{border-color:var(--gold); background:rgba(209,161,58,.08);}
+.amount-chip b{display:block; font-size:16px; font-weight:800; color:var(--paper); margin-bottom:4px;}
+.amount-chip span{font-size:10.5px; color:var(--gold-light);}
+.custom-amount{display:flex; align-items:center; gap:12px; background:var(--bg2); border:1px solid var(--line); border-radius:10px; padding:14px 18px; margin-bottom:22px;}
+.custom-amount input{flex:1; background:transparent; border:none; color:var(--text); font-family:'JetBrains Mono',monospace; font-size:16px; direction:ltr; text-align:left;}
+.custom-amount input:focus{outline:none;}
+.custom-amount span{font-size:12.5px; color:var(--text-faint); flex-shrink:0;}
+.gateway-note{font-size:11.5px; color:var(--text-faint); margin-top:14px; display:flex; align-items:center; gap:8px;}
+.pay-toast{display:none; margin-top:16px; background:rgba(209,161,58,.08); border:1px solid rgba(209,161,58,.3); border-radius:8px; padding:12px 16px; font-size:12.5px; color:var(--gold-light);}
+.pay-toast.show{display:block;}
+
+/* crypto panel */
+.wallet-list{display:flex; flex-direction:column; gap:14px;}
+.wallet-card{background:linear-gradient(180deg,var(--panel2),var(--panel)); border:1px solid rgba(209,161,58,.18); border-radius:12px; padding:20px 22px; display:flex; align-items:center; gap:20px;}
+.wallet-qr{width:76px; height:76px; background:#fff; border-radius:8px; flex-shrink:0; display:flex; align-items:center; justify-content:center; overflow:hidden;}
+.wallet-qr img,.wallet-qr canvas{width:100%; height:100%;}
+.wallet-info{flex:1; min-width:0;}
+.wallet-info .coin-name{font-size:14px; font-weight:800; margin-bottom:2px;}
+.wallet-info .coin-net{font-size:11px; color:var(--gold-light); margin-bottom:8px;}
+.wallet-addr-row{display:flex; align-items:center; gap:10px; background:var(--bg2); border:1px solid var(--line); border-radius:8px; padding:9px 12px;}
+.wallet-addr{flex:1; min-width:0; font-size:12px; color:var(--text-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; direction:ltr; text-align:left;}
+.copy-btn{background:var(--panel2); border:1px solid var(--line); border-radius:6px; padding:6px 12px; font-size:11px; color:var(--gold-light); cursor:pointer; flex-shrink:0; transition:border-color .15s;}
+.copy-btn:hover{border-color:var(--gold);}
+.copy-btn.copied{color:var(--ok); border-color:var(--ok);}
+
+footer{border-top:1px solid var(--line); padding:40px 0; text-align:center; font-size:12px; color:var(--text-faint); position:relative; z-index:1;}
+footer .logo{justify-content:center; margin-bottom:10px;}
+
+@media (max-width:820px){
+  h1.page-title{font-size:29px;}
+  .fund-grid{grid-template-columns:1fr;}
+  .amount-grid{grid-template-columns:repeat(2,1fr);}
+  .nav-links{display:none;}
+  .wallet-card{flex-direction:column; align-items:stretch; text-align:center;}
+  .wallet-addr-row{flex-direction:column; align-items:stretch;}
+  .wallet-addr{text-align:center;}
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="logo" href="index.html">
+      <svg viewBox="0 0 40 40" fill="none">
+        <defs><radialGradient id="darkSpace" cx="50%" cy="45%" r="65%"><stop offset="0%" stop-color="#2b2f4a"/><stop offset="100%" stop-color="#0a0b14"/></radialGradient></defs>
+        <mask id="keyhole"><rect width="40" height="40" fill="white"/><circle cx="20" cy="15" r="7" fill="black"/><path d="M15 21 L25 21 L29 34 L11 34 Z" fill="black"/></mask>
+        <rect width="40" height="40" rx="8" fill="url(#darkSpace)" mask="url(#keyhole)"/>
+        <circle cx="12" cy="10" r=".7" fill="#e9c67a"/><circle cx="28" cy="8" r=".5" fill="#e9c67a"/><circle cx="30" cy="16" r=".6" fill="#e9c67a"/>
+        <circle cx="20" cy="15" r="6.3" fill="none" stroke="#8a1f2b" stroke-width="1.1"/>
+      </svg>
+      <span class="word">Dark<b>File</b></span>
+    </a>
+    <div class="nav-links">
+      <a href="darkfile-all-cases.html">همه‌ی پرونده‌ها</a>
+      <a href="index.html#why">چرا DarkFile</a>
+      <a href="darkfile-donate.html" class="active">حمایت از ما</a>
+    </div>
+    <a href="index.html" class="btn btn-ghost btn-sm">بازگشت به صفحه اصلی</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow"><span class="blink"></span> پرونده‌ی ویژه: حمایت مالی</div>
+    <h1 class="page-title">این پرونده رو <em>باز نگه‌دار</em></h1>
+    <p class="page-sub">DarkFile با حمایتِ کارآگاه‌هایی مثل شما سرپا می‌مونه. هر کمکی — کوچیک یا بزرگ — مستقیم صرف ساختِ پرونده‌های تازه، هاستینگ سایت و بهتر شدنِ تجربه‌ی بازی می‌شه.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="brief-card">
+      <span class="lbl">این کمک کجا خرج می‌شه</span>
+      <div class="fund-grid">
+        <div class="fund-item"><div class="ic">🗂️</div><h4>پرونده‌های جدید</h4><p>نوشتن، طراحی و ساختِ پرونده‌های جنایی بعدی DarkFile.</p></div>
+        <div class="fund-item"><div class="ic">🖥️</div><h4>هاست و زیرساخت</h4><p>هزینه‌ی سرور، دیتابیس و آنلاین نگه‌داشتنِ سایت.</p></div>
+        <div class="fund-item"><div class="ic">🔧</div><h4>بهبود تجربه‌ی بازی</h4><p>رفع باگ، رتبه‌بندی بهتر و ویژگی‌های تازه برای کارآگاه‌ها.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="pay-tabs">
+      <div class="pay-tab active" data-tab="gateway">درگاه پرداخت</div>
+      <div class="pay-tab" data-tab="crypto">ارز دیجیتال</div>
+    </div>
+
+    <!-- ============ درگاه پرداخت ============ -->
+    <div class="pay-panel active" id="panel-gateway">
+      <div class="amount-grid">
+        <div class="amount-chip" data-amount="50000"><b class="num">50,000</b><span>تومان</span></div>
+        <div class="amount-chip sel" data-amount="100000"><b class="num">100,000</b><span>تومان</span></div>
+        <div class="amount-chip" data-amount="300000"><b class="num">300,000</b><span>تومان</span></div>
+        <div class="amount-chip" data-amount="1000000"><b class="num">1,000,000</b><span>تومان</span></div>
+      </div>
+      <div class="custom-amount">
+        <span>مبلغ دلخواه</span>
+        <input type="number" id="customAmount" placeholder="مثلاً 150000" min="1000" step="1000">
+        <span>تومان</span>
+      </div>
+      <a class="btn btn-gold" style="width:100%;" id="gatewayPayBtn" href="https://reymit.ir/darkfilegame" target="_blank" rel="noopener noreferrer">
+        <span>پرداخت و حمایت</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+      </a>
+      <div class="gateway-note">🔒 با کلیک، به درگاه امنِ <span class="mono" style="color:var(--gold-light);">Reymit</span> منتقل می‌شی — مبلغ رو همون‌جا نهایی می‌کنی.</div>
+    </div>
+
+    <!-- ============ ارز دیجیتال ============ -->
+    <div class="pay-panel" id="panel-crypto">
+      <div class="wallet-list">
+        <div class="wallet-card">
+          <div class="wallet-qr" id="qr-btc"></div>
+          <div class="wallet-info">
+            <div class="coin-name">Bitcoin (BTC)</div>
+            <div class="coin-net">شبکه: Bitcoin</div>
+            <div class="wallet-addr-row">
+              <span class="wallet-addr num" id="addr-btc">13eiQpFNvS2vfsxioVxUu1hqekvw7dYAM1</span>
+              <button class="copy-btn" data-target="addr-btc">کپی</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="wallet-card">
+          <div class="wallet-qr" id="qr-usdt-trc20"></div>
+          <div class="wallet-info">
+            <div class="coin-name">Tether (USDT)</div>
+            <div class="coin-net">شبکه: TRC20 (Tron)</div>
+            <div class="wallet-addr-row">
+              <span class="wallet-addr num" id="addr-usdt-trc20">TMYtG2jU8EiJXwNCUrozr2UyWn4cBAgdLE</span>
+              <button class="copy-btn" data-target="addr-usdt-trc20">کپی</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="wallet-card">
+          <div class="wallet-qr" id="qr-eth"></div>
+          <div class="wallet-info">
+            <div class="coin-name">Ethereum (ETH)</div>
+            <div class="coin-net">شبکه: ERC20 (Ethereum)</div>
+            <div class="wallet-addr-row">
+              <span class="wallet-addr num" id="addr-eth">0x895D77C89060e929C77574E1958F17cf6ABd57c6</span>
+              <button class="copy-btn" data-target="addr-eth">کپی</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gateway-note">⚠️ لطفاً قبل از واریز، شبکه‌ی درست رو انتخاب کن — واریز از شبکه‌ی اشتباه قابل بازگشت نیست.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="logo">
+    <svg viewBox="0 0 40 40" fill="none" style="width:22px;height:22px;">
+      <mask id="keyhole2"><rect width="40" height="40" fill="white"/><circle cx="20" cy="15" r="7" fill="black"/><path d="M15 21 L25 21 L29 34 L11 34 Z" fill="black"/></mask>
+      <rect width="40" height="40" rx="8" fill="#171a2c" mask="url(#keyhole2)"/>
+    </svg>
+    <span class="word">Dark<b>File</b></span>
+  </div>
+  ممنون که این پرونده رو باز نگه می‌داری 🖤
+</footer>
+
+<script>
+// ========== تب‌های روش پرداخت ==========
+document.querySelectorAll('.pay-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.pay-tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.pay-panel').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(`panel-${tab.dataset.tab}`).classList.add('active');
+  });
+});
+
+// ========== انتخاب مبلغ ==========
+const customAmountInput = document.getElementById('customAmount');
+let selectedAmount = 100000;
+document.querySelectorAll('.amount-chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    document.querySelectorAll('.amount-chip').forEach(c=>c.classList.remove('sel'));
+    chip.classList.add('sel');
+    selectedAmount = Number(chip.dataset.amount);
+    customAmountInput.value = '';
+  });
+});
+customAmountInput.addEventListener('input', ()=>{
+  document.querySelectorAll('.amount-chip').forEach(c=>c.classList.remove('sel'));
+  selectedAmount = Number(customAmountInput.value) || 0;
+});
+
+// ========== دکمه‌ی پرداخت (درگاه) ==========
+// دکمه‌ی «پرداخت و حمایت» یک لینک مستقیم به صفحه‌ی Reymit هست
+// (https://reymit.ir/darkfilegame) و توی تب جدید باز می‌شه.
+// چیدن مبلغ (چیپ‌ها/مبلغ دلخواه) صرفاً برای راهنمایی بصری کاربره؛
+// خودِ مبلغ نهایی توی صفحه‌ی Reymit انتخاب می‌شه.
+
+// ========== کپی آدرس کیف‌پول ==========
+document.querySelectorAll('.copy-btn').forEach(btn=>{
+  btn.addEventListener('click', async ()=>{
+    const text = document.getElementById(btn.dataset.target).textContent;
+    try{
+      await navigator.clipboard.writeText(text);
+      const original = btn.textContent;
+      btn.textContent='کپی شد ✓';
+      btn.classList.add('copied');
+      setTimeout(()=>{ btn.textContent=original; btn.classList.remove('copied'); }, 1800);
+    }catch(e){ console.error('کپی ناموفق بود', e); }
+  });
+});
+
+// ========== ساخت QR کد برای هر آدرس ==========
+// نکته: چون آدرس‌های بالا فقط جای‌گیرنده (placeholder) هستن، اول آدرس‌های
+// واقعی کیف‌پول‌ات رو توی HTML جایگزین کن، بعد QR کدها خودکار درست می‌شن.
+function renderWalletQR(qrElId, addrElId){
+  const addr = document.getElementById(addrElId).textContent.trim();
+  if(!addr || typeof QRCode === 'undefined') return;
+  new QRCode(document.getElementById(qrElId), {
+    text: addr, width: 76, height: 76,
+    colorDark:'#0d0f1a', colorLight:'#ffffff'
+  });
+}
+renderWalletQR('qr-btc','addr-btc');
+renderWalletQR('qr-usdt-trc20','addr-usdt-trc20');
+renderWalletQR('qr-eth','addr-eth');
+</script>
+</body>
+</html>س

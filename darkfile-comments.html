@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نظرات کارآگاه‌ها — DarkFile</title>
+<meta name="description" content="نظرات و بازخورد بازدیدکننده‌های DarkFile درباره‌ی سایت و پرونده‌های جنایی.">
+<meta property="og:title" content="نظرات کارآگاه‌ها — DarkFile">
+<meta property="og:description" content="نظرت رو درباره‌ی DarkFile برامون بنویس.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --bg:#0d0f1a; --bg2:#161a2b; --panel:#1c2036; --panel2:#232847;
+  --paper:#efe6cf; --paper-dim:#d9cdaa; --paper-shadow:#a99a6f;
+  --blood:#8a1f2b; --blood-light:#b83e42;
+  --gold:#d1a13a; --gold-light:#e9c67a;
+  --text:#ece6d6; --text-dim:#9391a3; --text-faint:#5c5a72;
+  --ok:#5f9e6f; --err:#c0555f; --warn:#d1a13a; --line:rgba(255,255,255,0.07);
+  --shadow:0 24px 70px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg); color:var(--text); font-family:'Vazirmatn',sans-serif; line-height:1.8; overflow-x:hidden;}
+.wrap{max-width:820px; margin:0 auto; padding:0 28px;}
+a{color:inherit; text-decoration:none;}
+button{font-family:inherit;}
+body::before{content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:radial-gradient(circle at 14% 8%, rgba(138,31,43,.10), transparent 42%),
+             radial-gradient(circle at 88% 78%, rgba(209,161,58,.07), transparent 46%);}
+.grain{position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.045; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+::-webkit-scrollbar{width:8px; height:8px;}
+::-webkit-scrollbar-track{background:var(--bg); border-left:1px solid var(--line);}
+::-webkit-scrollbar-thumb{background:var(--gold); border-radius:999px; border:2px solid var(--bg);}
+*{scrollbar-width:thin; scrollbar-color:var(--gold) var(--bg);}
+
+.num{font-family:'JetBrains Mono',monospace; font-variant-numeric:tabular-nums; direction:ltr; unicode-bidi:isolate; letter-spacing:.3px;}
+.mono{font-family:'JetBrains Mono',monospace;}
+
+.logo{display:flex; align-items:center; gap:10px;}
+.logo svg{width:30px; height:30px; flex-shrink:0;}
+.logo .word{font-weight:900; letter-spacing:.5px; font-size:17px;}
+.logo .word b{color:var(--blood-light);}
+
+.nav{position:sticky; top:0; z-index:80; background:rgba(13,15,26,.9); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+.nav .wrap{max-width:1100px; display:flex; align-items:center; justify-content:space-between; height:70px; gap:20px;}
+.nav-links{display:flex; align-items:center; gap:28px; font-size:13.5px; font-weight:500; color:var(--text-dim);}
+.nav-links a:hover{color:var(--gold-light);}
+.nav-links a.active{color:var(--gold-light);}
+
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 26px; border-radius:6px; font-size:13.5px; font-weight:700; cursor:pointer; border:1px solid transparent; transition:transform .15s,background .2s,border-color .2s; font-family:inherit;}
+.btn:hover{transform:translateY(-1px);}
+.btn-gold{background:var(--gold); color:#241d09;}
+.btn-gold:hover{background:var(--gold-light);}
+.btn-gold:disabled{background:var(--gold); opacity:.55; cursor:not-allowed; transform:none;}
+.btn-ghost{background:transparent; border:1px solid var(--line); color:var(--text);}
+.btn-ghost:hover{border-color:var(--gold);}
+.btn-sm{padding:9px 18px; font-size:12.5px;}
+.btn-xs{padding:7px 14px; font-size:11.5px;}
+
+.hero{position:relative; padding:64px 0 30px; overflow:hidden;}
+.eyebrow{display:inline-flex; align-items:center; gap:10px; font-size:12px; font-weight:600; letter-spacing:0.5px; color:var(--blood-light); border:1px solid rgba(138,31,43,.5); border-radius:999px; padding:6px 16px; margin-bottom:22px;}
+.blink{width:6px; height:6px; border-radius:50%; background:var(--blood-light); animation:blink 1.6s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+h1.page-title{font-size:36px; font-weight:900; line-height:1.4; margin-bottom:16px; letter-spacing:-0.5px; max-width:680px;}
+h1.page-title em{font-style:normal; color:var(--gold-light); font-weight:900;
+  background:linear-gradient(180deg, #f3d699 0%, var(--gold) 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+.page-sub{font-size:14.5px; color:var(--text-dim); max-width:600px;}
+
+section{position:relative; z-index:1; padding:20px 0 60px;}
+
+/* auth-as chip */
+.as-chip{display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--bg2); border:1px solid var(--line); border-radius:8px; padding:10px 16px; margin-bottom:16px; font-size:12px; color:var(--text-dim);}
+.as-chip b{color:var(--gold-light);}
+.as-chip span.badge{font-family:'JetBrains Mono',monospace; direction:ltr;}
+
+/* login gate */
+.login-gate{background:linear-gradient(180deg,var(--panel2),var(--panel)); border:1px solid rgba(209,161,58,.18); border-radius:14px; padding:28px 30px; box-shadow:var(--shadow); margin-bottom:36px; text-align:center;}
+.login-gate p{color:var(--text-dim); font-size:13.5px; margin:8px 0 18px;}
+
+/* form */
+.comment-form{background:linear-gradient(180deg,var(--panel2),var(--panel)); border:1px solid rgba(209,161,58,.18); border-radius:14px; padding:28px 30px; box-shadow:var(--shadow); margin-bottom:36px;}
+.form-row{margin-bottom:16px;}
+.form-row label{display:block; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:8px;}
+.form-row input, .form-row textarea{width:100%; background:var(--bg2); border:1px solid var(--line); border-radius:8px; padding:12px 14px; color:var(--text); font-family:inherit; font-size:14px; resize:vertical; transition:border-color .15s;}
+.form-row input:focus, .form-row textarea:focus{outline:none; border-color:var(--gold);}
+.form-row textarea{min-height:100px; line-height:1.7;}
+.char-count{font-size:11px; color:var(--text-faint); text-align:left; margin-top:6px; direction:ltr;}
+.form-foot{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:6px;}
+.form-msg{font-size:12.5px; display:none;}
+.form-msg.show{display:block;}
+.form-msg.ok{color:var(--ok);}
+.form-msg.err{color:var(--err);}
+.form-note{font-size:11.5px; color:var(--text-faint); margin-top:12px; display:flex; align-items:center; gap:8px;}
+
+/* comments list */
+.section-lbl{font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:18px; display:flex; align-items:center; gap:10px;}
+.section-lbl .count{color:var(--text-faint); font-weight:600; letter-spacing:0;}
+.comment-list{display:flex; flex-direction:column; gap:14px;}
+.comment-card{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:18px 20px;}
+.comment-top{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px; flex-wrap:wrap;}
+.comment-who{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+.comment-name{font-size:13.5px; font-weight:800; color:var(--paper);}
+.comment-badge{font-size:10.5px; color:var(--gold-light); font-family:'JetBrains Mono',monospace; direction:ltr;}
+.comment-time{font-size:11px; color:var(--text-faint); font-family:'JetBrains Mono',monospace; direction:ltr;}
+.comment-msg{font-size:13.5px; color:var(--text-dim); line-height:1.8; white-space:pre-wrap; word-break:break-word;}
+.pending-tag{font-size:10px; font-weight:700; color:var(--warn); background:rgba(209,161,58,.12); border:1px solid rgba(209,161,58,.3); border-radius:999px; padding:2px 10px;}
+.owner-tag{font-size:10px; font-weight:800; color:#241d09; background:linear-gradient(180deg,var(--gold-light),var(--gold)); border-radius:999px; padding:2px 10px; letter-spacing:.3px;}
+.comment-actions{margin-top:10px; display:flex; gap:14px;}
+.reply-toggle{font-size:11.5px; color:var(--text-faint); cursor:pointer; font-weight:700;}
+.reply-toggle:hover{color:var(--gold-light);}
+.reply-box{margin-top:12px; display:none;}
+.reply-box.show{display:block;}
+.reply-box textarea{width:100%; background:var(--bg2); border:1px solid var(--line); border-radius:8px; padding:10px 12px; color:var(--text); font-family:inherit; font-size:13px; min-height:70px; resize:vertical;}
+.reply-box textarea:focus{outline:none; border-color:var(--gold);}
+.reply-box-foot{display:flex; justify-content:flex-end; gap:10px; margin-top:8px;}
+.reply-list{margin-top:14px; padding-right:22px; border-right:2px solid var(--line); display:flex; flex-direction:column; gap:12px;}
+.reply-list .comment-card{background:var(--bg2); padding:14px 16px;}
+.empty-state, .loading-state{text-align:center; padding:40px 20px; color:var(--text-faint); font-size:13px;}
+.load-more{display:block; margin:24px auto 0;}
+
+@media (max-width:820px){
+  h1.page-title{font-size:27px;}
+  .nav-links{display:none;}
+  .comment-form, .login-gate{padding:22px 20px;}
+  .form-foot{flex-direction:column; align-items:stretch;}
+  .reply-list{padding-right:14px;}
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="logo" href="index.html">
+      <svg viewBox="0 0 40 40" fill="none">
+        <defs><radialGradient id="darkSpace" cx="50%" cy="45%" r="65%"><stop offset="0%" stop-color="#2b2f4a"/><stop offset="100%" stop-color="#0a0b14"/></radialGradient></defs>
+        <mask id="keyhole"><rect width="40" height="40" fill="white"/><circle cx="20" cy="15" r="7" fill="black"/><path d="M15 21 L25 21 L29 34 L11 34 Z" fill="black"/></mask>
+        <rect width="40" height="40" rx="8" fill="url(#darkSpace)" mask="url(#keyhole)"/>
+        <circle cx="12" cy="10" r=".7" fill="#e9c67a"/><circle cx="28" cy="8" r=".5" fill="#e9c67a"/><circle cx="30" cy="16" r=".6" fill="#e9c67a"/>
+        <circle cx="20" cy="15" r="6.3" fill="none" stroke="#8a1f2b" stroke-width="1.1"/>
+      </svg>
+      <span class="word">Dark<b>File</b></span>
+    </a>
+    <div class="nav-links">
+      <a href="darkfile-all-cases.html">همه‌ی پرونده‌ها</a>
+      <a href="index.html#why">چرا DarkFile</a>
+      <a href="darkfile-comments.html" class="active">نظرات</a>
+      <a href="darkfile-donate.html">حمایت از ما</a>
+    </div>
+    <a href="index.html" class="btn btn-ghost btn-sm">بازگشت به صفحه اصلی</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow"><span class="blink"></span> پرونده‌ی باز: بازخورد کارآگاه‌ها</div>
+    <h1 class="page-title">نظرت رو <em>ثبت کن</em></h1>
+    <p class="page-sub">هر چی درباره‌ی DarkFile فکر می‌کنی — از پرونده‌ها گرفته تا پیشنهاد برای بهتر شدن — همین‌جا بنویس. نظرات بعد از تایید تیم DarkFile برای همه نمایش داده می‌شه.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+
+    <!-- ============ حالت مهمان (لاگین نکرده) ============ -->
+    <div class="login-gate" id="loginGate" style="display:none;">
+      <div style="font-size:15px; font-weight:800; margin-bottom:4px;" id="gateTitleTxt">برای ثبت نظر و پاسخ، اول وارد شو</div>
+      <p id="gateMsgTxt">نظرات با اسم و پلاک همون کارت شناسایی کارآگاهی‌ت ثبت می‌شه.</p>
+      <a href="index.html" class="btn btn-gold btn-sm" id="gateActionBtn">ورود / ثبت‌نام</a>
+      <p id="gateDebug" style="display:none; margin-top:14px; font-size:11px; color:var(--err); font-family:'JetBrains Mono',monospace; direction:ltr; text-align:left; word-break:break-all;"></p>
+    </div>
+
+    <!-- ============ حالت لاگین‌کرده ============ -->
+    <form class="comment-form" id="commentForm" style="display:none;">
+      <div class="as-chip">
+        <span>ثبت نظر به‌عنوان: <b id="asName"></b></span>
+        <span class="badge num" id="asBadge"></span>
+      </div>
+      <div class="form-row">
+        <label for="cMsg">نظرت</label>
+        <textarea id="cMsg" maxlength="1000" placeholder="نظرت رو بنویس..." required></textarea>
+        <div class="char-count"><span id="charCount">0</span>/1000</div>
+      </div>
+      <div class="form-foot">
+        <div class="form-msg" id="formMsg"></div>
+        <button type="submit" class="btn btn-gold" id="submitBtn">ثبت نظر</button>
+      </div>
+      <div class="form-note">⏳ نظرت اول برای بررسی تیم DarkFile ارسال می‌شه، بعد از تایید برای همه نمایش داده می‌شه.</div>
+    </form>
+
+    <div class="section-lbl">نظرات ثبت‌شده <span class="count" id="commentCount"></span></div>
+    <div class="comment-list" id="commentList">
+      <div class="loading-state" id="loadingState">در حال بارگذاری نظرات…</div>
+    </div>
+  </div>
+</section>
+
+<script>
+// ========== اتصال به Supabase ==========
+const SUPABASE_URL = 'https://uohetpzmscuqdiwibqci.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_CukVAlNn7Nvrx5v_gu7atg_JDcw2dzW';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const PAGE_SIZE = 15;
+let offset = 0;
+let totalTopLoaded = 0;
+let currentUser = null;   // { id, name, badge_number }
+
+const commentList = document.getElementById('commentList');
+const loadingState = document.getElementById('loadingState');
+const commentCountEl = document.getElementById('commentCount');
+const loginGate = document.getElementById('loginGate');
+const commentForm = document.getElementById('commentForm');
+
+function timeAgo(dateStr){
+  const diffMs = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diffMs / 60000);
+  if(mins < 1) return 'همین الان';
+  if(mins < 60) return `${mins} دقیقه پیش`;
+  const hrs = Math.floor(mins / 60);
+  if(hrs < 24) return `${hrs} ساعت پیش`;
+  const days = Math.floor(hrs / 24);
+  if(days < 30) return `${days} روز پیش`;
+  return new Date(dateStr).toLocaleDateString('fa-IR');
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// ========== ساخت کارت یک نظر (+ ریپلای‌هاش) ==========
+function renderComment(c, replies, isReply = false){
+  const card = document.createElement('div');
+  card.className = 'comment-card';
+  card.dataset.id = c.id;
+
+  const pendingTag = c.approved ? '' : `<span class="pending-tag">در انتظار تایید</span>`;
+  const ownerTag = c.is_owner ? `<span class="owner-tag">Owner</span>` : '';
+  const replyToggle = (!isReply && currentUser) ? `<span class="reply-toggle" data-parent="${c.id}">پاسخ</span>` : '';
+
+  card.innerHTML = `
+    <div class="comment-top">
+      <div class="comment-who">
+        <span class="comment-name">${escapeHtml(c.name)}</span>
+        ${c.badge_number ? `<span class="comment-badge">${escapeHtml(c.badge_number)}</span>` : ''}
+        ${ownerTag}
+        ${pendingTag}
+      </div>
+      <span class="comment-time">${timeAgo(c.created_at)}</span>
+    </div>
+    <div class="comment-msg">${escapeHtml(c.message)}</div>
+    ${replyToggle ? `<div class="comment-actions">${replyToggle}</div>` : ''}
+    ${!isReply && currentUser ? `
+      <div class="reply-box" id="replyBox-${c.id}">
+        <textarea maxlength="1000" placeholder="پاسخت رو بنویس..."></textarea>
+        <div class="reply-box-foot">
+          <button type="button" class="btn btn-ghost btn-xs cancel-reply" data-parent="${c.id}">انصراف</button>
+          <button type="button" class="btn btn-gold btn-xs send-reply" data-parent="${c.id}">ارسال پاسخ</button>
+        </div>
+      </div>
+    ` : ''}
+  `;
+
+  if(!isReply && replies && replies.length){
+    const list = document.createElement('div');
+    list.className = 'reply-list';
+    replies.forEach(r => list.appendChild(renderComment(r, null, true)));
+    card.appendChild(list);
+  }
+
+  return card;
+}
+
+function wireCommentCardEvents(card){
+  const toggle = card.querySelector(':scope > .comment-actions .reply-toggle');
+  if(toggle){
+    toggle.addEventListener('click', () => {
+      document.getElementById(`replyBox-${toggle.dataset.parent}`).classList.toggle('show');
+    });
+  }
+  const cancelBtn = card.querySelector(':scope > .reply-box .cancel-reply');
+  if(cancelBtn){
+    cancelBtn.addEventListener('click', () => {
+      document.getElementById(`replyBox-${cancelBtn.dataset.parent}`).classList.remove('show');
+    });
+  }
+  const sendBtn = card.querySelector(':scope > .reply-box .send-reply');
+  if(sendBtn){
+    sendBtn.addEventListener('click', () => submitReply(sendBtn.dataset.parent, card));
+  }
+}
+
+// ========== ارسال پاسخ ==========
+async function submitReply(parentId, card){
+  const box = document.getElementById(`replyBox-${parentId}`);
+  const textarea = box.querySelector('textarea');
+  const message = textarea.value.trim();
+  if(!message){ textarea.focus(); return; }
+
+  const sendBtn = box.querySelector('.send-reply');
+  sendBtn.disabled = true;
+  sendBtn.textContent = 'در حال ارسال…';
+
+  const { error } = await sb.from('comments').insert({
+    name: currentUser.name,
+    badge_number: currentUser.badge_number,
+    message,
+    user_id: currentUser.id,
+    parent_id: parentId,
+    approved: currentUser.is_admin,
+    is_owner: currentUser.is_admin
+  });
+
+  sendBtn.disabled = false;
+  sendBtn.textContent = 'ارسال پاسخ';
+
+  if(error){
+    alert('ارسال پاسخ ناموفق بود. دوباره امتحان کن.');
+    console.error(error);
+    return;
+  }
+
+  textarea.value = '';
+  box.classList.remove('show');
+
+  // ریپلای‌های این کامنت رو دوباره بگیر و رندر کن (پاسخ تازه، در انتظار تایید، فقط برای خودت قابل دیدنه)
+  const { data: freshReplies } = await sb
+    .from('comments')
+    .select('*')
+    .eq('parent_id', parentId)
+    .order('created_at', { ascending: true });
+
+  let list = card.querySelector(':scope > .reply-list');
+  if(!list){
+    list = document.createElement('div');
+    list.className = 'reply-list';
+    card.appendChild(list);
+  }
+  list.innerHTML = '';
+  (freshReplies || []).forEach(r => list.appendChild(renderComment(r, null, true)));
+
+  alert(currentUser.is_admin ? 'پاسخت مستقیم منتشر شد!' : 'پاسخت ثبت شد و بعد از تایید نمایش داده می‌شه.');
+}
+
+// ========== بارگذاری نظرات (سطح بالا + ریپلای‌هاشون) ==========
+async function loadComments(initial = false){
+  const { data: topComments, error, count } = await sb
+    .from('comments')
+    .select('*', { count: 'exact' })
+    .is('parent_id', null)
+    .order('created_at', { ascending: false })
+    .range(offset, offset + PAGE_SIZE - 1);
+
+  loadingState.style.display = 'none';
+
+  if(error){
+    commentList.innerHTML = `<div class="empty-state">مشکلی توی بارگذاری نظرات پیش اومد. بعداً دوباره امتحان کن.</div>`;
+    console.error(error);
+    return;
+  }
+
+  if(initial && topComments.length === 0){
+    commentList.innerHTML = `<div class="empty-state">هنوز نظری ثبت نشده — اولین نفر باش 🖤</div>`;
+    commentCountEl.textContent = '';
+    return;
+  }
+
+  let repliesByParent = {};
+  const topIds = topComments.map(c => c.id);
+  if(topIds.length){
+    const { data: replies } = await sb
+      .from('comments')
+      .select('*')
+      .in('parent_id', topIds)
+      .order('created_at', { ascending: true });
+    (replies || []).forEach(r => {
+      if(!repliesByParent[r.parent_id]) repliesByParent[r.parent_id] = [];
+      repliesByParent[r.parent_id].push(r);
+    });
+  }
+
+  topComments.forEach(c => {
+    const card = renderComment(c, repliesByParent[c.id] || []);
+    commentList.appendChild(card);
+    wireCommentCardEvents(card);
+    card.querySelectorAll(':scope > .reply-list > .comment-card').forEach(wireCommentCardEvents);
+  });
+
+  offset += topComments.length;
+  totalTopLoaded += topComments.length;
+
+  if(count !== null) commentCountEl.textContent = `(${count})`;
+
+  const existingBtn = document.getElementById('loadMoreBtn');
+  if(existingBtn) existingBtn.remove();
+
+  if(count !== null && totalTopLoaded < count){
+    const btn = document.createElement('button');
+    btn.id = 'loadMoreBtn';
+    btn.className = 'btn btn-ghost load-more';
+    btn.textContent = 'نمایش نظرات بیشتر';
+    btn.addEventListener('click', () => loadComments(false));
+    commentList.parentElement.insertBefore(btn, commentList.nextSibling);
+  }
+}
+
+// ========== شمارنده‌ی کاراکتر فرم اصلی ==========
+const msgInput = document.getElementById('cMsg');
+const charCount = document.getElementById('charCount');
+if(msgInput){
+  msgInput.addEventListener('input', () => {
+    charCount.textContent = msgInput.value.length;
+  });
+}
+
+// ========== ارسال فرم اصلی ==========
+const form = document.getElementById('commentForm');
+const submitBtn = document.getElementById('submitBtn');
+const formMsg = document.getElementById('formMsg');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const message = msgInput.value.trim();
+
+  formMsg.className = 'form-msg';
+  if(!message){
+    formMsg.textContent = 'یه متن برای نظر بنویس.';
+    formMsg.classList.add('show', 'err');
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'در حال ارسال…';
+
+  const { error } = await sb.from('comments').insert({
+    name: currentUser.name,
+    badge_number: currentUser.badge_number,
+    message,
+    user_id: currentUser.id,
+    parent_id: null,
+    approved: currentUser.is_admin,
+    is_owner: currentUser.is_admin
+  });
+
+  submitBtn.disabled = false;
+  submitBtn.textContent = 'ثبت نظر';
+
+  if(error){
+    formMsg.textContent = 'ثبت نظر ناموفق بود. دوباره امتحان کن.';
+    formMsg.classList.add('show', 'err');
+    console.error(error);
+    return;
+  }
+
+  formMsg.textContent = currentUser.is_admin ? 'نظرت مستقیم منتشر شد! 🖤' : 'نظرت ثبت شد و برای بررسی ارسال شد، ممنون! 🖤';
+  formMsg.classList.add('show', 'ok');
+  form.reset();
+  charCount.textContent = '0';
+
+  offset = 0;
+  totalTopLoaded = 0;
+  commentList.innerHTML = '';
+  loadComments(true);
+});
+
+// ========== بررسی وضعیت ورود ==========
+const gateTitleTxt = document.getElementById('gateTitleTxt');
+const gateMsgTxt = document.getElementById('gateMsgTxt');
+const gateActionBtn = document.getElementById('gateActionBtn');
+const gateDebug = document.getElementById('gateDebug');
+
+function showGate(title, msg, debugText){
+  loginGate.style.display = 'block';
+  commentForm.style.display = 'none';
+  gateTitleTxt.textContent = title;
+  gateMsgTxt.textContent = msg;
+  if(debugText){
+    gateDebug.textContent = debugText;
+    gateDebug.style.display = 'block';
+  } else {
+    gateDebug.style.display = 'none';
+  }
+}
+
+async function init(){
+  try {
+    const { data: sessionData, error: sessionErr } = await sb.auth.getSession();
+    const session = sessionData ? sessionData.session : null;
+
+    if(sessionErr){
+      console.error('getSession failed:', sessionErr);
+      showGate('خطا در بررسی ورود', 'یه مشکل فنی پیش اومد. دوباره امتحان کن.', 'auth: ' + sessionErr.message);
+      currentUser = null;
+    } else if(!session){
+      showGate('برای ثبت نظر و پاسخ، اول وارد شو', 'نظرات با اسم و پلاک همون کارت شناسایی کارآگاهی‌ت ثبت می‌شه.', null);
+      gateActionBtn.style.display = 'inline-flex';
+      currentUser = null;
+    } else {
+      let { data: profile, error: profErr } = await sb
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .maybeSingle();
+
+      // اگه پروفایل اصلاً وجود نداره (نه خطای RLS)، یه ردیف پیش‌فرض براش می‌سازیم
+      if(!profErr && !profile){
+        const { data: created, error: createErr } = await sb
+          .from('profiles')
+          .insert({ id: session.user.id })
+          .select('*')
+          .maybeSingle();
+        if(createErr){
+          console.error('auto-create profile failed:', createErr);
+          profErr = createErr;
+        } else {
+          profile = created;
+        }
+      }
+
+      if(profErr){
+        console.error('profiles fetch/create failed:', profErr);
+        gateActionBtn.style.display = 'none';
+        showGate(
+          'مشکل در خوندن پروفایل',
+          'لاگین هستی ولی سایت نتونست پروفایلت رو بخونه. این پیام رو برای پشتیبانی بفرست:',
+          `code: ${profErr.code || '—'} | ${profErr.message || profErr}`
+        );
+        currentUser = null;
+      } else if(!profile){
+        gateActionBtn.style.display = 'none';
+        showGate('پروفایل پیدا نشد', 'حساب کاربریت پروفایل نداره. با پشتیبانی تماس بگیر.', null);
+        currentUser = null;
+      } else {
+        currentUser = {
+          id: session.user.id,
+          name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'کارآگاه ناشناس',
+          badge_number: profile.badge_number || '',
+          is_admin: profile.is_admin === true
+        };
+        loginGate.style.display = 'none';
+        commentForm.style.display = 'block';
+        document.getElementById('asName').textContent = currentUser.name;
+        document.getElementById('asBadge').textContent = currentUser.badge_number;
+      }
+    }
+  } catch(e){
+    console.error('init() threw:', e);
+    showGate('خطای غیرمنتظره', 'یه مشکل پیش اومد، صفحه رو رفرش کن.', String(e && e.message ? e.message : e));
+  }
+
+  try {
+    await loadComments(true);
+  } catch(e){
+    console.error('loadComments() threw:', e);
+    loadingState.style.display = 'none';
+    commentList.innerHTML = `<div class="empty-state">مشکلی توی بارگذاری نظرات پیش اومد.</div>`;
+  }
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,2456 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پرونده ۲۲۱-ب: عمارت مه — DarkFile</title>
+    <meta name="description" content="یک معمای جنایی واقعی و طاقت‌فرسا در سبک کارآگاهی کلاسیک. سقوط دکتر بهروز مستوفی، بنیان‌گذار باشگاه کارآگاهان مه، از پلِ درّه‌ی مه — دقیقاً به تقلید از سرنوشت افسانه‌ای قهرمانش. مدارک پزشکی‌قانونی، اثر انگشت، ماشین‌تحریر و بازجویی از ۴ مظنون رو با دقت بررسی کن.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Special+Elite&display=swap" rel="stylesheet">
+    <style>
+        /* ===== تمام استایل‌های قبلی ===== */
+        :root {
+            --ink: #0E1116;
+            --ink-2: #151A22;
+            --panel: #1B212B;
+            --panel-2: #212836;
+            --paper: #E9E1CB;
+            --paper-2: #DCD1AE;
+            --paper-shadow: #B7A97F;
+            --thread: #A6362B;
+            --thread-dim: #7A2822;
+            --brass: #B08D46;
+            --brass-light: #D9BD7C;
+            --text-light: #EDE7D8;
+            --text-dim: #9AA0AC;
+            --text-faint: #5C6270;
+            --text-dark: #241F16;
+            --cyber: #4FE3B0;
+            --cyber-dim: #1C3A32;
+            --gold: #E8C77E;
+            --green: #5FBF8F;
+            --red: #D9584C;
+            --bg: #0E1116;
+            --bg2: #151A22;
+            --line: rgba(255, 255, 255, 0.07);
+            --shadow: 0 24px 70px rgba(0, 0, 0, .55);
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background: var(--ink);
+            color: var(--text-light);
+            font-family: 'Vazirmatn', sans-serif;
+            line-height: 1.75;
+            overflow-x: hidden;
+        }
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+            direction: ltr;
+            unicode-bidi: isolate;
+        }
+        .num-fa {
+            font-family: 'Vazirmatn', sans-serif !important;
+            font-weight: 800 !important;
+            font-variant-numeric: tabular-nums !important;
+            letter-spacing: .5px;
+        }
+        .wrap {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(circle at 12% 15%, rgba(160, 140, 90, 0.05), transparent 40%),
+                radial-gradient(circle at 88% 75%, rgba(166, 54, 43, 0.06), transparent 45%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .grain {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: .035;
+            mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+            border-left: 1px solid var(--line);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--brass);
+            border-radius: 999px;
+            border: 2px solid var(--bg);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--brass-light);
+        }
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--brass) var(--bg);
+        }
+
+        #authStage {
+            position: fixed;
+            inset: 0;
+            z-index: 210;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at 20% 15%, rgba(166, 54, 43, .16), transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(176, 141, 70, .10), transparent 50%), var(--bg);
+            transition: opacity .6s ease, filter .6s ease;
+        }
+        #authStage.hide {
+            opacity: 0;
+            filter: blur(8px);
+            pointer-events: none;
+        }
+        .auth-box {
+            width: 400px;
+            max-width: 92vw;
+            background: linear-gradient(180deg, var(--panel-2), var(--panel));
+            border: 1px solid rgba(176, 141, 70, .25);
+            border-radius: 14px;
+            padding: 34px 32px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 255, 255, .04);
+            position: relative;
+        }
+        .auth-box::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 14px;
+            padding: 1px;
+            background: linear-gradient(140deg, rgba(176, 141, 70, .4), transparent 30%, transparent 70%, rgba(166, 54, 43, .35));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        .auth-badge-icon {
+            width: 54px;
+            height: 54px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, var(--thread), var(--thread-dim) 70%, #3f1116 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(166, 54, 43, .4);
+            font-size: 26px;
+        }
+        .auth-box h2 {
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 23px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 6px;
+            color: var(--paper);
+        }
+        .auth-box .sub {
+            font-size: 12.5px;
+            color: var(--text-dim);
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .auth-grid2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .auth-field {
+            margin-bottom: 15px;
+        }
+        .auth-field label {
+            display: block;
+            font-size: 11.5px;
+            color: var(--brass-light);
+            margin-bottom: 7px;
+            letter-spacing: .3px;
+        }
+        .auth-field input {
+            width: 100%;
+            background: var(--bg2);
+            border: 1px solid var(--line);
+            border-radius: 7px;
+            padding: 12px 14px;
+            color: var(--text-light);
+            font-family: 'Vazirmatn';
+            font-size: 13.5px;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .auth-field input:focus {
+            outline: none;
+            border-color: var(--brass);
+            box-shadow: 0 0 0 3px rgba(176, 141, 70, .15);
+        }
+        .gender-row {
+            display: flex;
+            gap: 10px;
+        }
+        .gender-opt {
+            flex: 1;
+            text-align: center;
+            padding: 11px 8px;
+            border: 1px solid var(--line);
+            border-radius: 7px;
+            font-size: 13px;
+            cursor: pointer;
+            background: var(--bg2);
+            transition: .15s;
+        }
+        .gender-opt.sel {
+            border-color: var(--brass);
+            background: rgba(176, 141, 70, .1);
+            color: var(--brass-light);
+        }
+        .auth-err {
+            font-size: 12px;
+            color: var(--red);
+            margin-bottom: 12px;
+            display: none;
+            background: rgba(166, 54, 43, .1);
+            border-radius: 6px;
+            padding: 9px 12px;
+        }
+        .auth-err.show {
+            display: block;
+        }
+        .auth-switch {
+            text-align: center;
+            font-size: 12.5px;
+            color: var(--text-faint);
+            margin-top: 18px;
+            cursor: pointer;
+        }
+        .auth-switch b {
+            color: var(--brass-light);
+        }
+        .auth-extra {
+            display: none;
+        }
+        .auth-extra.show {
+            display: block;
+        }
+
+        /* ===== ID CARD ===== */
+        #idCardStage {
+            position: fixed;
+            inset: 0;
+            z-index: 205;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 24px;
+            background: var(--bg);
+        }
+        #idCardStage.show {
+            display: flex;
+        }
+        .id-card {
+            width: 400px;
+            max-width: 90vw;
+            border-radius: 16px;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(160deg, #1c2036, #11131f);
+            border: 1px solid rgba(176, 141, 70, .3);
+            box-shadow: var(--shadow);
+        }
+        .id-card-top {
+            background: linear-gradient(120deg, var(--thread), #5c141c);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .id-card-top .idc-brand {
+            font-weight: 900;
+            font-size: 13px;
+            color: #fbe9e7;
+            letter-spacing: .5px;
+        }
+        .id-card-top .idc-brand b {
+            color: var(--brass-light);
+        }
+        .id-card-top .idc-label {
+            font-size: 10px;
+            color: #f3c9c9;
+            letter-spacing: 1px;
+        }
+        .id-card-body {
+            padding: 22px 22px 18px;
+            display: flex;
+            gap: 18px;
+            align-items: flex-start;
+        }
+        .id-card-photo {
+            width: 88px;
+            height: 88px;
+            border-radius: 10px;
+            background: linear-gradient(160deg, #2c3050, #171929);
+            border: 2px solid var(--brass);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .id-card-photo svg {
+            width: 100%;
+            height: 100%;
+        }
+        .id-card-info {
+            flex: 1;
+        }
+        .id-card-name {
+            font-family: 'Vazirmatn', sans-serif;
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--paper);
+            margin-bottom: 3px;
+        }
+        .id-card-rank {
+            font-size: 11.5px;
+            color: var(--brass-light);
+            margin-bottom: 10px;
+        }
+        .id-card-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-dim);
+            padding: 4px 0;
+            border-bottom: 1px dashed var(--line);
+        }
+        .id-card-row b {
+            color: var(--text-light);
+            font-family: 'Vazirmatn';
+            font-weight: 700;
+        }
+        .id-card-row .gold-value {
+            color: var(--brass-light);
+            font-weight: 800;
+        }
+        .id-card-badgeno {
+            text-align: center;
+            padding: 12px 22px 18px;
+        }
+        .id-card-badgeno .lbl {
+            font-size: 9.5px;
+            color: var(--text-faint);
+            letter-spacing: 1.5px;
+            margin-bottom: 4px;
+        }
+        .id-card-badgeno .num {
+            font-family: 'Vazirmatn';
+            font-weight: 800;
+            font-size: 20px;
+            color: var(--brass-light);
+            letter-spacing: 2px;
+            font-variant-numeric: tabular-nums;
+        }
+        .id-card-strip {
+            height: 10px;
+            background: repeating-linear-gradient(45deg, var(--brass) 0 8px, #2a2410 8px 16px);
+            opacity: .55;
+        }
+        .id-card-shine {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent 30%, rgba(255, 255, 255, .06) 45%, transparent 60%);
+            pointer-events: none;
+        }
+        .idc-continue-hint {
+            color: var(--text-faint);
+            font-size: 12.5px;
+        }
+
+        #sealStage {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 26px;
+            background: var(--bg);
+            transition: opacity .8s ease, filter .8s ease;
+        }
+        #sealStage.hide {
+            opacity: 0;
+            filter: blur(8px);
+            pointer-events: none;
+        }
+        .folder {
+            width: 360px;
+            height: 460px;
+            background: linear-gradient(165deg, #2b251a 0%, #151310 100%);
+            border: 2px solid #4a3e2c;
+            border-radius: 8px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85), inset 0 0 50px rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .folder:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 40px 100px rgba(166, 54, 43, 0.25), inset 0 0 50px rgba(0, 0, 0, 0.8);
+        }
+        .folder::before {
+            content: 'پرونده‌ی محرمانه';
+            position: absolute;
+            top: 36px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 800;
+            font-size: 24px;
+            color: #d1a13a;
+            letter-spacing: 0.5px;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.9);
+            border-bottom: 2px solid rgba(176, 141, 70, 0.3);
+            padding-bottom: 6px;
+        }
+        .folder::after {
+            content: '⚠️ FILE #221-B';
+            position: absolute;
+            bottom: 30px;
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 800;
+            font-size: 15px;
+            color: var(--thread);
+            letter-spacing: 0.5px;
+            background: rgba(166, 54, 43, 0.15);
+            padding: 6px 18px;
+            border-radius: 6px;
+            border: 1px dashed rgba(166, 54, 43, 0.4);
+        }
+        .seal {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #b83e42, #8a1f2b 60%, #2d0b0e 100%);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), inset 0 -6px 12px rgba(0, 0, 0, 0.5), 0 0 0 4px rgba(184, 62, 66, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .seal span {
+            font-family: 'Vazirmatn', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            color: #fbe9e7;
+            text-align: center;
+            line-height: 1.4;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+        .folder:hover .seal {
+            transform: scale(1.05);
+        }
+        .seal.crack {
+            animation: crack .5s forwards;
+        }
+        @keyframes crack {
+            0% {
+                transform: scale(1)
+            }
+            40% {
+                transform: scale(1.15) rotate(-4deg)
+            }
+            100% {
+                transform: scale(0) rotate(20deg);
+                opacity: 0
+            }
+        }
+        .hint-open {
+            color: var(--text-faint);
+            font-size: 13px;
+        }
+        .glitch-flash {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 210;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .glitch-flash.on {
+            animation: fl .5s steps(2, end);
+        }
+        @keyframes fl {
+            0% {
+                opacity: .9
+            }
+            20% {
+                opacity: .2
+            }
+            35% {
+                opacity: .7
+            }
+            55% {
+                opacity: .1
+            }
+            100% {
+                opacity: 0
+            }
+        }
+
+        #mainPage {
+            opacity: 0;
+            transition: opacity .7s ease;
+        }
+        #mainPage.show {
+            opacity: 1;
+        }
+
+        .case-topbar {
+            position: sticky;
+            top: 0;
+            z-index: 60;
+            background: rgba(14, 17, 22, 0.94);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(176, 141, 70, 0.18);
+        }
+        .case-topbar .wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+            gap: 20px;
+        }
+        .topbar-title {
+            font-size: 13px;
+            color: var(--text-faint);
+        }
+        .topbar-title b {
+            color: var(--brass-light);
+            font-weight: 700;
+        }
+        .topbar-stats {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+        .tb-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+        .tb-stat b {
+            color: var(--text-light);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .tb-stat svg {
+            width: 15px;
+            height: 15px;
+            color: var(--brass-light);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: inherit;
+            text-decoration: none;
+        }
+        .logo svg {
+            width: 30px;
+            height: 30px;
+            flex-shrink: 0;
+        }
+        .logo .word {
+            font-weight: 900;
+            letter-spacing: .3px;
+            font-size: 16px;
+        }
+        .logo .word b {
+            color: var(--thread);
+        }
+
+        .brief {
+            position: relative;
+            z-index: 1;
+            padding: 56px 0 40px;
+        }
+        .brief-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            letter-spacing: 1.5px;
+            color: var(--thread);
+            border: 1px solid var(--thread-dim);
+            border-radius: 999px;
+            padding: 6px 16px;
+            margin-bottom: 22px;
+        }
+        .blink {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--thread);
+            animation: blink 1.6s infinite;
+        }
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .25;
+            }
+        }
+        h1.case-title {
+            font-size: 40px;
+            font-weight: 800;
+            line-height: 1.3;
+            margin-bottom: 16px;
+            letter-spacing: -.3px;
+        }
+        h1.case-title .accent {
+            color: var(--brass-light);
+        }
+        .brief-sub {
+            font-size: 15px;
+            color: var(--text-dim);
+            max-width: 720px;
+            margin-bottom: 30px;
+        }
+        .brief-grid {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 28px;
+            align-items: stretch;
+            margin-bottom: 10px;
+        }
+        .brief-card {
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 30px;
+        }
+        .brief-card h3 {
+            font-size: 13px;
+            color: var(--brass);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .brief-fact {
+            display: flex;
+            gap: 14px;
+            padding: 10px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.07);
+            font-size: 14px;
+        }
+        .brief-fact:last-child {
+            border-bottom: none;
+        }
+        .brief-fact .k {
+            color: var(--text-faint);
+            min-width: 120px;
+            flex-shrink: 0;
+        }
+        .brief-fact .v {
+            color: var(--text-light);
+        }
+        .victim-card {
+            background: linear-gradient(180deg, var(--panel-2), var(--panel));
+            border: 1px solid rgba(166, 54, 43, 0.25);
+            border-radius: 8px;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .victim-photo {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            background: linear-gradient(160deg, #3a3f47, #181b21);
+            border: 2px solid var(--thread-dim);
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+        .victim-photo::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(135deg, rgba(0, 0, 0, 0.15) 0 3px, transparent 3px 7px);
+        }
+        .victim-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .victim-role {
+            font-size: 13px;
+            color: var(--text-dim);
+            margin-bottom: 16px;
+        }
+        .victim-stamp {
+            border: 2px solid var(--thread);
+            color: var(--thread);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 5px 14px;
+            border-radius: 2px;
+            transform: rotate(-4deg);
+        }
+
+        section {
+            position: relative;
+            z-index: 1;
+            padding: 56px 0;
+        }
+        .section-head {
+            max-width: 680px;
+            margin-bottom: 36px;
+        }
+        .section-tag {
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--brass);
+            margin-bottom: 12px;
+            display: block;
+        }
+        h2.section-title {
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        .section-desc {
+            color: var(--text-dim);
+            font-size: 14.5px;
+        }
+
+        .notebook-bar {
+            position: sticky;
+            top: 70px;
+            z-index: 50;
+            background: rgba(27, 33, 43, 0.96);
+            border-bottom: 1px solid rgba(176, 141, 70, 0.15);
+            backdrop-filter: blur(6px);
+        }
+        .notebook-bar .wrap {
+            display: flex;
+            align-items: center;
+            gap: 26px;
+            padding: 12px 32px;
+            flex-wrap: wrap;
+        }
+        .nb-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12.5px;
+            color: var(--text-dim);
+        }
+        .nb-item svg {
+            width: 15px;
+            height: 15px;
+            color: var(--brass-light);
+            flex-shrink: 0;
+        }
+        .nb-track {
+            width: 70px;
+            height: 5px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+        .nb-fill {
+            height: 100%;
+            background: var(--brass);
+            transition: width .35s;
+        }
+        .nb-score {
+            margin-inline-start: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+        }
+        .nb-score b {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--gold);
+            font-size: 15px;
+        }
+
+        .ev-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .ev-card {
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform .2s, border-color .2s;
+            position: relative;
+        }
+        .ev-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(176, 141, 70, 0.4);
+        }
+        .ev-thumb {
+            height: 150px;
+            background: var(--ink-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .ev-thumb svg {
+            width: 52px;
+            height: 52px;
+            color: var(--brass-light);
+            opacity: .75;
+        }
+        .ev-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 10px;
+            background: rgba(166, 54, 43, 0.85);
+            color: #F6E8E4;
+            padding: 3px 8px;
+            border-radius: 3px;
+            letter-spacing: .5px;
+        }
+        .ev-check {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(95, 191, 143, 0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .ev-check svg {
+            width: 14px;
+            height: 14px;
+            color: #0E1116;
+            opacity: 1;
+        }
+        .ev-card.viewed .ev-check {
+            display: flex;
+        }
+        .ev-body {
+            padding: 16px 18px 20px;
+        }
+        .ev-no {
+            font-size: 10.5px;
+            color: var(--paper-shadow);
+            margin-bottom: 8px;
+            letter-spacing: .5px;
+        }
+        .ev-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+        .ev-desc {
+            font-size: 12.5px;
+            color: var(--text-dim);
+        }
+        .ev-zoomhint {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--brass-light);
+            margin-top: 10px;
+        }
+        .ev-zoomhint svg {
+            width: 13px;
+            height: 13px;
+        }
+
+        .sus-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .sus-card {
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 24px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform .2s, border-color .2s;
+            position: relative;
+        }
+        .sus-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(176, 141, 70, 0.4);
+        }
+        .sus-avatar {
+            width: 74px;
+            height: 74px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            background: linear-gradient(160deg, #343a44, #181b21);
+            border: 2px solid rgba(176, 141, 70, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--brass-light);
+        }
+        .sus-name {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .sus-role {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin-bottom: 14px;
+        }
+        .sus-status {
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-faint);
+        }
+        .sus-card.done .sus-status {
+            background: rgba(95, 191, 143, 0.14);
+            color: var(--green);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(6, 7, 9, 0.82);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            backdrop-filter: blur(3px);
+        }
+        .modal-overlay.open {
+            display: flex;
+        }
+        .modal-box {
+            background: var(--panel);
+            border: 1px solid rgba(176, 141, 70, 0.25);
+            border-radius: 10px;
+            max-width: 640px;
+            width: 100%;
+            max-height: 88vh;
+            overflow-y: auto;
+            padding: 0;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+        }
+        .modal-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 26px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            position: sticky;
+            top: 0;
+            background: var(--panel);
+            z-index: 2;
+        }
+        .modal-head h3 {
+            font-size: 17px;
+            font-weight: 700;
+        }
+        .modal-close {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.06);
+            cursor: pointer;
+            border: none;
+            color: var(--text-light);
+            font-size: 16px;
+        }
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+        .modal-body {
+            padding: 26px;
+        }
+
+        .magnify-tip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--brass-light);
+            margin-bottom: 14px;
+            background: rgba(176, 141, 70, 0.08);
+            border: 1px solid rgba(176, 141, 70, 0.2);
+            padding: 8px 14px;
+            border-radius: 6px;
+        }
+        .magnify-tip svg {
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0;
+        }
+        .magnify-container {
+            position: relative;
+            width: 100%;
+            max-width: 520px;
+            height: 320px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 6px;
+            background: #12151b;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            cursor: none;
+        }
+        .scene-inner {
+            position: absolute;
+            inset: 0;
+        }
+        .lens {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid var(--brass-light);
+            box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.5), 0 8px 30px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+            display: none;
+            pointer-events: none;
+            z-index: 5;
+            background: #12151b;
+        }
+        .lens-inner {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .dossier-top {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .dossier-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(160deg, #343a44, #181b21);
+            border: 2px solid rgba(176, 141, 70, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            color: var(--brass-light);
+            flex-shrink: 0;
+        }
+        .dossier-name {
+            font-size: 17px;
+            font-weight: 700;
+        }
+        .dossier-role {
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+        .qa-block {
+            margin-bottom: 18px;
+        }
+        .qa-q {
+            font-size: 13.5px;
+            color: var(--brass-light);
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            gap: 8px;
+        }
+        .qa-q span.qmark {
+            flex-shrink: 0;
+        }
+        .qa-a {
+            background: var(--ink-2);
+            border-radius: 6px;
+            padding: 12px 16px;
+            font-size: 13.5px;
+            color: var(--text-light);
+            border-inline-start: 3px solid var(--thread-dim);
+        }
+        .interrogate-done-btn {
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 26px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: transform .15s, background .2s, border-color .2s, opacity .2s;
+            font-family: inherit;
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+        .btn-primary {
+            background: var(--thread);
+            color: #F6E8E4;
+        }
+        .btn-primary:hover {
+            background: #B74134;
+        }
+        .btn-ghost {
+            border-color: rgba(237, 231, 216, 0.25);
+            color: var(--text-light);
+            background: transparent;
+        }
+        .btn-ghost:hover {
+            border-color: rgba(237, 231, 216, 0.55);
+        }
+        .btn-gold {
+            background: var(--brass);
+            color: var(--ink);
+        }
+        .btn-gold:hover {
+            background: var(--brass-light);
+        }
+        .btn:disabled {
+            opacity: .35;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-block {
+            width: 100%;
+        }
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 12.5px;
+        }
+
+        .hint-panel {
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 26px;
+        }
+        .hint-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+            gap: 16px;
+        }
+        .hint-row:last-child {
+            border-bottom: none;
+        }
+        .hint-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13.5px;
+        }
+        .hint-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(176, 141, 70, 0.12);
+            color: var(--brass-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            flex-shrink: 0;
+        }
+        .hint-cost {
+            font-size: 11.5px;
+            color: var(--red);
+        }
+        .hint-text {
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--text-dim);
+            background: var(--ink-2);
+            border-radius: 6px;
+            padding: 12px 14px;
+            border-inline-start: 3px solid var(--brass);
+            display: none;
+        }
+        .hint-text.shown {
+            display: block;
+        }
+        .hint-confirm {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .solve-panel {
+            background: var(--panel);
+            border: 1px solid rgba(176, 141, 70, 0.2);
+            border-radius: 10px;
+            padding: 32px;
+        }
+        .solve-group {
+            margin-bottom: 26px;
+        }
+        .solve-group h4 {
+            font-size: 14px;
+            color: var(--brass-light);
+            margin-bottom: 14px;
+        }
+        .opt-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .opt {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--ink-2);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 6px;
+            padding: 12px 14px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: border-color .2s, background .2s;
+        }
+        .opt:hover {
+            border-color: rgba(176, 141, 70, 0.3);
+        }
+        .opt input {
+            accent-color: var(--brass);
+            flex-shrink: 0;
+        }
+        .opt.checked {
+            border-color: var(--brass);
+            background: rgba(176, 141, 70, 0.08);
+        }
+        .gate-msg {
+            font-size: 12.5px;
+            color: var(--text-faint);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .gate-msg svg {
+            width: 15px;
+            height: 15px;
+            color: var(--brass-light);
+            flex-shrink: 0;
+        }
+        .wrong-msg {
+            background: rgba(166, 54, 43, 0.12);
+            border: 1px solid rgba(166, 54, 43, 0.3);
+            color: #E39187;
+            border-radius: 6px;
+            padding: 14px 16px;
+            font-size: 13px;
+            margin-bottom: 18px;
+            display: none;
+        }
+        .wrong-msg.show {
+            display: block;
+        }
+
+        .result-stamp {
+            text-align: center;
+            padding: 10px 0 6px;
+        }
+        .result-stamp .stamp-big {
+            display: inline-block;
+            border: 3px solid;
+            border-radius: 6px;
+            padding: 10px 30px;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            transform: rotate(-4deg);
+            font-family: 'Special Elite', cursive;
+        }
+        .stamp-solved {
+            color: var(--green);
+            border-color: var(--green);
+        }
+        .score-big {
+            text-align: center;
+            margin: 26px 0 8px;
+        }
+        .score-big .num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 52px;
+            font-weight: 700;
+            color: var(--gold);
+        }
+        .score-big .lbl {
+            font-size: 12px;
+            color: var(--text-faint);
+            letter-spacing: 1px;
+        }
+        .rank-pill {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+        .rank-pill span {
+            font-size: 13px;
+            padding: 6px 16px;
+            border-radius: 999px;
+            border: 1px solid var(--brass);
+            color: var(--brass-light);
+        }
+        .result-story {
+            font-size: 13.5px;
+            color: var(--text-dim);
+            background: rgba(176, 141, 70, 0.06);
+            border-radius: 8px;
+            padding: 16px 18px;
+            margin-bottom: 20px;
+            border-inline-start: 3px solid var(--brass);
+            line-height: 1.8;
+        }
+
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 40px 0;
+            text-align: center;
+            font-size: 12.5px;
+            color: var(--text-faint);
+        }
+        footer .logo {
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 920px) {
+            .brief-grid {
+                grid-template-columns: 1fr;
+            }
+            .ev-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .sus-grid {
+                grid-template-columns: repeat(1, 1fr);
+            }
+            .opt-grid {
+                grid-template-columns: 1fr;
+            }
+            .topbar-stats {
+                display: none;
+            }
+            .magnify-container {
+                height: 240px;
+            }
+            .notebook-bar .wrap {
+                gap: 12px;
+                padding: 10px 16px;
+            }
+            .nb-item {
+                font-size: 11px;
+            }
+            .nb-track {
+                width: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grain"></div>
+    <div class="glitch-flash" id="flash"></div>
+
+    <!-- ===== AUTH ===== -->
+    <div id="authStage">
+        <div class="auth-box">
+            <div class="auth-badge-icon">🕵️</div>
+            <h2 id="authTitle">ورود به DarkFile</h2>
+            <div class="sub" id="authSub">برای دسترسی به پرونده‌های محرمانه، وارد حساب خود شوید</div>
+            <div class="auth-err" id="authErr"></div>
+
+            <div class="auth-extra" id="authExtraNames">
+                <div class="auth-grid2">
+                    <div class="auth-field"><label>نام</label><input type="text" id="authFirstName" placeholder="مثلاً علی"></div>
+                    <div class="auth-field"><label>نام خانوادگی</label><input type="text" id="authLastName" placeholder="مثلاً محمدی"></div>
+                </div>
+            </div>
+            <div class="auth-extra" id="authExtraGender">
+                <div class="auth-field">
+                    <label>جنسیت (برای پروفایل کارآگاهی)</label>
+                    <div class="gender-row">
+                        <div class="gender-opt" data-g="male">مرد</div>
+                        <div class="gender-opt" data-g="female">زن</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="auth-field"><label>ایمیل</label><input type="email" id="authEmail" placeholder="you@example.com"></div>
+            <div class="auth-field"><label>رمز عبور</label><input type="password" id="authPass" placeholder="حداقل ۶ کاراکتر"></div>
+            <button class="btn btn-gold btn-block" id="authSubmitBtn">ورود</button>
+            <div class="auth-switch" id="authSwitch">حساب ندارید؟ <b>ثبت‌نام کنید</b></div>
+        </div>
+    </div>
+
+    <!-- ===== ID CARD (حذف شده از دید کاربر) ===== -->
+    <div id="idCardStage" style="display:none !important;"></div>
+
+    <!-- ===== SEAL ===== -->
+    <div id="sealStage">
+        <div class="folder" id="folderBtn">
+            <div class="seal" id="sealEl"><span>پرونده‌ی<br>محرمانه</span></div>
+        </div>
+        <div class="hint-open">برای شکستن مهر و باز کردن پرونده کلیک کنید</div>
+    </div>
+
+    <!-- ===== MAIN ===== -->
+    <div id="mainPage">
+        <div class="case-topbar">
+            <div class="wrap">
+                <div class="logo">
+                    <a href="index.html">
+                        <svg viewBox="0 0 40 40" fill="none">
+                            <defs>
+                                <radialGradient id="darkSpace" cx="50%" cy="45%" r="65%">
+                                    <stop offset="0%" stop-color="#2b2f4a"/>
+                                    <stop offset="100%" stop-color="#0a0b14"/>
+                                </radialGradient>
+                            </defs>
+                            <mask id="keyhole">
+                                <rect width="40" height="40" fill="white"/>
+                                <circle cx="20" cy="15" r="7" fill="black"/>
+                                <path d="M15 21 L25 21 L29 34 L11 34 Z" fill="black"/>
+                            </mask>
+                            <rect width="40" height="40" rx="8" fill="url(#darkSpace)" mask="url(#keyhole)"/>
+                            <circle cx="12" cy="10" r=".7" fill="#e9c67a"/>
+                            <circle cx="28" cy="8" r=".5" fill="#e9c67a"/>
+                            <circle cx="30" cy="16" r=".6" fill="#e9c67a"/>
+                            <circle cx="20" cy="15" r="6.3" fill="none" stroke="#8a1f2b" stroke-width="1.1"/>
+                        </svg>
+                        <span class="word">Dark<b>File</b></span>
+                    </a>
+                </div>
+
+                <div class="topbar-title"><b class="mono">FILE #221-B - عمارت مه</b></div>
+
+                <div class="topbar-stats">
+                    <div class="tb-stat" id="tbDetective" style="display:none;">🕵️ <b id="tbDetectiveName"></b></div>
+                    <div class="tb-stat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg> <span id="tb-timer" class="mono num-fa">۰۰:۰۰</span></div>
+                    <div class="tb-stat" style="background: rgba(176,141,70,0.08); padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(176,141,70,0.2);">
+                        <span style="font-size:12px;color:var(--brass-light);">امتیاز:</span>
+                        <b id="tb-score" class="mono num-fa" style="color:var(--gold);font-size:16px;margin-right:4px;">۱۰۰۰</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="brief">
+            <div class="wrap">
+                <div class="brief-eyebrow"><span class="blink"></span> <span class="mono">FILE #221-B — CONFIDENTIAL / سطح دسترسی: کارآگاه ارشد</span></div>
+                <h1 class="case-title">عمارت مه<br><span class="accent">سقوطی که ادای احترام جلوه داده شد</span></h1>
+                <p class="brief-sub">سه‌شنبه سحر، عمارت قدیمیِ مه در محله‌ی انگلیسی‌سازِ شمال شهر. دکتر بهروز مستوفی، بنیان‌گذار «باشگاه کارآگاهان مه» و کلکسیونر بزرگ‌ترین مجموعه‌ی نسخ اول ادبیات کارآگاهی کشور، در انتهای درّه‌ی مصنوعیِ باغش — که خودش به تقلید از سقوط افسانه‌ای قهرمان محبوبش ساخته بود — بی‌جان پیدا شده. کنارش یادداشتی تایپ‌شده که انگار او هم می‌خواسته مثل قهرمانش، در اوجِ باشکوه‌ترین لحظه‌اش ناپدید شود. اما یک ردِ کبودی روی بازوی جسد، به یک سقوطِ ساده و انتخابی شباهتی ندارد. هیچ سرنخی اینجا رایگان به دستت نمی‌رسد؛ باید مثل یک کارآگاه واقعی، خط به خط مدارک را کنار هم بگذاری.</p>
+
+                <div class="brief-grid">
+                    <div class="brief-card">
+                        <h3>خلاصه‌ی گزارش اولیه پلیس</h3>
+                        <div class="brief-fact"><div class="k">محل حادثه</div><div class="v">پلِ چوبیِ «درّه‌ی مه»، انتهای باغِ عمارتِ مستوفی</div></div>
+                        <div class="brief-fact"><div class="k">زمان کشف جسد</div><div class="v">سه‌شنبه، ساعت ۰۶:۱۰ بامداد (توسط باغبان)</div></div>
+                        <div class="brief-fact"><div class="k">علت مرگ ظاهری</div><div class="v">سقوط از ارتفاع (تخمین زمان مرگ: ۲۲:۳۰ تا ۰۰:۳۰)</div></div>
+                        <div class="brief-fact"><div class="k">وضعیت صحنه</div><div class="v">درِ کتابخانه از داخل قفل نبود؛ یادداشتِ تایپی روی میزِ مطالعه؛ عصای شخصیِ مستوفی کنارِ نرده‌ی پل افتاده</div></div>
+                        <div class="brief-fact"><div class="k">مظنونین اصلی</div><div class="v">۴ نفر (کلکسیونر رقیب، برادرزاده‌ی وارث، منشیِ باشگاه، عضو ارشدِ رقیب)</div></div>
+                        <div class="brief-fact"><div class="k">مأموریت تو</div><div class="v">ثابت کن این ادای احترام نبوده، صحنه‌سازی را افشا کن و قاتل واقعی را با مدرک محکوم کن</div></div>
+                    </div>
+                    <div class="victim-card">
+                        <div class="victim-photo">🎩</div>
+                        <div class="victim-name">دکتر بهروز مستوفی</div>
+                        <div class="victim-role">۶۴ ساله، بنیان‌گذار باشگاه کارآگاهان مه و کلکسیونر آثار کارآگاهی کلاسیک</div>
+                        <div class="victim-stamp mono">DECEASED</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="notebook-bar">
+            <div class="wrap">
+                <div class="nb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg> مدارک بررسی‌شده: <span id="nb-ev-count">۰</span>/۷ <div class="nb-track"><div class="nb-fill" id="nb-ev-fill" style="width:0%"></div></div></div>
+                <div class="nb-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c1.2-4 4-6 7-6s5.8 2 7 6"/></svg> مظنونین بازجویی‌شده: <span id="nb-sus-count">۰</span>/۴ <div class="nb-track"><div class="nb-fill" id="nb-sus-fill" style="width:0%"></div></div></div>
+                <div class="nb-score">راهنمایی‌ها: <b id="nb-hints">۰</b>/۳</div>
+            </div>
+        </div>
+
+        <section id="evidence">
+            <div class="wrap">
+                <div class="section-head">
+                    <span class="section-tag">اتاق مدارک</span>
+                    <h2 class="section-title">شواهد صحنه‌ی جرم رو با دقت بررسی کن</h2>
+                    <p class="section-desc">روی هر مدرک کلیک کن. از ابزار ذره‌بین برای کشف جزئیات پنهان روی فاکتورها، گزارش‌های آزمایشگاه و تصاویر استفاده کن.</p>
+                </div>
+                <div class="ev-grid" id="ev-grid"></div>
+            </div>
+        </section>
+
+        <section id="suspects">
+            <div class="wrap">
+                <div class="section-head">
+                    <span class="section-tag">اتاق بازجویی</span>
+                    <h2 class="section-title">چهار مظنون، چهار داستان، یک قاتل</h2>
+                    <p class="section-desc">ادعاهای هرکدام را با کارت تردد، رد موقعیت مکانی و اثر انگشت ثبت‌شده در پرونده مقایسه کن. یکی از این چهار نفر دروغ می‌گوید.</p>
+                </div>
+                <div class="sus-grid" id="sus-grid"></div>
+            </div>
+        </section>
+
+        <section id="hints">
+            <div class="wrap">
+                <div class="section-head">
+                    <span class="section-tag">دفترچه‌ی راهنما</span>
+                    <h2 class="section-title">نیاز به تحلیل کارآگاه ارشد داری؟</h2>
+                    <p class="section-desc">می‌توانی تا ۳ راهنمایی دریافت کنی، اما هر راهنمایی بخشی از امتیاز کارآگاهی شما را کسر می‌کند (۷۰، ۱۳۰ و ۲۰۰ امتیاز).</p>
+                </div>
+                <div class="hint-panel" id="hint-panel"></div>
+            </div>
+        </section>
+
+        <section id="solve">
+            <div class="wrap">
+                <div class="section-head">
+                    <span class="section-tag">صدور حکم نهایی</span>
+                    <h2 class="section-title">وقتشه قاتل رو محکوم کنی</h2>
+                    <p class="section-desc">قاتل واقعی، نحوه انجام جنایت و مدارک اثبات‌کننده را انتخاب کن.</p>
+                </div>
+                <div class="solve-panel">
+                    <div class="gate-msg" id="gate-msg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg> برای ثبت اتهام‌نامه، باید حداقل ۵ مدرک رو بررسی کنی و با هر ۴ مظنون صحبت کرده باشی.</div>
+                    <div class="wrong-msg" id="wrong-msg"></div>
+
+                    <div class="solve-group">
+                        <h4>۱. قاتل واقعی دکتر بهروز مستوفی کیست؟</h4>
+                        <div class="opt-grid" id="opt-suspect"></div>
+                    </div>
+                    <div class="solve-group">
+                        <h4>۲. قاتل واقعاً چگونه او را کشت؟</h4>
+                        <div class="opt-grid" id="opt-motive">
+                            <label class="opt"><input type="radio" name="motive" value="fall_direct"> مستقیماً او را از روی پل به داخل درّه هل داد، بدون هیچ درگیری قبلی، و علت مرگ واقعاً همان سقوط بود</label>
+                            <label class="opt"><input type="radio" name="motive" value="struggle_then_push"> ابتدا در کتابخانه با او درگیر شد و او را بیهوش کرد، سپس جسدش را تا پلِ درّه برد و پایین انداخت تا شبیه یک سقوطِ ادای‌احترام‌گونه به نظر برسد</label>
+                            <label class="opt"><input type="radio" name="motive" value="poison_stage"> او را مسموم کرد و سپس جسدش را به درّه منتقل کرد تا صحنه‌ی سقوط بسازد</label>
+                            <label class="opt"><input type="radio" name="motive" value="drown_stage"> او را در حوضِ باغ غرق کرد و صحنه‌ی سقوط از پل را جعل کرد بدون آن‌که جسد واقعاً از پل بیفتد</label>
+                        </div>
+                    </div>
+                    <div class="solve-group">
+                        <h4>۳. کلیدی‌ترین مدارک اثبات جرم کدامند؟ (حداقل ۲ مورد)</h4>
+                        <div class="opt-grid" id="opt-evidence"></div>
+                    </div>
+                    <button class="btn btn-primary btn-block" id="submit-btn" disabled>ثبت اتهام‌نامه در سیستم جنایی</button>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="logo">
+                <a href="index.html">
+                    <svg viewBox="0 0 40 40" fill="none" style="width:22px;height:22px;">
+                        <mask id="keyhole2">
+                            <rect width="40" height="40" fill="white"/>
+                            <circle cx="20" cy="15" r="7" fill="black"/>
+                            <path d="M15 21 L25 21 L29 34 L11 34 Z" fill="black"/>
+                        </mask>
+                        <rect width="40" height="40" rx="8" fill="#171a2c" mask="url(#keyhole2)"/>
+                    </svg>
+                    <span class="word">Dark<b>File</b></span>
+                </a>
+            </div>
+            عمارت مه — FILE #221-B · DarkFile
+        </footer>
+    </div>
+
+    <!-- ===== MODALS ===== -->
+    <div class="modal-overlay" id="ev-modal">
+        <div class="modal-box">
+            <div class="modal-head"><h3 id="ev-modal-title"></h3><button class="modal-close" onclick="closeModal('ev-modal')">✕</button></div>
+            <div class="modal-body" id="ev-modal-body"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="sus-modal">
+        <div class="modal-box">
+            <div class="modal-head"><h3>جلسه بازجویی رسمی</h3><button class="modal-close" onclick="closeModal('sus-modal')">✕</button></div>
+            <div class="modal-body" id="sus-modal-body"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="result-modal">
+        <div class="modal-box">
+            <div class="modal-head"><h3>نتیجه بررسی پرونده</h3><button class="modal-close" onclick="closeModal('result-modal')">✕</button></div>
+            <div class="modal-body" id="result-modal-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js">
+    </script>
+
+    <script>
+        /* ================= SUPABASE ================= */
+        const SUPABASE_URL = "https://uohetpzmscuqdiwibqci.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_CukVAlNn7Nvrx5v_gu7atg_JDcw2dzW";
+        const CASE_ID = "fog-manor-case";
+
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let currentSession = null;
+
+        /* ================= HELPERS ================= */
+        function toFa(n) {
+            return String(n).replace(/[0-9]/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+        }
+
+        function genBadgeNumber() {
+            const y = new Date().getFullYear();
+            const rand = Math.floor(10000 + Math.random() * 89999);
+            return `DF-${y}-${rand}`;
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+        window.closeModal = closeModal;
+
+        document.querySelectorAll('.modal-overlay').forEach(m => {
+            m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+        });
+
+        /* ================= AVATARS ================= */
+        const AVATAR_MALE =
+            `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#171929"/><circle cx="50" cy="42" r="20" fill="#2c3050"/><path d="M50 20 a20 20 0 0 1 20 20 h-6 a4 4 0 0 0 -4 -4 h-20 a4 4 0 0 0 -4 4 h-6 a20 20 0 0 1 20 -20z" fill="#0e1020"/><path d="M22 44 q28 -14 56 0 l0 10 q-28 -12 -56 0 z" fill="#0e1020"/><path d="M20 90 q30 -24 60 0 l0 10 -60 0 z" fill="#2c3050"/><rect x="10" y="40" width="80" height="6" fill="#d1a13a" opacity=".18"/></svg>`;
+        const AVATAR_FEMALE =
+            `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#171929"/><circle cx="50" cy="44" r="19" fill="#2c3050"/><path d="M30 40 q-4 30 6 46 q-14 -4 -16 -30 q0 -18 10 -16z" fill="#0e1020"/><path d="M70 40 q4 30 -6 46 q14 -4 16 -30 q0 -18 -10 -16z" fill="#0e1020"/><path d="M50 22 a18 18 0 0 1 18 18 q-6 -6 -18 -6 q-12 0 -18 6 a18 18 0 0 1 18 -18z" fill="#0e1020"/><path d="M20 92 q30 -22 60 0 l0 8 -60 0 z" fill="#2c3050"/><rect x="10" y="40" width="80" height="6" fill="#d1a13a" opacity=".18"/></svg>`;
+
+        let selectedGender = null;
+        document.querySelectorAll('.gender-opt').forEach(el => {
+            el.addEventListener('click', () => {
+                document.querySelectorAll('.gender-opt').forEach(o => o.classList.remove('sel'));
+                el.classList.add('sel');
+                selectedGender = el.dataset.g;
+            });
+        });
+
+        /* ================= PROFILE ================= */
+        function savePendingProfile(firstName, lastName, gender) {
+            localStorage.setItem('df_pending_profile', JSON.stringify({ first_name: firstName, last_name: lastName,
+                gender }));
+        }
+
+        function popPendingProfile() {
+            const raw = localStorage.getItem('df_pending_profile');
+            if (!raw) return null;
+            try { return JSON.parse(raw); } catch (e) { return null; }
+        }
+
+        async function ensureProfile(user) {
+            const { data: existing } = await sb.from('profiles').select().eq('id', user.id).maybeSingle();
+            if (existing) {
+                return existing;
+            }
+            const pending = popPendingProfile();
+            if (!pending) return null;
+            const badge = genBadgeNumber();
+            const { data, error } = await sb.from('profiles').upsert({
+                id: user.id,
+                first_name: pending.first_name,
+                last_name: pending.last_name,
+                gender: pending.gender,
+                badge_number: badge,
+                total_score: 0
+            }, { onConflict: 'id' }).select().single();
+            if (error) { console.error('profile insert failed:', error); return null; }
+            localStorage.removeItem('df_pending_profile');
+            return data;
+        }
+
+        // به‌روزرسانی امتیاز در پروفایل
+        async function updateProfileScore(userId, newScore) {
+            const { error } = await sb.from('profiles')
+                .update({ total_score: newScore })
+                .eq('id', userId);
+            if (error) {
+                console.error('Error updating profile score:', error);
+            }
+        }
+
+        function setHeaderDetective(profile) {
+            if (!profile) return;
+            document.getElementById('tbDetective').style.display = 'flex';
+            document.getElementById('tbDetectiveName').textContent = `${profile.first_name} ${profile.last_name} — ${profile
+            .badge_number}`;
+        }
+
+        /* ================= AUTH ================= */
+        let authMode = 'signin';
+        const authErr = document.getElementById('authErr');
+        const authSwitch = document.getElementById('authSwitch');
+        const authSubmitBtn = document.getElementById('authSubmitBtn');
+        const authTitle = document.getElementById('authTitle');
+        const authSub = document.getElementById('authSub');
+        const authExtraNames = document.getElementById('authExtraNames');
+        const authExtraGender = document.getElementById('authExtraGender');
+
+        function applyAuthMode() {
+            const isSignup = authMode === 'signup';
+            authExtraNames.classList.toggle('show', isSignup);
+            authExtraGender.classList.toggle('show', isSignup);
+            authTitle.textContent = isSignup ? 'ساخت پرونده‌ی کارآگاهی' : 'ورود به DarkFile';
+            authSub.textContent = isSignup ? 'اطلاعات‌تان برای صدور کارت شناسایی کارآگاهی لازم است' :
+                'برای دسترسی به پرونده‌های محرمانه، وارد حساب خود شوید';
+            authSubmitBtn.textContent = isSignup ? 'ثبت‌نام و دریافت کارت' : 'ورود';
+            authSwitch.innerHTML = isSignup ? 'قبلاً ثبت‌نام کرده‌اید؟ <b>وارد شوید</b>' :
+                'حساب ندارید؟ <b>ثبت‌نام کنید</b>';
+        }
+        applyAuthMode();
+
+        authSwitch.addEventListener('click', () => {
+            authMode = authMode === 'signin' ? 'signup' : 'signin';
+            applyAuthMode();
+            authErr.classList.remove('show');
+        });
+
+        authSubmitBtn.addEventListener('click', async () => {
+            const email = document.getElementById('authEmail').value.trim();
+            const pass = document.getElementById('authPass').value;
+            authErr.classList.remove('show');
+
+            if (!email || pass.length < 6) {
+                authErr.textContent = 'ایمیل معتبر و رمز حداقل ۶ کاراکتری وارد کنید.';
+                authErr.classList.add('show');
+                return;
+            }
+            if (authMode === 'signup') {
+                const fn = document.getElementById('authFirstName').value.trim();
+                const ln = document.getElementById('authLastName').value.trim();
+                if (!fn || !ln) {
+                    authErr.textContent = 'نام و نام خانوادگی را وارد کنید.';
+                    authErr.classList.add('show');
+                    return;
+                }
+                if (!selectedGender) {
+                    authErr.textContent = 'یکی از گزینه‌های جنسیت را برای پروفایل انتخاب کنید.';
+                    authErr.classList.add('show');
+                    return;
+                }
+                savePendingProfile(fn, ln, selectedGender);
+            }
+
+            authSubmitBtn.disabled = true;
+            authSubmitBtn.textContent = 'لطفاً صبر کنید...';
+            try {
+                const fn = authMode === 'signin' ? sb.auth.signInWithPassword({ email, password: pass }) : sb.auth
+                    .signUp({ email, password: pass });
+                const { data, error } = await fn;
+                authSubmitBtn.disabled = false;
+                applyAuthMode();
+
+                if (error) {
+                    authErr.textContent = error.message;
+                    authErr.classList.add('show');
+                    return;
+                }
+
+                if (authMode === 'signup' && !data.session) {
+                    authErr.textContent = 'حساب ساخته شد — ایمیلتان را برای تأیید بررسی کنید، سپس با همین ایمیل و رمز وارد شوید.';
+                    authErr.classList.add('show');
+                    authMode = 'signin';
+                    applyAuthMode();
+                    return;
+                }
+
+                currentSession = data.session;
+                await sb.from('case_progress').upsert({ user_id: data.user.id, case_id: CASE_ID }, {
+                    onConflict: 'user_id,case_id',
+                    ignoreDuplicates: true
+                });
+
+                const profile = await ensureProfile(data.user);
+                document.getElementById('authStage').classList.add('hide');
+                if (profile) {
+                    setHeaderDetective(profile);
+                    // نمایش مستقیم صفحه اصلی (بدون کارت شناسایی)
+                    document.getElementById('mainPage').classList.add('show');
+                    if (!state.startTime) state.startTime = Date.now();
+                } else {
+                    authErr.textContent = 'ورود موفق بود ولی ساخت کارت هویت با خطا مواجه شد.';
+                    authErr.classList.add('show');
+                }
+            } catch (e) {
+                authSubmitBtn.disabled = false;
+                applyAuthMode();
+                authErr.textContent = 'خطا در اتصال به سرور احراز هویت.';
+                authErr.classList.add('show');
+            }
+        });
+
+        /* ================= SEAL ================= */
+        document.getElementById('folderBtn').addEventListener('click', () => {
+            document.getElementById('sealEl').classList.add('crack');
+            setTimeout(() => {
+                document.getElementById('sealStage').classList.add('hide');
+                const flash = document.getElementById('flash');
+                flash.classList.add('on');
+                setTimeout(() => flash.classList.remove('on'), 550);
+                setTimeout(() => {
+                    // اگر صفحه اصلی هنوز نشان داده نشده (مثلاً کاربر بدون لاگین)
+                    if (!document.getElementById('mainPage').classList.contains('show')) {
+                        document.getElementById('mainPage').classList.add('show');
+                        if (!state.startTime) state.startTime = Date.now();
+                    }
+                }, 250);
+            }, 480);
+        });
+
+        /* ================= STATE ================= */
+        const state = {
+            evidenceViewed: new Set(),
+            suspectsDone: new Set(),
+            hintsUsed: 0,
+            wrongAttempts: 0,
+            startTime: null,
+            solved: false
+        };
+
+        /* ================= EVIDENCE ================= */
+        const evidence = [{
+            id: 'e1',
+            no: 'EVID-01',
+            title: 'گزارش پزشکی‌قانونی و آسیب‌شناسی سقوط',
+            desc: 'بررسی الگوی آسیب‌ها و کبودی‌های بدن نسبت به ارتفاع و زاویه‌ی سقوط.',
+            zoom: true,
+            scene: sceneForensic,
+            tip: 'با ذره‌بین به الگوی کبودیِ روی بازوها و زاویه‌ی ضربه‌ی جمجمه دقت کن.'
+        }, {
+            id: 'e2',
+            no: 'EVID-02',
+            title: 'یادداشتِ خداحافظی و لاگِ ماشین‌تحریر',
+            desc: 'تحلیل متنِ یادداشتِ تایپ‌شده و دفترِ ثبتِ استفاده از ماشین‌تحریرهای باشگاه.',
+            zoom: true,
+            scene: sceneNote,
+            tip: 'با ذره‌بین شماره‌ی سریالِ ماشین‌تحریرِ پایینِ برگه رو با دفترِ ثبت مقایسه کن.'
+        }, {
+            id: 'e3',
+            no: 'EVID-03',
+            title: 'دفترِ ثبتِ عبورِ دروازه‌ی باغ',
+            desc: 'ثبتِ دقیقِ ورود و خروجِ افراد از دروازه‌ی کوچکِ منتهی به درّه‌ی مه.',
+            zoom: true,
+            scene: sceneGate,
+            tip: 'زمانِ ثبت‌شده‌ی خروجِ نیلوفر رو با ادعای خودش در بازجویی مقایسه کن.'
+        }, {
+            id: 'e4',
+            no: 'EVID-04',
+            title: 'دفترچه‌ی احضارِ درشکه',
+            desc: 'تطبیقِ زمانِ سفارشِ درشکه‌های شب‌هنگام با ادعای حضورِ مظنونین.',
+            zoom: true,
+            scene: sceneCab,
+            tip: 'دقت کن؛ درشکه‌ی آرش کِی به عمارت رسیده، ولی خودِ او دقیقاً کِی آنجا بوده؟'
+        }, {
+            id: 'e5',
+            no: 'EVID-05',
+            title: 'وصیت‌نامه و مکاتباتِ حقوقیِ باشگاه',
+            desc: 'شرایطِ ارثیِ عمارت و مجموعه‌ی نسخ اول، و برنامه‌ی مستوفی برای تغییرِ باشگاه.',
+            zoom: true,
+            scene: sceneWill,
+            tip: 'مهرِ زمانیِ نامه رو با تاریخِ کنفرانسِ ادبیِ اصفهان مقایسه کن — این آلیبی قابلِ نقضه؟'
+        }, {
+            id: 'e6',
+            no: 'EVID-06',
+            title: 'آزمایشِ اثرِ انگشتِ نرده‌ی پل',
+            desc: 'تطبیقِ اثرانگشت‌های یافت‌شده روی نرده‌ی پلِ چوبی و عصای مستوفی.',
+            zoom: true,
+            scene: sceneFingerprint,
+            tip: 'اثرِ انگشت رو با اظهاراتِ مظنونین در بازجویی مقایسه کن.'
+        }, {
+            id: 'e7',
+            no: 'EVID-07',
+            title: 'دفترچه‌ی مخفیِ گواهی‌های اصالت',
+            desc: 'کشفِ مدرکِ جعلِ گواهیِ اصالتِ چند نسخه‌ی اولِ نایاب به نامِ منشیِ باشگاه.',
+            zoom: true,
+            scene: sceneLedger,
+            tip: 'نگاه کن چه کسی رسماً «گواهی‌دهنده‌ی اصالت» بوده — و چه کسی با افشا شدنش همه‌چیز رو از دست می‌داد.'
+        }];
+
+        /* ================= SUSPECTS ================= */
+        const suspects = [{
+            id: 'kian',
+            name: 'کیان دیبا',
+            role: 'کلکسیونرِ رقیب؛ خواهانِ نسخه‌ی اولِ نایابِ مستوفی',
+            init: 'ک.د',
+            qa: [
+                ['ادعا کردید ساعت ۲۱:۵۰ عمارت را ترک کردید؟', 'بله. برای دیدنِ نسخه‌ی اولِ کتاب رفته بودم، جوابِ رد شنیدم و رفتم.'],
+                ['دفترِ درشکه ثبت کرده درشکه‌ی شما ساعت ۲۳:۱۵ دوباره جلوی عمارت بوده. اگر رفته بودید، چرا؟',
+                    '[مکث] ...می‌خواستم پیشنهادِ بهتری بدم. رسیدم دیدم چراغِ کتابخانه خاموشه، فکر کردم خوابیده، برگشتم.'
+                ],
+                ['قیمتی که برای آن نسخه پیشنهاد داده بودید، سه برابرِ ارزشِ بازار بود. چرا این‌قدر مصرّ بودید؟', 'چون می‌دانستم اصل است، نه کپی. اما مصر بودن دلیل نمی‌شود کسی را از پل هل داده باشم.']
+            ]
+        }, {
+            id: 'arash',
+            name: 'آرش مستوفی',
+            role: 'برادرزاده و وارثِ اصلی؛ بدهکارِ قمار',
+            init: 'آ.م',
+            qa: [
+                ['ادعا کردید ساعت ۲۲:۰۰ عمارت را ترک کردید و مستقیم رفتید خانه؟', 'بله. رفتم دیدنِ عمو که بدهی‌هام رو حل کنم، جوابِ رد شنیدم، برگشتم خانه.'],
+                ['دفترچه‌ی درشکه ساعت ۰۰:۲۰ یک سفارشِ دیگر از آدرسِ عمارت به نامِ شما ثبت کرده.',
+                    '[مکثِ طولانی] ...گوشیم رو دمِ خانه جا گذاشتم. برگشتم که باهاش حرف بزنم، ولی وقتی رسیدم همه‌جا ساکت بود، ترسیدم و برگشتم.'
+                ],
+                ['بدهیِ قمارِ دومیلیاردی شما و وصیت‌نامه‌ای که همه‌چیز رو به شما می‌رسونه، انگیزه‌ی قوی‌ایه.', 'من دزد نیستم، وارثِ قانونی‌ام. بدهکار بودن دلیل نمی‌شه عمومو کشته باشم.']
+            ]
+        }, {
+            id: 'niloofar',
+            name: 'نیلوفر امامی',
+            role: 'منشیِ باشگاه و دستیارِ شخصیِ مستوفی',
+            init: 'ن.ا',
+            qa: [
+                ['شما ادعا کردید ساعت ۲۱:۳۰ باشگاه را ترک کردید. دفترِ ثبتِ دروازه چه می‌گوید؟', '[کمی مکث] احتمالاً ساعت رو اشتباه گفتم. برای مرتب کردنِ آرشیو مونده بودم شاید.'],
+                ['دفترِ دروازه ساعتِ ۲۳:۴۰ خروجِ شما رو ثبت کرده — نزدیک به دو ساعت بیشتر از چیزی که گفتید آنجا بودید.', 'داشتم چند تا گواهیِ اصالت رو مرتب می‌کردم... وقت از دستم در رفت.'],
+                ['اثرِ انگشتِ شما دقیقاً روی نرده‌ی پل و عصای دکتر پیدا شده. چرا گفتید هیچ‌وقت آن شب به درّه نرفتید؟', '[سکوتِ طولانی] ...می‌دونستم اگه اون دفترچه لو بره، فقط اسمِ من به دادگاه می‌ره. داشت با یک گواهیِ جعلی همه‌چیز رو گردنِ من می‌انداخت. فقط... می‌خواستم باهاش حرف بزنم.']
+            ]
+        }, {
+            id: 'hooman',
+            name: 'هومن اردکانی',
+            role: 'عضوِ ارشدِ باشگاه؛ رقیبِ انتخاباتیِ ریاست',
+            init: 'ه.ا',
+            qa: [
+                ['شنیدیم دکتر مستوفی قصد داشت شما رو از فهرستِ کاندیداهای ریاستِ باشگاه حذف کنه.', 'بله، به‌خاطرِ یه اختلافِ قدیمی. می‌خواستم از راهِ قانونی توی مجمعِ عمومی اعتراض کنم.'],
+                ['شبِ حادثه کجا بودید؟', 'کنفرانسِ ادبیِ اصفهان بودم، ساعتِ ۲۲:۰۰ به هتل رسیدم. رسیدِ هتل و بلیطِ قطار موجوده.'],
+                ['با این‌حال بهش گفته بودید «تقاصِ این کارت رو پس می‌دی».', 'حرفِ عصبانیت بود، منظورم اعتراضِ رسمی بود نه این‌که برم بکشمش. من حتی توی شهر هم نبودم.']
+            ]
+        }];
+
+        /* ================= SCENES ================= */
+        function sceneForensic() {
+            return `<div style="position:absolute;inset:0;background:#12151b;padding:20px;">
+                <div style="background:var(--paper);color:var(--text-dark);width:100%;height:100%;padding:18px;border-radius:2px;font-family:'JetBrains Mono',monospace;font-size:10.5px;line-height:1.55;">
+                    <div style="font-size:12px;font-weight:700;border-bottom:2px solid #241F16;padding-bottom:4px;margin-bottom:8px;">گزارش پزشکی‌قانونی - پرونده ۲۲۱-ب</div>
+                    <div>مقتول: بهروز مستوفی | علت مرگ ثبت‌شده در صحنه: سقوط از ارتفاع (شکستگی متعدد ستون فقرات و جمجمه)</div>
+                    <div style="margin-top:6px;">کبودی‌های انگشت‌مانند روی هر دو بازو مشاهده شده، در فاصله‌ای که با گرفتنِ ساده‌ی نرده هنگام حفظ تعادل هم‌خوانی ندارد.</div>
+                    <div style="margin-top:6px;font-weight:700;color:#A6362B;">نکته کلیدی آزمایشگاه:</div>
+                    <div>الگوی ضربه به جمجمه نشان می‌دهد سر ابتدا با یک جسمِ سختِ ثابت (احتمالاً لبه‌ی میز یا نرده) برخورد کرده، و سپس سقوط رخ داده — نه برعکس.</div>
+                    <div style="margin-top:10px;font-size:7px;color:#6b5f45;">* نتیجه‌گیری نهایی: مقتول پیش از سقوط، دچار درگیریِ فیزیکی شده. صحنه پس از آن آماده‌سازی شده.</div>
+                </div>
+            </div>`;
+        }
+
+        function sceneNote() {
+            return `<div style="position:absolute;inset:0;background:#0c0f13;padding:20px;font-family:'JetBrains Mono',monospace;color:var(--cyber);">
+                <div style="font-size:11px;margin-bottom:10px;border-bottom:1px solid var(--cyber-dim);padding-bottom:4px;">LOG: TYPEWRITER_REGISTRY_CLUB_ARCHIVE</div>
+                <div style="font-size:8px;line-height:1.8;color:#a8c9b8;">
+                    <div style="color:var(--text-dim);">متن یادداشت (تایپ‌شده، بدون امضای دست‌نویس):</div>
+                    <div style="margin:4px 0 10px;">«شاید وقتش رسیده که مثل قهرمانم، در اوجِ ماجرا کنار بکشم. مرا ببخشید. — ب.م»</div>
+                    <div>Machine ID: TW-07 | زمان آخرین استفاده: ۲۳:۱۰ سه‌شنبه شب</div>
+                    <div style="color:var(--gold);">شناسه‌ی ماشین‌تحریرِ ثبت‌شده در دفترِ باشگاه برای TW-07: اختصاصیِ میزِ نیلوفر امامی (منشی)</div>
+                    <div style="margin-top:8px;">ماشین‌تحریرِ شخصیِ بهروز مستوفی (TW-01): بدون هیچ فعالیتِ ثبت‌شده در تمام آن شب.</div>
+                </div>
+            </div>`;
+        }
+
+        function sceneGate() {
+            return `<div style="position:absolute;inset:0;background:#12151b;padding:20px;">
+                <div style="background:var(--paper);color:var(--text-dark);width:100%;height:100%;padding:14px;font-family:'JetBrains Mono',monospace;font-size:9px;">
+                    <div style="font-weight:700;margin-bottom:6px;">سیستمِ ثبتِ عبور - دروازه‌ی باغِ عمارتِ مه</div>
+                    <div style="display:grid;grid-template-columns:1fr 2fr;gap:4px;border-bottom:1px solid #000;padding-bottom:2px;font-weight:700;"><span>زمان</span><span>رویداد</span></div>
+                    <div style="display:grid;grid-template-columns:1fr 2fr;gap:4px;padding:3px 0;"><span>۲۰:۰۵</span><span>ورود — نیلوفر امامی (کلید اختصاصی)</span></div>
+                    <div style="display:grid;grid-template-columns:1fr 2fr;gap:4px;padding:3px 0;"><span>۲۱:۵۰</span><span>خروج — کیان دیبا</span></div>
+                    <div style="display:grid;grid-template-columns:1fr 2fr;gap:4px;padding:3px 0;"><span>۲۲:۰۰</span><span>خروج — آرش مستوفی</span></div>
+                    <div style="display:grid;grid-template-columns:1fr 2fr;gap:4px;padding:3px 0;color:#A6362B;font-weight:700;"><span>۲۳:۴۰</span><span>خروج — نیلوفر امامی (کلید اختصاصی)</span></div>
+                    <div style="display:grid;grid-template-columns:1fr 2fr;gap:4px;padding:3px 0;"><span>۰۰:۲۰</span><span>ورود — آرش مستوفی (بازگشت، سفارش درشکه)</span></div>
+                    <div style="margin-top:10px;font-size:6px;color:#6b5f45;">* هیچ ورود یا خروج دیگری بین ۲۳:۴۰ تا کشف جسد (۰۶:۱۰) ثبت نشده.</div>
+                </div>
+            </div>`;
+        }
+
+        function sceneCab() {
+            return `<div style="position:absolute;inset:0;background:#0c0f13;padding:20px;font-family:'JetBrains Mono',monospace;">
+                <div style="color:var(--gold);font-size:10px;margin-bottom:8px;">داده‌ی دفترچه‌ی احضارِ درشکه + دفترِ دروازه‌ی خصوصی</div>
+                <div style="font-size:7.5px;color:#d0d7de;line-height:1.75;">
+                    <div>[۲۱:۵۰ تا ۰۰:۳۰] سفارشِ درشکه‌ی آرش مستوفی از میدانِ نزدیکِ منزلش</div>
+                    <div style="margin-top:8px;color:var(--text-dim);">--- دفترِ دروازه‌ی خصوصیِ عمارت ---</div>
+                    <div style="color:var(--red);font-weight:700;">[۰۰:۲۰] ورودِ درشکه‌ی آرش مستوفی (شماره تأیید شده)</div>
+                    <div style="color:var(--red);font-weight:700;">[۰۰:۳۵] خروجِ همان درشکه</div>
+                    <div style="margin-top:8px;">* فاصله‌ی منزلِ آرش تا عمارت با درشکه حدود ۲۰ دقیقه است؛ یعنی بازگشت او دقیقاً پس از پایانِ بازه‌ی تخمینیِ زمانِ مرگ بوده.</div>
+                </div>
+            </div>`;
+        }
+
+        function sceneWill() {
+            return `<div style="position:absolute;inset:0;background:#12151b;padding:20px;">
+                <div style="background:var(--paper);color:var(--text-dark);width:100%;height:100%;padding:14px;font-family:'JetBrains Mono',monospace;font-size:9px;">
+                    <div style="font-weight:700;margin-bottom:6px;">وصیت‌نامه (بند ۴) و مکاتباتِ حقوقیِ باشگاه</div>
+                    <div>در صورتِ کناره‌گیری یا فوتِ رئیس، مدیریتِ باشگاه و مجموعه‌ی نسخ اول به شورای هیئت‌مدیره منتقل می‌شود، نه به وارثِ خانوادگی.</div>
+                    <div style="margin-top:6px;color:#A6362B;font-weight:700;">نامه‌ی مستوفی به وکیل، ساعت ۲۱:۴۰ سه‌شنبه:</div>
+                    <div>«لطفاً پیش‌نویسِ اخراجِ رسمیِ منشی از باشگاه رو تا آخرِ هفته آماده کنید.»</div>
+                    <div style="margin-top:8px;font-weight:700;">گزارشِ کنفرانسِ ادبیِ اصفهان:</div>
+                    <div>لیستِ حضار و عکس‌های سالن تأیید می‌کند هومن اردکانی از ساعتِ ۱۹:۰۰ تا نیمه‌شب در محل حضور داشته.</div>
+                    <div style="margin-top:10px;font-size:6px;color:#6b5f45;">* آلیبیِ هومن توسطِ ده‌ها شاهدِ مستقل تأیید می‌شود.</div>
+                </div>
+            </div>`;
+        }
+
+        function sceneFingerprint() {
+            return `<div style="position:absolute;inset:0;background:#0c0f13;padding:20px;font-family:'JetBrains Mono',monospace;">
+                <div style="color:var(--gold);font-size:10px;margin-bottom:8px;">آزمایشگاه جرم‌شناسی — اثرِ انگشتِ نرده‌ی پل و عصا</div>
+                <div style="font-size:7.5px;color:#d0d7de;line-height:1.75;">
+                    <div>نمونه A (نرده‌ی پل، نزدیکِ نقطه‌ی سقوط): <span style="color:var(--red);font-weight:700;">تطابق ۹۳٪ با اثرِ انگشتِ نیلوفر امامی</span></div>
+                    <div>نمونه B (دسته‌ی عصای مستوفی): <span style="color:var(--red);font-weight:700;">تطابق ۸۹٪ با اثرِ انگشتِ نیلوفر امامی</span></div>
+                    <div>نمونه C (لبه‌ی پایینیِ پل): اثرِ انگشت‌های متعدد و نامشخص (احتمالاً باغبان، تمیزکاریِ هفتگی)</div>
+                    <div style="margin-top:8px;color:var(--text-dim);">* نیلوفر امامی در بازجوییِ اولیه مدعی شد «هرگز آن شب به درّه نرفتم».</div>
+                </div>
+            </div>`;
+        }
+
+        function sceneLedger() {
+            return `<div style="position:absolute;inset:0;background:#12151b;padding:20px;">
+                <div style="background:var(--paper);color:var(--text-dark);width:100%;height:100%;padding:14px;font-family:'JetBrains Mono',monospace;font-size:9px;">
+                    <div style="font-weight:700;margin-bottom:6px;">دفترچه‌ی مخفیِ گواهی‌های اصالت (کشف‌شده در گاوصندوقِ مقتول)</div>
+                    <div>۹ موردِ صدورِ گواهیِ اصالتِ «نسخه‌ی اول واقعی» برای نسخه‌هایی که در واقع کپی‌های ماهرانه بودند — ارزشِ کلِ فروش: بیش از ۱۸ میلیارد تومان.</div>
+                    <div style="margin-top:6px;">گواهیِ هر نسخه با امضای منشیِ باشگاه، نیلوفر امامی، صادر شده — اما آزمایشِ دست‌خط نشان می‌دهد امضای مستوفی روی این گواهی‌ها جعلی بوده.</div>
+                    <div style="margin-top:6px;color:#A6362B;font-weight:700;">یادداشتِ حاشیه‌ی دفترچه، به خطِ بهروز مستوفی:</div>
+                    <div>«اگه این پرونده لو بره، دیگه هیچ کلکسیونری به باشگاهِ من اعتماد نمی‌کنه. باید همین امشب باهاش تمومش کنم.»</div>
+                    <div style="margin-top:10px;font-size:6px;color:#6b5f45;">* همان روز، مستوفی جلسه‌ای فوری با نیلوفر برای «تسویه‌حسابِ نهایی» در تقویمش ثبت کرده بود — دقیقاً برای ساعتِ ۲۲:۰۰ همان شب.</div>
+                </div>
+            </div>`;
+        }
+
+        /* ================= RENDER EVIDENCE ================= */
+        const evGrid = document.getElementById('ev-grid');
+        evidence.forEach(ev => {
+            const card = document.createElement('div');
+            card.className = 'ev-card';
+            card.id = 'evcard-' + ev.id;
+            card.innerHTML = `
+                    <div class="ev-thumb">
+                        <span class="ev-tag">مدرک</span>
+                        <div class="ev-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg></div>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="12" cy="12" r="3.5"/></svg>
+                    </div>
+                    <div class="ev-body">
+                        <div class="ev-no mono">${ev.no}</div>
+                        <div class="ev-title">${ev.title}</div>
+                        <div class="ev-desc">${ev.desc}</div>
+                        <div class="ev-zoomhint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="M20 20l-5.5-5.5"/></svg> بررسی با ذره‌بین</div>
+                    </div>`;
+            card.addEventListener('click', () => openEvidence(ev));
+            evGrid.appendChild(card);
+        });
+
+        function openEvidence(ev) {
+            state.evidenceViewed.add(ev.id);
+            document.getElementById('evcard-' + ev.id).classList.add('viewed');
+            updateNotebook();
+            document.getElementById('ev-modal-title').textContent = ev.no + ' — ' + ev.title;
+            document.getElementById('ev-modal-body').innerHTML = `
+                    <div class="magnify-tip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="M20 20l-5.5-5.5"/></svg> ${ev.tip}</div>
+                    <div class="magnify-container" id="magbox-${ev.id}">
+                        <div class="scene-inner">${ev.scene()}</div>
+                        <div class="lens"></div>
+                    </div>`;
+            document.getElementById('ev-modal').classList.add('open');
+            setTimeout(() => attachMagnifier(document.getElementById('magbox-' + ev.id), 2.6), 30);
+        }
+
+        function attachMagnifier(container, zoom) {
+            if (!container || container.dataset.rigged) return;
+            container.dataset.rigged = '1';
+            const inner = container.querySelector('.scene-inner');
+            const lens = container.querySelector('.lens');
+            const lensInner = document.createElement('div');
+            lensInner.className = 'lens-inner';
+            lensInner.innerHTML = inner.innerHTML;
+            lens.appendChild(lensInner);
+
+            function position(clientX, clientY) {
+                const rect = container.getBoundingClientRect();
+                const x = Math.max(0, Math.min(rect.width, clientX - rect.left));
+                const y = Math.max(0, Math.min(rect.height, clientY - rect.top));
+                const lensSize = lens.offsetWidth || 150;
+                const half = lensSize / 2;
+                lens.style.left = (x - half) + 'px';
+                lens.style.top = (y - half) + 'px';
+                lensInner.style.width = rect.width + 'px';
+                lensInner.style.height = rect.height + 'px';
+                lensInner.style.transformOrigin = '0 0';
+                const tx = half - x * zoom;
+                const ty = half - y * zoom;
+                lensInner.style.transform = `translate(${tx}px, ${ty}px) scale(${zoom})`;
+            }
+
+            container.addEventListener('mousemove', e => { lens.style.display = 'block';
+                position(e.clientX, e.clientY); });
+            container.addEventListener('mouseleave', () => { lens.style.display = 'none'; });
+            container.addEventListener('touchmove', e => { const t = e.touches[0]; if (t) { lens.style.display = 'block';
+                    position(t.clientX, t.clientY); } }, { passive: true });
+            container.addEventListener('touchend', () => { lens.style.display = 'none'; });
+        }
+
+        /* ================= RENDER SUSPECTS ================= */
+        const susGrid = document.getElementById('sus-grid');
+        suspects.forEach(s => {
+            const card = document.createElement('div');
+            card.className = 'sus-card';
+            card.id = 'suscard-' + s.id;
+            card.innerHTML = `
+                    <div class="sus-avatar">${s.init}</div>
+                    <div class="sus-name">${s.name}</div>
+                    <div class="sus-role">${s.role}</div>
+                    <div class="sus-status" id="susstatus-${s.id}">هنوز بازجویی نشده</div>`;
+            card.addEventListener('click', () => openSuspect(s));
+            susGrid.appendChild(card);
+        });
+
+        function openSuspect(s) {
+            document.getElementById('sus-modal-body').innerHTML = `
+                    <div class="dossier-top">
+                        <div class="dossier-avatar">${s.init}</div>
+                        <div><div class="dossier-name">${s.name}</div><div class="dossier-role">${s.role}</div></div>
+                    </div>
+                    ${s.qa.map(pair => `
+                        <div class="qa-block">
+                            <div class="qa-q"><span class="qmark">؟</span> ${pair[0]}</div>
+                            <div class="qa-a">${pair[1]}</div>
+                        </div>`).join('')}
+                    <button class="btn btn-gold btn-block interrogate-done-btn" id="finish-sus-btn">پایان بازجویی پرونده این مظنون</button>
+                `;
+            document.getElementById('finish-sus-btn').addEventListener('click', () => finishSuspect(s.id));
+            document.getElementById('sus-modal').classList.add('open');
+        }
+
+        function finishSuspect(id) {
+            state.suspectsDone.add(id);
+            const el = document.getElementById('suscard-' + id);
+            el.classList.add('done');
+            document.getElementById('susstatus-' + id).textContent = 'بازجویی کامل شد';
+            updateNotebook();
+            closeModal('sus-modal');
+        }
+
+        /* ================= NOTEBOOK ================= */
+        function updateNotebook() {
+            const evCount = state.evidenceViewed.size,
+                evTotal = evidence.length;
+            const suCount = state.suspectsDone.size,
+                suTotal = suspects.length;
+            document.getElementById('nb-ev-count').textContent = toFa(evCount);
+            document.getElementById('nb-sus-count').textContent = toFa(suCount);
+            document.getElementById('nb-ev-fill').style.width = (evCount / evTotal * 100) + '%';
+            document.getElementById('nb-sus-fill').style.width = (suCount / suTotal * 100) + '%';
+            document.getElementById('nb-hints').textContent = toFa(state.hintsUsed);
+            refreshGate();
+            updateScore();
+        }
+
+        function refreshGate() {
+            const ok = state.evidenceViewed.size >= 5 && state.suspectsDone.size >= 4;
+            document.getElementById('submit-btn').disabled = !ok;
+            document.getElementById('gate-msg').style.display = ok ? 'none' : 'flex';
+        }
+
+        /* ================= SCORE ================= */
+        function currentScore() {
+            let score = 1000;
+            const hintCosts = [70, 130, 200];
+            for (let i = 0; i < state.hintsUsed; i++) {
+                score -= hintCosts[i] || 0;
+            }
+            const n = state.wrongAttempts;
+            score -= 60 * n * (n + 1) / 2;
+            return Math.max(0, score);
+        }
+
+        function updateScore() {
+            document.getElementById('tb-score').textContent = toFa(currentScore());
+        }
+
+        /* ================= HINTS ================= */
+        const hints = [
+            { cost: 70, text: 'در یک سقوطِ سادهِ عمدی، معمولاً فقط یک ضربه‌ی واحد و از پایین به بالا روی بدن دیده می‌شود. کبودیِ هر دو بازو نشان می‌دهد قبل از سقوط، کسی محکم او را گرفته بوده.' },
+            { cost: 130, text: 'یادداشتِ خداحافظی رو کسی «تایپ» کرده، نه خودِ مستوفی. دفترِ ثبتِ ماشین‌تحریرها رو با دقتِ بیشتری بخون — کدوم ماشین‌تحریر واقعاً پشتِ اون برگه بوده؟' },
+            { cost: 200, text: 'کسی که اثرِ انگشتش هم روی نردهِ پل و هم روی عصای مستوفی است، توضیحِ قانع‌کننده‌ای برای حضورش در درّه نداره — مگر این‌که چیزی برای مخفی‌کردن داشته باشه.' }
+        ];
+        const hintPanel = document.getElementById('hint-panel');
+        hints.forEach((h, i) => {
+            const row = document.createElement('div');
+            row.className = 'hint-row';
+            row.innerHTML = `
+                    <div class="hint-label"><div class="hint-num">${toFa(i+1)}</div><div>راهنمایی کارآگاه ارشد شماره ${toFa(i+1)}<div class="hint-cost">هزینه: ${toFa(h.cost)} امتیاز</div></div></div>
+                    <div class="hint-confirm">
+                        <button class="btn btn-ghost btn-sm" id="hintbtn-${i}">دریافت راهنمایی</button>
+                    </div>
+                `;
+            const textDiv = document.createElement('div');
+            textDiv.className = 'hint-text';
+            textDiv.id = 'hinttext-' + i;
+            textDiv.textContent = h.text;
+            hintPanel.appendChild(row);
+            hintPanel.appendChild(textDiv);
+
+            row.querySelector(`#hintbtn-${i}`).addEventListener('click', function() { revealHint(i, this); });
+        });
+
+        function revealHint(i, btn) {
+            if (btn.dataset.stage !== 'confirm') {
+                btn.dataset.stage = 'confirm';
+                btn.textContent = `تأیید کسر ${toFa(hints[i].cost)} امتیاز`;
+                btn.classList.remove('btn-ghost');
+                btn.classList.add('btn-primary');
+                return;
+            }
+            document.getElementById('hinttext-' + i).classList.add('shown');
+            btn.disabled = true;
+            btn.textContent = 'راهنمایی دریافت شد';
+            state.hintsUsed = Math.max(state.hintsUsed, i + 1);
+            updateNotebook();
+        }
+
+        /* ================= SOLVE FORM ================= */
+        const optSuspect = document.getElementById('opt-suspect');
+        suspects.forEach(s => {
+            const label = document.createElement('label');
+            label.className = 'opt';
+            label.innerHTML = `<input type="radio" name="suspect" value="${s.id}"> ${s.name} — ${s.role.split('؛')[0]}`;
+            optSuspect.appendChild(label);
+        });
+
+        const optEvidence = document.getElementById('opt-evidence');
+        evidence.forEach(ev => {
+            const label = document.createElement('label');
+            label.className = 'opt';
+            label.innerHTML = `<input type="checkbox" name="evidence" value="${ev.id}"> ${ev.no} — ${ev.title}`;
+            optEvidence.appendChild(label);
+        });
+
+        document.querySelectorAll('.opt input').forEach(inp => {
+            inp.addEventListener('change', () => {
+                const parent = inp.closest('.opt');
+                if (parent) parent.classList.toggle('checked', inp.checked || inp.type === 'radio' && inp.checked);
+                if (inp.type === 'radio') {
+                    document.querySelectorAll(`input[name="${inp.name}"]`).forEach(r => {
+                        r.closest('.opt').classList.toggle('checked', r.checked);
+                    });
+                }
+                checkSubmitReady();
+            });
+        });
+
+        function checkSubmitReady() {
+            const s = document.querySelector('input[name="suspect"]:checked');
+            const m = document.querySelector('input[name="motive"]:checked');
+            const e = document.querySelectorAll('input[name="evidence"]:checked');
+            document.getElementById('submit-btn').disabled = !(s && m && e.length >= 2);
+        }
+
+        /* ================= TIMER ================= */
+        function tickTimer() {
+            if (!state.startTime) return;
+            const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+            const m = Math.floor(elapsed / 60),
+                s = elapsed % 60;
+            document.getElementById('tb-timer').textContent = toFa(String(m).padStart(2, '0')) + ':' + toFa(String(s).padStart(2,
+                '0'));
+        }
+        setInterval(tickTimer, 1000);
+
+        /* ================= SUBMIT ================= */
+        document.getElementById('submit-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('submit-btn');
+            const wrongMsg = document.getElementById('wrong-msg');
+
+            const suspectSel = document.querySelector('input[name="suspect"]:checked');
+            const motiveSel = document.querySelector('input[name="motive"]:checked');
+            const evSel = Array.from(document.querySelectorAll('input[name="evidence"]:checked')).map(i => i.value);
+
+            if (!suspectSel || !motiveSel || evSel.length < 2) {
+                wrongMsg.textContent = 'باید هر سه بخش را کامل کنی: انتخاب قاتل، نحوه جرم و حداقل دو مدرک اثبات‌کننده.';
+                wrongMsg.classList.add('show');
+                return;
+            }
+
+            wrongMsg.classList.remove('show');
+            btn.disabled = true;
+            btn.textContent = 'در حال ارسال به سیستم جنایی...';
+
+            const elapsedMs = Date.now() - state.startTime;
+
+            const { data: { session } } = await sb.auth.getSession();
+            if (!session) {
+                wrongMsg.textContent = 'لطفاً ابتدا وارد حساب کاربری خود شوید.';
+                wrongMsg.classList.add('show');
+                btn.disabled = false;
+                btn.textContent = 'ثبت اتهام‌نامه';
+                return;
+            }
+
+            const payload = {
+                caseId: CASE_ID,
+                suspect: suspectSel.value,
+                motive: motiveSel.value,
+                evidence: evSel,
+                hintsUsed: state.hintsUsed,
+                wrongAttempts: state.wrongAttempts,
+                elapsedMs: elapsedMs
+            };
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/functions/v1/validate-accusation`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        wrongMsg.textContent = 'تابع اعتبارسنجی در سرور یافت نشد. لطفاً با پشتیبانی تماس بگیرید.';
+                    } else if (response.status === 429) {
+                        const retrySec = result.retryAfterSec || 60;
+                        wrongMsg.textContent = `تعداد تلاش‌ها زیاد است. ${retrySec} ثانیه صبر کنید.`;
+                    } else {
+                        wrongMsg.textContent = result.message || `خطا (${response.status}) در ارتباط با سرور.`;
+                    }
+                    wrongMsg.classList.add('show');
+                    btn.disabled = false;
+                    btn.textContent = 'ثبت اتهام‌نامه';
+                    return;
+                }
+
+                if (result.correct) {
+                    // ذخیره امتیاز جدید در پروفایل
+                    await updateProfileScore(session.user.id, result.score);
+                    showResult(result);
+                } else {
+                    state.wrongAttempts++;
+                    const penalty = result.penalty || 60;
+                    wrongMsg.textContent = `${result.message || 'اتهام درست نبود.'} (${toFa(penalty)} امتیاز کسر شد)`;
+                    wrongMsg.classList.add('show');
+                    btn.disabled = false;
+                    btn.textContent = 'ثبت مجدد اتهام‌نامه';
+                    updateNotebook();
+                }
+            } catch (err) {
+                console.error('Submit error:', err);
+                wrongMsg.textContent = 'خطای شبکه یا سیستم. لطفاً اتصال اینترنت را بررسی کنید.';
+                wrongMsg.classList.add('show');
+                btn.disabled = false;
+                btn.textContent = 'ثبت اتهام‌نامه';
+            }
+        });
+
+        /* ================= RESULT ================= */
+        function showResult(data) {
+            state.solved = true;
+            const score = data.score;
+
+            let rank;
+            if (score >= 900) rank = 'کارآگاه شرلوکی — رتبه S';
+            else if (score >= 750) rank = 'بازپرس ارشد — رتبه A';
+            else if (score >= 550) rank = 'کارآگاه جنایی — رتبه B';
+            else rank = 'دستیار کارآگاه — رتبه C';
+
+            document.getElementById('result-modal-body').innerHTML = `
+                    <div class="result-stamp"><div class="stamp-big stamp-solved mono">پرونده ۲۱۷-ک بسته شد</div></div>
+                    <div class="score-big"><div class="num mono">${toFa(score)}</div><div class="lbl">امتیاز نهایی شما (محاسبه‌شده در سرور)</div></div>
+                    <div class="rank-pill"><span>${rank}</span></div>
+                    <div class="result-story">${(data.narrative || 'پرونده با موفقیت حل شد.').replace(/\n/g, '<br>')}</div>
+                    <button class="btn btn-gold btn-block" id="close-res-btn">بستن و بازگشت به صفحه اصلی</button>
+                `;
+            document.getElementById('close-res-btn').addEventListener('click', () => {
+                closeModal('result-modal');
+                document.getElementById('tb-score').textContent = toFa(score);
+                // هدایت به صفحه اصلی
+                window.location.href = 'index.html';
+            });
+            document.getElementById('result-modal').classList.add('open');
+        }
+
+        /* ================= INIT ================= */
+        (async () => {
+            try {
+                const { data: { session } } = await sb.auth.getSession();
+                if (session) {
+                    currentSession = session;
+                    document.getElementById('authStage').classList.add('hide');
+                    const profile = await ensureProfile(session.user);
+                    if (profile) {
+                        setHeaderDetective(profile);
+                        // نمایش مستقیم صفحه اصلی
+                        document.getElementById('mainPage').classList.add('show');
+                        if (!state.startTime) state.startTime = Date.now();
+                    }
+                }
+            } catch (e) {
+                console.error("خطا در بررسی نشست اولیه کاربر:", e);
+            }
+        })();
+    </script>
+</body>
+</html>
