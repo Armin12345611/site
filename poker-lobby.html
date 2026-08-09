@@ -125,49 +125,97 @@ document.getElementById('btnLogin').addEventListener('click', async ()=>{
   afterLogin(data.user);
 });
 
+function roomUrl(code){
+  // به‌جای جایگزین کردن نام فایل (که اگه مسیر/دامنه فرق کنه خراب می‌شه)،
+  // فقط از پوشه‌ی صفحه‌ی فعلی استفاده می‌کنیم.
+  const dir = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+  return location.origin + dir + 'poker-room.html?room=' + encodeURIComponent(code);
+}
+
 document.getElementById('btnCreate').addEventListener('click', async ()=>{
   document.getElementById('adminErr').classList.remove('show');
-  const sbAmt = Math.max(1, parseInt(document.getElementById('sbInput').value)||20);
-  const stack = Math.max(100, parseInt(document.getElementById('stackInput').value)||4000);
-  const { data:{ user } } = await sb.auth.getUser();
-  if(!user){ showErr('adminErr','ابتدا وارد شوید.'); return; }
+  const btn = document.getElementById('btnCreate');
+  btn.disabled = true;
+  try{
+    const sbAmt = Math.max(1, parseInt(document.getElementById('sbInput').value)||20);
+    const stack = Math.max(100, parseInt(document.getElementById('stackInput').value)||4000);
+    const { data:{ user } } = await sb.auth.getUser();
+    if(!user){ showErr('adminErr','ابتدا وارد شوید.'); return; }
 
-  const code = genCode();
-  const { data: room, error } = await sb.from('poker_rooms').insert({
-    code, admin_id:user.id, capacity:6, small_blind:sbAmt, big_blind:sbAmt*2, starting_stack:stack, status:'waiting'
-  }).select().single();
-  if(error){ showErr('adminErr', 'خطا در ساخت میز: '+error.message); return; }
+    const code = genCode();
+    const { data: inserted, error } = await sb.from('poker_rooms').insert({
+      code, admin_id:user.id, capacity:6, small_blind:sbAmt, big_blind:sbAmt*2, starting_stack:stack, status:'waiting'
+    }).select().maybeSingle();
 
-  const { data: profile } = await sb.from('profiles').select('first_name,last_name').eq('id', user.id).maybeSingle();
-  const myName = profile ? `${profile.first_name} ${profile.last_name}` : 'ادمین';
+    if(error){
+      console.error('insert poker_rooms error:', error);
+      showErr('adminErr', 'خطا در ساخت میز: '+error.message);
+      return;
+    }
 
-  const seatRows = Array.from({length:6}, (_,i)=> i===0
-    ? { room_id: room.id, seat_no:0, player_id:user.id, is_bot:false, display_name: myName }
-    : { room_id: room.id, seat_no:i, player_id:null, is_bot:false, display_name:null }
-  );
-  const { error: seatErr } = await sb.from('poker_seats').insert(seatRows);
-  if(seatErr){ showErr('adminErr', 'خطا در ساخت صندلی‌ها: '+seatErr.message); return; }
+    // اگه پالیسی RLS اجازه‌ی select بعد از insert رو نده، inserted می‌تونه null باشه
+    // بدون اینکه error برگرده. برای همین دوباره با کد میز رو می‌خونیم.
+    let room = inserted;
+    if(!room){
+      const { data: fetched, error: fetchErr } = await sb.from('poker_rooms').select('*').eq('code', code).maybeSingle();
+      if(fetchErr || !fetched){
+        console.error('fallback fetch poker_rooms failed:', fetchErr);
+        showErr('adminErr', 'میز ساخته شد ولی خوندنش با خطا مواجه شد. پالیسی SELECT جدول poker_rooms رو در Supabase چک کن (باید به ادمین اجازه‌ی خوندن ردیف خودش رو بده).');
+        return;
+      }
+      room = fetched;
+    }
 
-  const { error: stateErr } = await sb.from('poker_state').insert({ room_id: room.id, hand_number:0, data:{stage:'idle'} });
-  if(stateErr){ showErr('adminErr', 'خطا در ساخت وضعیت میز: '+stateErr.message); return; }
+    const { data: profile } = await sb.from('profiles').select('first_name,last_name').eq('id', user.id).maybeSingle();
+    const myName = profile ? `${profile.first_name} ${profile.last_name}` : 'ادمین';
 
-  const link = location.origin + location.pathname.replace('poker-lobby.html','poker-room.html') + '?room=' + code;
-  document.getElementById('roomLink').textContent = link;
-  document.getElementById('createdBox').classList.remove('hidden');
-  document.getElementById('btnGo').onclick = ()=> location.href = link;
-  document.getElementById('btnCopy').onclick = ()=>{
-    navigator.clipboard.writeText(link);
-    document.getElementById('btnCopy').textContent='کپی شد ✓';
-  };
+    const seatRows = Array.from({length:6}, (_,i)=> i===0
+      ? { room_id: room.id, seat_no:0, player_id:user.id, is_bot:false, display_name: myName }
+      : { room_id: room.id, seat_no:i, player_id:null, is_bot:false, display_name:null }
+    );
+    const { error: seatErr } = await sb.from('poker_seats').insert(seatRows);
+    if(seatErr){
+      console.error('insert poker_seats error:', seatErr);
+      showErr('adminErr', 'خطا در ساخت صندلی‌ها: '+seatErr.message);
+      return;
+    }
+
+    const { error: stateErr } = await sb.from('poker_state').insert({ room_id: room.id, hand_number:0, data:{stage:'idle'} });
+    if(stateErr){
+      console.error('insert poker_state error:', stateErr);
+      showErr('adminErr', 'خطا در ساخت وضعیت میز: '+stateErr.message);
+      return;
+    }
+
+    const link = roomUrl(room.code || code);
+    document.getElementById('roomLink').textContent = link;
+    document.getElementById('createdBox').classList.remove('hidden');
+    document.getElementById('btnGo').onclick = ()=> location.href = link;
+    document.getElementById('btnCopy').onclick = ()=>{
+      navigator.clipboard.writeText(link);
+      document.getElementById('btnCopy').textContent='کپی شد ✓';
+    };
+  } catch(e){
+    console.error('unexpected error creating room:', e);
+    showErr('adminErr', 'خطای غیرمنتظره: '+e.message);
+  } finally {
+    btn.disabled = false;
+  }
 });
 
 document.getElementById('btnJoin').addEventListener('click', ()=>{
+  document.getElementById('joinErr').classList.remove('show');
   let raw = document.getElementById('joinCode').value.trim();
   if(!raw){ showErr('joinErr','کد یا لینک رو وارد کنید.'); return; }
   let code = raw;
   const m = raw.match(/room=([A-Za-z0-9]+)/);
   if(m) code = m[1];
-  location.href = 'poker-room.html?room=' + encodeURIComponent(code.toUpperCase());
+  code = code.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if(code.length !== 6){
+    showErr('joinErr', 'کد اتاق نامعتبره — باید ۶ کاراکتر باشه. کد یا لینک رو دوباره چک کن.');
+    return;
+  }
+  location.href = roomUrl(code);
 });
 
 (async ()=>{
