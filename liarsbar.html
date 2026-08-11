@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دروغ‌گو | DarkFile</title>
+<meta name="description" content="بازی چندنفره‌ی بلوف با کارت — دروغ‌گو، میزِ DarkFile. بلوف بزن، دروغِ بقیه رو لو بده، یا شانستو به اسلحه بسپار.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0f1a; --bg2:#161a2b; --panel:#1c2036; --panel2:#232847;
+  --paper:#efe6cf; --paper-dim:#d9cdaa;
+  --blood:#8a1f2b; --blood-light:#b83e42;
+  --gold:#d1a13a; --gold-light:#e9c67a;
+  --text:#ece6d6; --text-dim:#9391a3; --text-faint:#5c5a72;
+  --ok:#5f9e6f; --line:rgba(255,255,255,0.08);
+  --felt:#0f2e24; --felt-light:#154a37; --gunmetal:#2b2e3a;
+  --shadow:0 24px 70px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg); color:var(--text); font-family:'Vazirmatn',sans-serif; line-height:1.8; min-height:100vh;}
+.wrap{max-width:1080px; margin:0 auto; padding:0 22px;}
+a{color:inherit; text-decoration:none;}
+button{font-family:inherit;}
+.num{font-family:'JetBrains Mono',monospace; font-variant-numeric:tabular-nums; direction:ltr; unicode-bidi:isolate;}
+::-webkit-scrollbar{width:8px; height:8px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--gold); border-radius:999px;}
+*{scrollbar-width:thin; scrollbar-color:var(--gold) var(--bg);}
+
+.nav{position:sticky; top:0; z-index:80; background:rgba(13,15,26,.92); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+.nav .wrap{display:flex; align-items:center; justify-content:space-between; height:64px;}
+.logo{display:flex; align-items:center; gap:10px; font-weight:900; font-size:16px;}
+.logo b{color:var(--blood-light);}
+.logo .tag{font-size:11px; color:var(--gold-light); border:1px solid rgba(209,161,58,.4); border-radius:999px; padding:3px 10px; margin-right:8px; font-weight:600;}
+.nav-right{display:flex; align-items:center; gap:12px; font-size:12.5px; color:var(--text-dim);}
+.nav-right a:hover{color:var(--gold-light);}
+
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:12px 24px; border-radius:6px; font-size:13.5px; font-weight:700; cursor:pointer; border:1px solid transparent; transition:transform .15s,background .2s,opacity .2s; font-family:inherit;}
+.btn:hover{transform:translateY(-1px);}
+.btn:disabled{opacity:.4; cursor:not-allowed; transform:none;}
+.btn-gold{background:var(--gold); color:#241d09;}
+.btn-gold:hover{background:var(--gold-light);}
+.btn-ghost{background:transparent; border:1px solid var(--line); color:var(--text);}
+.btn-ghost:hover{border-color:var(--gold);}
+.btn-blood{background:var(--blood); color:#fbe9e7;}
+.btn-blood:hover{background:var(--blood-light);}
+.btn-sm{padding:9px 16px; font-size:12.5px;}
+.btn-lg{padding:15px 32px; font-size:15px;}
+
+main{position:relative; z-index:1; padding:50px 0 80px;}
+.center-box{max-width:460px; margin:60px auto; background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:36px 32px; text-align:center; box-shadow:var(--shadow);}
+.center-box h1{font-size:20px; font-weight:800; margin-bottom:10px;}
+.center-box p{font-size:13.5px; color:var(--text-dim); margin-bottom:22px;}
+.center-icon{width:56px; height:56px; margin:0 auto 18px; border-radius:50%; background:radial-gradient(circle at 35% 30%, var(--blood-light), var(--blood) 70%, #3f1116 100%); display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 8px 20px rgba(138,31,43,.4);}
+
+/* ===== لندینگ بازی (بدون room param) ===== */
+.game-hero{text-align:center; max-width:640px; margin:0 auto 50px;}
+.game-hero .eyebrow{display:inline-flex; align-items:center; gap:8px; font-size:12px; font-weight:700; color:var(--gold-light); border:1px solid rgba(209,161,58,.4); border-radius:999px; padding:6px 16px; margin-bottom:20px;}
+.game-hero h1{font-size:34px; font-weight:900; margin-bottom:14px; letter-spacing:-.4px;}
+.game-hero h1 em{font-style:normal; background:linear-gradient(180deg,#f3d699,var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;}
+.game-hero p{color:var(--text-dim); font-size:14.5px;}
+.rules-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; max-width:820px; margin:36px auto 0;}
+.rule-card{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:20px;}
+.rule-card .n{font-family:'JetBrains Mono'; font-weight:800; color:var(--gold); font-size:13px; margin-bottom:8px;}
+.rule-card h3{font-size:14px; font-weight:700; margin-bottom:6px;}
+.rule-card p{font-size:12px; color:var(--text-dim);}
+
+/* ===== لابی ===== */
+.lobby-wrap{max-width:640px; margin:0 auto;}
+.lobby-card{background:linear-gradient(180deg,var(--panel2),var(--panel)); border:1px solid rgba(209,161,58,.2); border-radius:14px; padding:30px; box-shadow:var(--shadow);}
+.lobby-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; flex-wrap:wrap; gap:10px;}
+.lobby-head h2{font-size:20px; font-weight:800;}
+.status-pill{font-size:11px; font-weight:700; padding:5px 13px; border-radius:999px; background:rgba(209,161,58,.12); color:var(--gold-light); border:1px solid rgba(209,161,58,.3);}
+.invite-row{display:flex; gap:8px; margin:18px 0 24px; align-items:center;}
+.invite-row input{flex:1; background:var(--bg2); border:1px solid var(--line); border-radius:8px; padding:11px 14px; color:var(--text-dim); font-size:12px; font-family:'JetBrains Mono'; direction:ltr; text-align:left;}
+.seat-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:12px; margin-bottom:26px;}
+.seat{background:var(--bg2); border:1px solid var(--line); border-radius:10px; padding:14px 10px; text-align:center; position:relative;}
+.seat.filled{border-color:rgba(209,161,58,.35);}
+.seat .avatar{width:42px; height:42px; border-radius:50%; margin:0 auto 8px; background:var(--gunmetal); display:flex; align-items:center; justify-content:center; font-size:18px; overflow:hidden;}
+.seat .avatar img{width:100%; height:100%; object-fit:cover;}
+.seat .nm{font-size:11.5px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.seat .host-tag{position:absolute; top:6px; left:6px; font-size:9px; background:var(--gold); color:#241d09; padding:2px 6px; border-radius:999px; font-weight:800;}
+.seat.empty{opacity:.35; border-style:dashed;}
+.lobby-actions{display:flex; gap:12px; flex-wrap:wrap;}
+.hint{font-size:12px; color:var(--text-faint); margin-top:14px;}
+
+/* ===== صفحه بازی ===== */
+.game-wrap{max-width:920px; margin:0 auto;}
+.table-felt{background:radial-gradient(ellipse at 50% 30%, var(--felt-light), var(--felt) 70%); border:2px solid rgba(209,161,58,.25); border-radius:20px; padding:26px; box-shadow:var(--shadow), inset 0 0 80px rgba(0,0,0,.5); position:relative; overflow:hidden;}
+.table-felt::before{content:''; position:absolute; inset:10px; border:1.5px dashed rgba(233,198,122,.15); border-radius:14px; pointer-events:none;}
+.round-info{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:20px;}
+.target-chip{display:flex; align-items:center; gap:10px; background:rgba(0,0,0,.28); border:1px solid rgba(209,161,58,.35); border-radius:999px; padding:8px 18px;}
+.target-chip .tlabel{font-size:11px; color:var(--text-dim);}
+.target-chip .tval{font-size:17px; font-weight:900; color:var(--gold-light);}
+.log-toggle{font-size:11.5px; color:var(--text-dim); cursor:pointer; border:1px solid var(--line); border-radius:999px; padding:6px 14px;}
+
+.opponents-row{display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-bottom:26px;}
+.opp{background:rgba(0,0,0,.25); border:1px solid var(--line); border-radius:12px; padding:12px 16px; text-align:center; min-width:104px; position:relative; transition:border-color .2s, box-shadow .2s;}
+.opp.active-turn{border-color:var(--gold); box-shadow:0 0 0 3px rgba(209,161,58,.15);}
+.opp.dead{opacity:.35; filter:grayscale(1);}
+.opp .avatar{width:44px; height:44px; border-radius:50%; margin:0 auto 8px; background:var(--gunmetal); overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:18px;}
+.opp .avatar img{width:100%; height:100%; object-fit:cover;}
+.opp .nm{font-size:11.5px; font-weight:700; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:90px;}
+.opp .cc{font-size:10.5px; color:var(--text-faint);}
+.opp .dead-tag{position:absolute; top:-8px; left:50%; transform:translateX(-50%); background:var(--blood); color:#fbe9e7; font-size:9px; font-weight:800; padding:2px 8px; border-radius:999px;}
+
+.claim-zone{min-height:120px; display:flex; align-items:center; justify-content:center; margin-bottom:24px;}
+.claim-card{background:rgba(0,0,0,.35); border:1px solid rgba(209,161,58,.3); border-radius:14px; padding:22px 30px; text-align:center; max-width:420px;}
+.claim-card .who{font-size:13px; color:var(--text-dim); margin-bottom:8px;}
+.claim-card .what{font-size:19px; font-weight:800; color:var(--gold-light); margin-bottom:16px;}
+.decision-btns{display:flex; gap:12px; justify-content:center;}
+.reveal-row{display:flex; gap:8px; justify-content:center; margin-top:14px;}
+.mini-card{width:36px; height:50px; border-radius:6px; background:var(--paper); color:#241d09; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:15px; box-shadow:0 4px 10px rgba(0,0,0,.4);}
+.mini-card.wrong{background:var(--blood-light); color:#fff;}
+
+.shot-banner{text-align:center; padding:20px; border-radius:14px; margin-bottom:20px; font-weight:800; font-size:16px;}
+.shot-banner.dead{background:rgba(138,31,43,.18); border:1px solid rgba(138,31,43,.5); color:var(--blood-light);}
+.shot-banner.alive{background:rgba(95,158,111,.12); border:1px solid rgba(95,158,111,.4); color:var(--ok);}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.shake{animation:shake .4s;}
+
+.my-area{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:20px 22px; margin-top:22px;}
+.my-head{display:flex; align-items:center; justify-content:between; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:8px;}
+.my-head .whoami{display:flex; align-items:center; gap:10px;}
+.my-head .whoami .avatar{width:36px; height:36px; border-radius:50%; overflow:hidden; background:var(--gunmetal);}
+.my-head .whoami .avatar img{width:100%; height:100%; object-fit:cover;}
+.my-head .status{font-size:12px; color:var(--gold-light); font-weight:700;}
+.hand-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; min-height:96px;}
+.card{width:64px; height:90px; border-radius:8px; background:linear-gradient(160deg,var(--paper),var(--paper-dim)); color:#241d09; display:flex; flex-direction:column; align-items:center; justify-content:center; font-weight:900; font-size:22px; cursor:pointer; box-shadow:0 6px 16px rgba(0,0,0,.4); border:2px solid transparent; transition:transform .15s, border-color .15s; user-select:none;}
+.card:hover{transform:translateY(-6px);}
+.card.sel{border-color:var(--gold); transform:translateY(-10px); box-shadow:0 10px 24px rgba(209,161,58,.35);}
+.card .sub{font-size:9px; font-weight:600; color:#6b5a2f;}
+.card.joker{background:linear-gradient(160deg,#2e3350,#181a2c); color:var(--gold-light);}
+.play-controls{display:flex; align-items:center; gap:14px; flex-wrap:wrap;}
+.claim-note{font-size:12px; color:var(--text-faint);}
+
+.log-panel{max-height:220px; overflow-y:auto; background:var(--bg2); border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin-top:18px; font-size:12px; color:var(--text-dim); display:none;}
+.log-panel.show{display:block;}
+.log-panel .row{padding:5px 0; border-bottom:1px dashed var(--line);}
+.log-panel .row:last-child{border-bottom:none;}
+
+.winner-box{text-align:center; padding:50px 20px;}
+.winner-box .crown{font-size:52px; margin-bottom:14px;}
+.winner-box h2{font-size:26px; font-weight:900; margin-bottom:8px; color:var(--gold-light);}
+.winner-box p{color:var(--text-dim); margin-bottom:24px;}
+
+.toast{position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--panel2); border:1px solid var(--gold); color:var(--paper); padding:12px 24px; border-radius:999px; font-size:12.5px; font-weight:600; box-shadow:var(--shadow); z-index:300; display:none;}
+.toast.show{display:block;}
+.loading-dots{text-align:center; padding:80px 20px; color:var(--text-dim);}
+
+@media (max-width:640px){
+  .rules-grid{grid-template-columns:1fr;}
+  .card{width:54px; height:76px; font-size:18px;}
+  .seat-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="logo" href="index.html">Dark<b>File</b><span class="tag">دروغ‌گو</span></a>
+    <div class="nav-right">
+      <span id="navUser"></span>
+      <a href="index.html">بازگشت به سایت</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap" id="appRoot">
+    <div class="loading-dots">در حال بارگذاری…</div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const SUPABASE_URL = 'https://uohetpzmscuqdiwibqci.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_CukVAlNn7Nvrx5v_gu7atg_JDcw2dzW';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const RANK_LABEL = { A:'آس', K:'شاه', Q:'بی‌بی', J:'جوکر' };
+const app = document.getElementById('appRoot');
+let me = null;          // { id, email }
+let myProfile = null;   // profiles row
+let room = null;        // liarsbar_rooms row
+let players = [];       // liarsbar_players rows
+let myHand = [];        // my own cards (from liarsbar_hands)
+let roomChannel = null, playersChannel = null;
+let selectedCardIdx = [];
+
+function toast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(window.__toastT); window.__toastT=setTimeout(()=>t.classList.remove('show'),2600);
+}
+function getParam(k){ return new URLSearchParams(location.search).get(k); }
+function avatarFor(p){
+  if(p && p.avatar_url) return p.avatar_url;
+  return null;
+}
+function initials(name){ return (name||'?').trim().charAt(0); }
+
+// ============ راه‌اندازی اولیه ============
+(async function init(){
+  const { data:{ session } } = await sb.auth.getSession();
+  if(!session){ renderLoggedOut(); return; }
+  me = session.user;
+  const { data: prof } = await sb.from('profiles').select().eq('id', me.id).maybeSingle();
+  myProfile = prof;
+  document.getElementById('navUser').textContent = prof ? `${prof.first_name} ${prof.last_name}` : '';
+
+  const code = getParam('room');
+  if(code){ enterRoomFlow(code); }
+  else { renderLanding(); }
+})();
+
+function renderLoggedOut(){
+  app.innerHTML = `
+    <div class="center-box">
+      <div class="center-icon">🔫</div>
+      <h1>ورود لازم است</h1>
+      <p>برای بازی «دروغ‌گو» باید اول توی سایت DarkFile وارد حساب‌ت بشی.</p>
+      <a class="btn btn-gold" href="index.html">ورود / ثبت‌نام در DarkFile</a>
+    </div>`;
+}
+
+// ============ لندینگِ بازی (بدون room param) ============
+function renderLanding(){
+  const isAdmin = myProfile && myProfile.is_admin === true;
+  app.innerHTML = `
+    <div class="game-hero">
+      <div class="eyebrow">🎴 بازیِ جدیدِ میزِ DarkFile</div>
+      <h1>بلوف بزن، دروغ‌ِ بقیه رو <em>لو بده</em>،<br>یا شانستو به اسلحه بسپار</h1>
+      <p>هر نفر کارت رو رو میز می‌ذاره و ادعا می‌کنه چیه. باور کن یا بگو «دروغ‌گو!» — هرکس اشتباه کنه، ماشه رو می‌کشه.</p>
+    </div>
+    <div class="rules-grid">
+      <div class="rule-card"><div class="n">۰۱</div><h3>ادعا کن</h3><p>۱ تا ۳ کارت رو پنهانی می‌ذاری وسط و ادعا می‌کنی همه از رتبه‌ی هدفِ این دوره‌ان.</p></div>
+      <div class="rule-card"><div class="n">۰۲</div><h3>باور کن یا بلوف بزن</h3><p>نفر بعدی یا قبول می‌کنه (بدون دیدن کارت‌ها)، یا داد می‌زنه «دروغ‌گو!» و کارت‌ها رو می‌کنه.</p></div>
+      <div class="rule-card"><div class="n">۰۳</div><h3>اسلحه تصمیم می‌گیره</h3><p>هرکس دروغ گفته بود یا اشتباه بلوف زده بود، ماشه رو می‌کشه. یک از شیش، شانسِ مرگه.</p></div>
+    </div>
+    <div class="lobby-wrap" style="margin-top:50px;">
+      ${isAdmin ? `
+        <div class="lobby-card" style="text-align:center;">
+          <h2 style="margin-bottom:10px;">میزِ جدید بساز</h2>
+          <p style="color:var(--text-dim); font-size:13px; margin-bottom:20px;">فقط ادمینِ سایت می‌تونه میز باز کنه. بعد از ساختن، لینکِ دعوت رو برای بقیه بفرست.</p>
+          <button class="btn btn-blood btn-lg" id="createRoomBtn">🔫 ساختِ میزِ تازه</button>
+        </div>
+      ` : `
+        <div class="lobby-card" style="text-align:center;">
+          <h2 style="margin-bottom:10px;">منتظرِ دعوت باش</h2>
+          <p style="color:var(--text-dim); font-size:13px;">فقط ادمینِ DarkFile می‌تونه میزِ «دروغ‌گو» رو باز کنه. وقتی میز باز شد، لینکِ دعوتش رو برات می‌فرسته — همون لینک رو باز کن تا بشینی سرِ میز.</p>
+        </div>
+      `}
+    </div>`;
+  if(isAdmin){
+    document.getElementById('createRoomBtn').addEventListener('click', createRoom);
+  }
+}
+
+async function createRoom(){
+  const btn = document.getElementById('createRoomBtn');
+  btn.disabled = true; btn.textContent = 'در حال ساخت...';
+  const code = Math.random().toString(36).slice(2,8).toUpperCase();
+  const { data, error } = await sb.from('liarsbar_rooms').insert({
+    code, host_id: me.id, status:'lobby', max_players: 8, state:{}
+  }).select().single();
+  if(error){ toast('خطا در ساخت میز: ' + error.message); btn.disabled=false; btn.textContent='🔫 ساختِ میزِ تازه'; return; }
+  // میزبان به‌صورت خودکار سرِ میز می‌شینه
+  await sb.from('liarsbar_players').insert({
+    room_id: data.id, user_id: me.id, display_name: `${myProfile.first_name} ${myProfile.last_name}`,
+    avatar_url: myProfile.avatar_url || null, seat: 0, is_host: true, is_alive: true, hand_count: 0
+  });
+  location.href = `liarsbar.html?room=${code}`;
+}
+
+// ============ ورود به یک اتاقِ مشخص ============
+async function enterRoomFlow(code){
+  app.innerHTML = `<div class="loading-dots">در حال پیدا کردنِ میز ${code}…</div>`;
+  const { data: r, error } = await sb.from('liarsbar_rooms').select().eq('code', code).maybeSingle();
+  if(error || !r){
+    app.innerHTML = `<div class="center-box"><div class="center-icon">❓</div><h1>میز پیدا نشد</h1><p>این لینکِ دعوت معتبر نیست یا میز بسته شده.</p><a class="btn btn-ghost" href="liarsbar.html">بازگشت</a></div>`;
+    return;
+  }
+  room = r;
+  await loadPlayers();
+  subscribeRealtime();
+
+  if(room.status === 'finished'){ renderFinished(); return; }
+  if(room.status === 'playing'){
+    const amPlaying = players.some(p=>p.user_id===me.id);
+    if(!amPlaying){
+      app.innerHTML = `<div class="center-box"><div class="center-icon">👀</div><h1>بازی شروع شده</h1><p>این دور از بازی قبلاً استارت خورده و دیگه نمی‌تونی بهش بپیوندی. منتظرِ دورِ بعد بمون.</p></div>`;
+      return;
+    }
+    await loadMyHand();
+    renderGame();
+    return;
+  }
+  renderLobby();
+}
+
+async function loadPlayers(){
+  const { data } = await sb.from('liarsbar_players').select().eq('room_id', room.id).order('seat');
+  players = data || [];
+}
+async function loadMyHand(){
+  const { data } = await sb.from('liarsbar_hands').select().eq('room_id', room.id).eq('user_id', me.id).maybeSingle();
+  myHand = data ? (data.cards || []) : [];
+}
+
+function subscribeRealtime(){
+  if(roomChannel) sb.removeChannel(roomChannel);
+  if(playersChannel) sb.removeChannel(playersChannel);
+
+  roomChannel = sb.channel('room-'+room.id)
+    .on('postgres_changes', { event:'UPDATE', schema:'public', table:'liarsbar_rooms', filter:`id=eq.${room.id}` }, payload => {
+      room = payload.new;
+      handleRoomChange();
+    }).subscribe();
+
+  playersChannel = sb.channel('players-'+room.id)
+    .on('postgres_changes', { event:'*', schema:'public', table:'liarsbar_players', filter:`room_id=eq.${room.id}` }, async () => {
+      await loadPlayers();
+      rerenderCurrentView();
+    }).subscribe();
+}
+
+async function handleRoomChange(){
+  if(room.status === 'finished'){ renderFinished(); return; }
+  if(room.status === 'playing'){
+    await loadMyHand();
+    renderGame();
+    await hostAutoAdvance();
+    return;
+  }
+  renderLobby();
+}
+function rerenderCurrentView(){
+  if(room.status === 'playing') renderGame();
+  else if(room.status === 'finished') renderFinished();
+  else renderLobby();
+}
+
+// ============ لابی ============
+function renderLobby(){
+  const isHost = room.host_id === me.id;
+  const amIn = players.some(p=>p.user_id===me.id);
+  const inviteUrl = `${location.origin}${location.pathname}?room=${room.code}`;
+
+  const seats = [];
+  for(let i=0;i<room.max_players;i++){
+    const p = players.find(pl=>pl.seat===i);
+    if(p){
+      const av = avatarFor(p);
+      seats.push(`<div class="seat filled">${p.is_host?'<span class="host-tag">ادمین</span>':''}
+        <div class="avatar">${av?`<img src="${av}">`:initials(p.display_name)}</div>
+        <div class="nm">${p.display_name}</div></div>`);
+    } else {
+      seats.push(`<div class="seat empty"><div class="avatar">?</div><div class="nm">خالی</div></div>`);
+    }
+  }
+
+  app.innerHTML = `
+    <div class="lobby-wrap">
+      <div class="lobby-card">
+        <div class="lobby-head">
+          <h2>میزِ ${room.code}</h2>
+          <span class="status-pill">در انتظارِ بازیکن‌ها</span>
+        </div>
+        <p style="font-size:12.5px; color:var(--text-dim);">لینکِ دعوت رو برای دوستات بفرست تا سرِ میز بشینن.</p>
+        <div class="invite-row">
+          <input readonly value="${inviteUrl}" id="inviteInput">
+          <button class="btn btn-ghost btn-sm" id="copyInviteBtn">کپی</button>
+        </div>
+        <div class="seat-grid">${seats.join('')}</div>
+        <div class="lobby-actions">
+          ${!amIn ? `<button class="btn btn-gold" id="joinBtn">نشستن سرِ میز</button>` : ''}
+          ${amIn && !isHost ? `<button class="btn btn-ghost" id="leaveBtn">بلند شدن از میز</button>` : ''}
+          ${isHost ? `<button class="btn btn-blood" id="startBtn" ${players.length<2?'disabled':''}>🔫 شروعِ بازی (${players.length}/${room.max_players})</button>` : ''}
+        </div>
+        ${isHost && players.length<2 ? `<div class="hint">برای شروع، حداقل ۲ نفر باید سرِ میز باشن.</div>` : ''}
+        ${!isHost ? `<div class="hint">فقط ادمین می‌تونه بازی رو استارت بزنه — منتظر بمون.</div>` : ''}
+      </div>
+    </div>`;
+
+  document.getElementById('copyInviteBtn').addEventListener('click', ()=>{
+    navigator.clipboard.writeText(inviteUrl).then(()=>toast('لینک کپی شد'));
+  });
+  const joinBtn = document.getElementById('joinBtn');
+  if(joinBtn) joinBtn.addEventListener('click', joinRoom);
+  const leaveBtn = document.getElementById('leaveBtn');
+  if(leaveBtn) leaveBtn.addEventListener('click', leaveRoom);
+  const startBtn = document.getElementById('startBtn');
+  if(startBtn) startBtn.addEventListener('click', startGame);
+}
+
+async function joinRoom(){
+  if(players.length >= room.max_players){ toast('میز پره'); return; }
+  const usedSeats = new Set(players.map(p=>p.seat));
+  let seat = 0; while(usedSeats.has(seat)) seat++;
+  const { error } = await sb.from('liarsbar_players').insert({
+    room_id: room.id, user_id: me.id, display_name: `${myProfile.first_name} ${myProfile.last_name}`,
+    avatar_url: myProfile.avatar_url || null, seat, is_host:false, is_alive:true, hand_count:0
+  });
+  if(error){ toast('خطا: '+error.message); return; }
+  await loadPlayers(); renderLobby();
+}
+async function leaveRoom(){
+  await sb.from('liarsbar_players').delete().eq('room_id', room.id).eq('user_id', me.id);
+  await loadPlayers(); renderLobby();
+}
+
+// ============ شروعِ بازی (فقط میزبان) ============
+async function startGame(){
+  if(players.length < 2){ toast('حداقل ۲ بازیکن لازمه'); return; }
+  const btn = document.getElementById('startBtn');
+  if(btn){ btn.disabled=true; btn.textContent='در حال آماده‌سازی...'; }
+  await dealNewRound(players[0].seat, true);
+  await sb.from('liarsbar_rooms').update({ status:'playing', updated_at:new Date().toISOString() }).eq('id', room.id);
+}
+
+// ============ منطق پخشِ کارت (همیشه توسط میزبان) ============
+function buildDeck(aliveCount){
+  const rankCount = Math.max(6, aliveCount*2);
+  const ranks = ['A','K','Q'];
+  let deck = [];
+  ranks.forEach(r=>{ for(let i=0;i<rankCount;i++) deck.push({r, id:r+'-'+i+'-'+Math.random().toString(36).slice(2,6)}); });
+  for(let i=0;i<2;i++) deck.push({r:'J', id:'J-'+i+'-'+Math.random().toString(36).slice(2,6)});
+  for(let i=deck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [deck[i],deck[j]]=[deck[j],deck[i]]; }
+  return deck;
+}
+
+async function dealNewRound(starterSeat, isFirstEver){
+  await loadPlayers();
+  const alive = players.filter(p=>p.is_alive);
+  if(alive.length <= 1){
+    const winner = alive[0] || players[0];
+    await sb.from('liarsbar_rooms').update({
+      status:'finished', updated_at:new Date().toISOString(),
+      state:{ ...room.state, phase:'finished', winner_id: winner.user_id, winner_name: winner.display_name }
+    }).eq('id', room.id);
+    return;
+  }
+  const deck = buildDeck(alive.length);
+  const perPlayer = 4;
+  let cursor = 0;
+  const target = ['A','K','Q'][Math.floor(Math.random()*3)];
+
+  for(const p of alive){
+    const hand = deck.slice(cursor, cursor+perPlayer);
+    cursor += perPlayer;
+    await sb.from('liarsbar_hands').upsert({ room_id: room.id, user_id: p.user_id, cards: hand, last_played: [], updated_at:new Date().toISOString() });
+    await sb.from('liarsbar_players').update({ hand_count: hand.length }).eq('id', p.id);
+  }
+
+  let mover = alive.find(p=>p.seat===starterSeat) || alive[0];
+  if(!mover) mover = alive[0];
+
+  const roundLog = isFirstEver ? [] : (room.state.log || []);
+  const newLog = [...roundLog, `🎴 دورِ جدید شروع شد — رتبه‌ی هدف: ${RANK_LABEL[target]}`].slice(-30);
+
+  await sb.from('liarsbar_rooms').update({
+    updated_at: new Date().toISOString(),
+    state: {
+      phase: 'awaiting_play',
+      target_rank: target,
+      turn: mover.user_id,
+      current_claim: null,
+      pending_challenge: null,
+      revealed: null,
+      last_shot: null,
+      round_no: (room.state.round_no||0) + 1,
+      log: newLog
+    }
+  }).eq('id', room.id);
+}
+
+// ============ رندرِ صفحه‌ی بازی ============
+function renderGame(){
+  const st = room.state || {};
+  const alive = players.filter(p=>p.is_alive);
+  const meRow = players.find(p=>p.user_id===me.id);
+  const isMyTurn = st.phase==='awaiting_play' && st.turn===me.id;
+  const isResponder = st.phase==='awaiting_response' && st.current_claim && nextAliveAfter(st.current_claim.by)===me.id;
+
+  const opponents = players.filter(p=>p.user_id!==me.id).map(p=>{
+    const av = avatarFor(p);
+    const activeTurn = (st.phase==='awaiting_play' && st.turn===p.user_id) ? 'active-turn' : '';
+    return `<div class="opp ${p.is_alive?'':'dead'} ${activeTurn}">
+      ${!p.is_alive?'<div class="dead-tag">حذف شد</div>':''}
+      <div class="avatar">${av?`<img src="${av}">`:initials(p.display_name)}</div>
+      <div class="nm">${p.display_name}</div>
+      <div class="cc num">${p.hand_count} کارت</div>
+    </div>`;
+  }).join('');
+
+  let claimZone = `<div class="claim-zone"><span style="color:var(--text-faint); font-size:13px;">در انتظارِ حرکتِ بعدی…</span></div>`;
+
+  if(st.phase==='awaiting_play'){
+    const moverName = (players.find(p=>p.user_id===st.turn)||{}).display_name || '؟';
+    claimZone = `<div class="claim-zone"><div class="claim-card"><div class="who">نوبتِ</div><div class="what">${moverName}</div></div></div>`;
+  } else if(st.phase==='awaiting_response' && st.current_claim){
+    const byName = (players.find(p=>p.user_id===st.current_claim.by)||{}).display_name || '؟';
+    claimZone = `<div class="claim-zone"><div class="claim-card">
+        <div class="who">${byName} ادعا کرد</div>
+        <div class="what">${st.current_claim.count} کارت ${RANK_LABEL[st.target_rank]}</div>
+        ${isResponder ? `<div class="decision-btns">
+          <button class="btn btn-ghost btn-sm" id="acceptBtn">قبول می‌کنم</button>
+          <button class="btn btn-blood btn-sm" id="bluffBtn">🔍 دروغ‌گو!</button>
+        </div>` : `<div style="font-size:11.5px; color:var(--text-faint); margin-top:6px;">منتظرِ تصمیمِ نفرِ بعدی…</div>`}
+      </div></div>`;
+  } else if(st.phase==='challenged'){
+    claimZone = `<div class="claim-zone"><div class="claim-card"><div class="who">🔍 دروغ‌گو اعلام شد!</div><div class="what">در حالِ رو کردنِ کارت‌ها…</div></div></div>`;
+  } else if(st.phase==='revealed' && st.revealed){
+    const cards = st.revealed.cards.map(c=>`<div class="mini-card ${(c.r===st.target_rank||c.r==='J')?'':'wrong'}">${c.r==='J'?'🃏':c.r}</div>`).join('');
+    const verdict = st.revealed.was_lie ? 'دروغ بود! 😈' : 'راست می‌گفت! 😇';
+    claimZone = `<div class="claim-zone"><div class="claim-card">
+        <div class="who">${verdict}</div>
+        <div class="reveal-row">${cards}</div>
+      </div></div>`;
+  } else if(st.phase==='survived' || st.phase==='eliminated'){
+    const shooterName = (players.find(p=>p.user_id===(st.last_shot||{}).by)||{}).display_name || '؟';
+    const dead = st.phase==='eliminated';
+    claimZone = `<div class="claim-zone"><div class="shot-banner ${dead?'dead':'alive'} shake">
+        ${dead ? `🔫💥 ${shooterName} شلیک کرد و... حذف شد!` : `🔫 ${shooterName} ماشه رو کشید و... جون سالم به در برد!`}
+      </div></div>`;
+  }
+
+  const canPlay = isMyTurn && myHand.length>0;
+  const handCards = myHand.map((c,idx)=>{
+    const sel = selectedCardIdx.includes(idx) ? 'sel' : '';
+    const joker = c.r==='J' ? 'joker' : '';
+    return `<div class="card ${sel} ${joker}" data-idx="${idx}">${c.r==='J'?'🃏':c.r}<span class="sub">${c.r==='J'?'وایلد':RANK_LABEL[c.r]}</span></div>`;
+  }).join('');
+
+  const myAv = avatarFor(myProfile);
+  const logRows = (st.log||[]).slice().reverse().map(l=>`<div class="row">${l}</div>`).join('');
+
+  app.innerHTML = `
+    <div class="game-wrap">
+      <div class="table-felt">
+        <div class="round-info">
+          <div class="target-chip"><span class="tlabel">رتبه‌ی هدفِ این دور</span><span class="tval">${RANK_LABEL[st.target_rank]||'—'}</span></div>
+          <div class="log-toggle" id="logToggle">📜 تاریخچه</div>
+        </div>
+        <div class="opponents-row">${opponents}</div>
+        ${claimZone}
+        <div class="log-panel" id="logPanel">${logRows || '<span style="color:var(--text-faint)">هنوز اتفاقی ثبت نشده</span>'}</div>
+      </div>
+
+      <div class="my-area">
+        <div class="my-head">
+          <div class="whoami">
+            <div class="avatar">${myAv?`<img src="${myAv}">`:''}</div>
+            <b>${myProfile.first_name} ${myProfile.last_name}</b>
+          </div>
+          <div class="status">${meRow && !meRow.is_alive ? '❌ حذف شدی — فقط تماشاگری' : (isMyTurn ? '🎯 نوبتِ توئه' : '')}</div>
+        </div>
+        <div class="hand-row">${handCards || '<span style="color:var(--text-faint); font-size:12.5px;">کارتی نداری</span>'}</div>
+        <div class="play-controls">
+          <button class="btn btn-gold btn-sm" id="playBtn" ${(!canPlay || selectedCardIdx.length===0 || selectedCardIdx.length>3)?'disabled':''}>
+            🎴 گذاشتنِ ${selectedCardIdx.length||''} کارت به‌عنوانِ ${RANK_LABEL[st.target_rank]||''}
+          </button>
+          <span class="claim-note">۱ تا ۳ کارت انتخاب کن — لازم نیست راست بگی 😉</span>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('logToggle').addEventListener('click', ()=>{
+    document.getElementById('logPanel').classList.toggle('show');
+  });
+  if(canPlay){
+    document.querySelectorAll('.card').forEach(el=>{
+      el.addEventListener('click', ()=>{
+        const idx = Number(el.dataset.idx);
+        const pos = selectedCardIdx.indexOf(idx);
+        if(pos>=0) selectedCardIdx.splice(pos,1);
+        else { if(selectedCardIdx.length>=3){ toast('حداکثر ۳ کارت'); return; } selectedCardIdx.push(idx); }
+        renderGame();
+      });
+    });
+    const playBtn = document.getElementById('playBtn');
+    if(playBtn) playBtn.addEventListener('click', playSelectedCards);
+  }
+  const acceptBtn = document.getElementById('acceptBtn');
+  if(acceptBtn) acceptBtn.addEventListener('click', acceptClaim);
+  const bluffBtn = document.getElementById('bluffBtn');
+  if(bluffBtn) bluffBtn.addEventListener('click', callBluff);
+
+  // فقط میزبان: پیشروی خودکارِ مراحلِ سیستمی (revealed → survived/eliminated → دورِ بعد)
+  hostAutoAdvance();
+  // خودِ چالش‌شونده کارت‌ها رو رو می‌کنه؛ خودِ شلیک‌کننده شانسشو امتحان می‌کنه
+  selfResolveIfNeeded();
+}
+
+function nextAliveAfter(userId){
+  const alive = players.filter(p=>p.is_alive).sort((a,b)=>a.seat-b.seat);
+  if(alive.length===0) return null;
+  const idx = alive.findIndex(p=>p.user_id===userId);
+  if(idx===-1) return alive[0].user_id;
+  return alive[(idx+1)%alive.length].user_id;
+}
+function nextAliveWithCardsAfter(userId){
+  const alive = players.filter(p=>p.is_alive).sort((a,b)=>a.seat-b.seat);
+  if(alive.length===0) return null;
+  let idx = alive.findIndex(p=>p.user_id===userId);
+  if(idx===-1) idx = -1;
+  for(let step=1; step<=alive.length; step++){
+    const cand = alive[(idx+step)%alive.length];
+    if(cand.hand_count>0) return cand.user_id;
+  }
+  return null;
+}
+
+// ============ حرکت: گذاشتنِ کارت ============
+async function playSelectedCards(){
+  if(selectedCardIdx.length===0 || selectedCardIdx.length>3) return;
+  const played = selectedCardIdx.map(i=>myHand[i]);
+  const remaining = myHand.filter((_,i)=>!selectedCardIdx.includes(i));
+  selectedCardIdx = [];
+
+  await sb.from('liarsbar_hands').update({ cards: remaining, last_played: played, updated_at:new Date().toISOString() })
+    .eq('room_id', room.id).eq('user_id', me.id);
+  await sb.from('liarsbar_players').update({ hand_count: remaining.length }).eq('room_id', room.id).eq('user_id', me.id);
+
+  const st = room.state;
+  const myName = `${myProfile.first_name} ${myProfile.last_name}`;
+  const newLog = [...(st.log||[]), `🎴 ${myName} ادعا کرد ${played.length} کارت ${RANK_LABEL[st.target_rank]} گذاشت`].slice(-30);
+  await sb.from('liarsbar_rooms').update({
+    updated_at:new Date().toISOString(),
+    state: { ...st, phase:'awaiting_response', current_claim:{ by: me.id, count: played.length }, log:newLog }
+  }).eq('id', room.id);
+  myHand = remaining;
+}
+
+// ============ حرکت: قبول‌کردن ============
+async function acceptClaim(){
+  const st = room.state;
+  const byName = (players.find(p=>p.user_id===st.current_claim.by)||{}).display_name || '؟';
+  const newLog = [...(st.log||[]), `✅ ${myProfile.first_name} حرفِ ${byName} رو باور کرد`].slice(-30);
+  const nextMover = nextAliveWithCardsAfter(me.id) || me.id;
+  await sb.from('liarsbar_rooms').update({
+    updated_at:new Date().toISOString(),
+    state: { ...st, phase:'awaiting_play', turn: nextMover, current_claim:null, log:newLog }
+  }).eq('id', room.id);
+}
+
+// ============ حرکت: دروغ‌گو! ============
+async function callBluff(){
+  const st = room.state;
+  const byName = (players.find(p=>p.user_id===st.current_claim.by)||{}).display_name || '؟';
+  const newLog = [...(st.log||[]), `🔍 ${myProfile.first_name} فریاد زد «دروغ‌گو!» به ${byName}`].slice(-30);
+  await sb.from('liarsbar_rooms').update({
+    updated_at:new Date().toISOString(),
+    state: { ...st, phase:'challenged', pending_challenge:{ challenger: me.id, challenged: st.current_claim.by, count: st.current_claim.count }, log:newLog }
+  }).eq('id', room.id);
+}
+
+// ============ خودِ بازیکنِ چالش‌شده کارت‌ها رو رو می‌کنه؛ خودِ شلیک‌کننده شلیک می‌کنه ============
+async function selfResolveIfNeeded(){
+  const st = room.state || {};
+  if(st.phase==='challenged' && st.pending_challenge && st.pending_challenge.challenged===me.id){
+    const { data: hd } = await sb.from('liarsbar_hands').select().eq('room_id', room.id).eq('user_id', me.id).maybeSingle();
+    const lastPlayed = (hd && hd.last_played) || [];
+    const wasLie = lastPlayed.some(c=> c.r!==st.target_rank && c.r!=='J');
+    const shooter = wasLie ? st.pending_challenge.challenged : st.pending_challenge.challenger;
+    await sb.from('liarsbar_hands').update({ last_played: [] }).eq('room_id', room.id).eq('user_id', me.id);
+    const newLog = [...(st.log||[]), wasLie ? '💥 کارت‌ها رو شدن — دروغ بود!' : '💥 کارت‌ها رو شدن — راست می‌گفت!'].slice(-30);
+    await sb.from('liarsbar_rooms').update({
+      updated_at:new Date().toISOString(),
+      state: { ...st, phase:'revealed', revealed:{ cards: lastPlayed, was_lie: wasLie }, shooter, log:newLog }
+    }).eq('id', room.id);
+    return;
+  }
+  if(st.phase==='revealed' && st.shooter===me.id){
+    await new Promise(r=>setTimeout(r, 1600)); // مکثِ نمایشیِ رو شدنِ کارت‌ها
+    const { data: fresh } = await sb.from('liarsbar_rooms').select().eq('id', room.id).maybeSingle();
+    if(!fresh || fresh.state.phase!=='revealed' || fresh.state.shooter!==me.id) return; // یکی دیگه زودتر رسیدگی کرد
+    const dead = Math.random() < (1/6);
+    const meRow = players.find(p=>p.user_id===me.id);
+    await sb.from('liarsbar_players').update({ is_alive: !dead, shots_fired:(meRow?.shots_fired||0)+1 }).eq('room_id', room.id).eq('user_id', me.id);
+    const newLog = [...(fresh.state.log||[]), dead ? `🔫💀 ${myProfile.first_name} ماشه رو کشید... و حذف شد!` : `🔫😮‍💨 ${myProfile.first_name} ماشه رو کشید... و جون سالم به در برد!`].slice(-30);
+    await sb.from('liarsbar_rooms').update({
+      updated_at:new Date().toISOString(),
+      state: { ...fresh.state, phase: dead?'eliminated':'survived', last_shot:{ by: me.id, result: dead?'dead':'alive' }, log:newLog }
+    }).eq('id', room.id);
+  }
+}
+
+// ============ فقط میزبان: بعد از شلیک، دورِ بعدی رو می‌چینه ============
+let hostAdvanceLock = false;
+async function hostAutoAdvance(){
+  if(room.host_id !== me.id) return;
+  if(hostAdvanceLock) return;
+  const st = room.state || {};
+  if(st.phase==='survived' || st.phase==='eliminated'){
+    hostAdvanceLock = true;
+    await new Promise(r=>setTimeout(r, 2200));
+    await loadPlayers();
+    const alive = players.filter(p=>p.is_alive);
+    if(alive.length<=1){
+      const winner = alive[0];
+      await sb.from('liarsbar_rooms').update({
+        status:'finished', updated_at:new Date().toISOString(),
+        state:{ ...room.state, phase:'finished', winner_id: winner?winner.user_id:null, winner_name: winner?winner.display_name:'—' }
+      }).eq('id', room.id);
+    } else {
+      const shooterSeat = (players.find(p=>p.user_id===(st.last_shot||{}).by)||{}).seat ?? players[0].seat;
+      const starter = nextAliveWithCardsAfter(st.last_shot ? st.last_shot.by : players[0].user_id) ;
+      const starterSeat = (players.find(p=>p.user_id===starter)||alive[0]).seat;
+      await dealNewRound(starterSeat, false);
+    }
+    hostAdvanceLock = false;
+    return;
+  }
+  // اگر نوبتِ کسیه که دیگه کارت نداره یا هیچ‌کس کارت نداره → دورِ جدید
+  if(st.phase==='awaiting_play'){
+    const moverRow = players.find(p=>p.user_id===st.turn);
+    const anyoneHasCards = players.some(p=>p.is_alive && p.hand_count>0);
+    if(!anyoneHasCards){
+      hostAdvanceLock = true;
+      await dealNewRound(players[0].seat, false);
+      hostAdvanceLock = false;
+    } else if(moverRow && moverRow.hand_count===0){
+      const nxt = nextAliveWithCardsAfter(st.turn);
+      if(nxt){
+        hostAdvanceLock = true;
+        await sb.from('liarsbar_rooms').update({ updated_at:new Date().toISOString(), state:{ ...st, turn: nxt } }).eq('id', room.id);
+        hostAdvanceLock = false;
+      }
+    }
+  }
+}
+
+// ============ صفحه‌ی پایانِ بازی ============
+function renderFinished(){
+  const st = room.state || {};
+  const isHost = room.host_id === me.id;
+  app.innerHTML = `
+    <div class="winner-box">
+      <div class="crown">🏆</div>
+      <h2>${st.winner_name || '—'} برنده‌ی میز شد!</h2>
+      <p>بازی تموم شد. ${isHost ? 'می‌تونی همین میز رو دوباره راه بندازی.' : 'منتظرِ ادمین برای دورِ بعدی بمون.'}</p>
+      ${isHost ? `<button class="btn btn-blood btn-lg" id="restartBtn">🔁 بازیِ دوباره، همین میز</button>` : ''}
+      <div style="margin-top:14px;"><a class="btn btn-ghost" href="liarsbar.html">بازگشت به لابی</a></div>
+    </div>`;
+  const rb = document.getElementById('restartBtn');
+  if(rb) rb.addEventListener('click', restartRoom);
+}
+
+async function restartRoom(){
+  await sb.from('liarsbar_players').update({ is_alive:true, hand_count:0, shots_fired:0 }).eq('room_id', room.id);
+  await sb.from('liarsbar_rooms').update({ status:'lobby', updated_at:new Date().toISOString(), state:{} }).eq('id', room.id);
+  await loadPlayers();
+  renderLobby();
+}
+</script>
+</body>
+</html>
