@@ -543,7 +543,7 @@
     <h2 id="lobbyTitle">در انتظار شروع بازی...</h2>
     <p id="lobbySub">صندلی‌ها رو ببین — وقتی همه آماده بودن، ادمین بازی رو شروع می‌کنه.</p>
     <div class="seat-list" id="lobbySeatList"></div>
-    <button class="btn raise" id="btnStartGame" style="display:none;">شروع بازی ▶ (صندلی‌های خالی با بات پر می‌شن)</button>
+    <button class="btn raise" id="btnStartGame" style="display:none;">شروع بازی ▶ (فقط با بازیکن‌های واقعی)</button>
     <div class="net-err" id="lobbyErr"></div>
   </div>
 </div>
@@ -640,7 +640,7 @@
 
       <div class="footer-note">
         شافل کارت‌ها با <b>crypto.getRandomValues</b> (تصادفی‌ساز رمزنگاری مرورگر) انجام می‌شود — نه Math.random ساده — تا هیچ الگوی قابل پیش‌بینی یا دستکاری‌ای وجود نداشته باشد.<br>
-        ربات‌ها فقط به کارت‌های خودشان و اطلاعات عمومی میز دسترسی دارند و هرگز کارت‌های شما را «نمی‌بینند».
+        این میز فقط بازیکنان واقعی داره — هر صندلی متعلق به یک آدم واقعیه که وارد شده، نه بات.
       </div>
     </div>
 
@@ -852,20 +852,6 @@ function chenScore(cards){
   }
   return Math.max(0,Math.min(20,pts))/20;
 }
-function detectDraws(cards){
-  let val=0;
-  const suitCount={};
-  cards.forEach(c=>suitCount[c.suit]=(suitCount[c.suit]||0)+1);
-  if(Object.values(suitCount).some(v=>v===4)) val+=0.55;
-  const ranks=[...new Set(cards.map(c=>c.rank))].sort((a,b)=>a-b);
-  let maxRun=1,cur=1;
-  for(let i=1;i<ranks.length;i++){
-    if(ranks[i]===ranks[i-1]+1){cur++; maxRun=Math.max(maxRun,cur);}
-    else if(ranks[i]!==ranks[i-1]) cur=1;
-  }
-  if(maxRun>=4) val+=0.45; else if(maxRun===3) val+=0.15;
-  return Math.min(1,val);
-}
 
 /* =========================================================
    NETWORKING / MULTIPLAYER
@@ -873,16 +859,6 @@ function detectDraws(cards){
 const SUPABASE_URL = 'https://uohetpzmscuqdiwibqci.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_CukVAlNn7Nvrx5v_gu7atg_JDcw2dzW';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-const AVA_POOL = ['🗿','👑','🧮','🤪','🕵️','🎩','🐺','🦊'];
-const BOT_NAME_POOL = [
-  {name:'رکس «صخره»', aggression:0.22, bluffFreq:0.05, callLoose:0.05},
-  {name:'ویکا «ملکه بلاف»', aggression:0.82, bluffFreq:0.38, callLoose:0.20},
-  {name:'سام «ماشین‌حساب»', aggression:0.5, bluffFreq:0.14, callLoose:0.10},
-  {name:'تامی «دیوانه»', aggression:0.9, bluffFreq:0.42, callLoose:0.30},
-  {name:'نیکا «سرد»', aggression:0.35, bluffFreq:0.10, callLoose:0.08},
-  {name:'آرمین «شارک»', aggression:0.65, bluffFreq:0.22, callLoose:0.15},
-];
 
 const ROOM_CODE = new URLSearchParams(location.search).get('room');
 let ROOM = null, IS_ADMIN = false, MY_SEAT = -1, MY_UID = null;
@@ -897,17 +873,15 @@ function fatal(msg){
   document.getElementById('loginOverlay').classList.add('hidden');
 }
 
+// seatRows باید فقط شامل صندلی‌های واقعاً گرفته‌شده توسط آدم‌های واقعی باشد (بدون بات)
 function newGameState(seatRows){
-  const humanPersona = {name:'شما', aggression:0, bluffFreq:0, callLoose:0};
   const players = seatRows.map((s,i)=>({
     id:i, seat_no:i,
-    name: s.is_bot ? s.display_name : (s.display_name || 'بازیکن'),
-    ava: s.is_bot ? (s._ava||'🧑') : '🧑',
+    name: s.display_name || 'بازیکن',
+    ava:'🧑',
     isUser: (i===0), // فقط صندلی ادمین به‌صورت محلی با دکمه بازی می‌کند
-    isBot: !!s.is_bot,
-    isRemoteHuman: !s.is_bot && i!==0,
+    isRemoteHuman: i!==0,
     playerId: s.player_id,
-    persona: s.is_bot ? s._persona : humanPersona,
     stack: ROOM.starting_stack, holeCards:[], folded:false, allIn:false, busted:false,
     bet:0, totalContributed:0, actedThisRound:false,
   }));
@@ -1071,7 +1045,7 @@ function serializeState(){
     currentBet:G.currentBet, minRaise:G.minRaise, sb:G.sb, bb:G.bb,
     currentPlayerIndex:G.currentPlayerIndex, firstToAct:G.firstToAct, handNumber:G.handNumber,
     players: G.players.map(p=>({
-      seat_no:p.seat_no, name:p.name, ava:p.ava, isBot:!!p.isBot,
+      seat_no:p.seat_no, name:p.name, ava:p.ava,
       stack:p.stack, folded:p.folded, allIn:p.allIn, busted:p.busted, bet:p.bet,
       showWinner:!!p.showWinner, hasCards: p.holeCards.length>0,
       revealCards: (G.stage==='showdown' && !p.folded && !p.busted) ? p.holeCards : null,
@@ -1103,7 +1077,7 @@ function applyNetworkState(data){
     else if(idx===MY_SEAT && myHoleCards.length) holeCards = myHoleCards;
     else if(p.hasCards) holeCards = [{},{}]; // فقط برای نمایش پشت کارت
     return {
-      id:idx, seat_no:p.seat_no, name:p.name, ava:p.ava, isBot:p.isBot,
+      id:idx, seat_no:p.seat_no, name:p.name, ava:p.ava,
       stack:p.stack, folded:p.folded, allIn:p.allIn, busted:p.busted, bet:p.bet,
       showWinner:p.showWinner, holeCards, eval: p.evalDesc?{score:[0]}:null, _evalDesc:p.evalDesc,
     };
@@ -1188,7 +1162,7 @@ const ALLIN_FLAVOR = [
   'لحظه‌ی سرنوشت‌ساز — همه یا هیچ!',
   'میز یه لحظه ساکت شد؛ آل‌این رفت',
 ];
-function personaHeat(p){ return (p.persona && p.persona.aggression) || 0.3; }
+function personaHeat(p){ return 0.3; }
 function bestHandCardsText(evalObj){
   if(!evalObj || !evalObj.cards) return '';
   return evalObj.cards.map(c=>rankLabel(c.rank)+c.suit).join(' ');
@@ -1247,63 +1221,6 @@ function isBettingRoundComplete(){
   const acting = actionable();
   if(acting.length===0) return true;
   return acting.every(p=>p.actedThisRound && p.bet===G.currentBet);
-}
-
-/* AI decision */
-function aiDecide(p){
-  const stage = G.stage;
-  let strength;
-  if(stage==='preflop'){
-    strength = chenScore(p.holeCards);
-  } else {
-    const ev = evaluate7([...p.holeCards, ...G.community]);
-    let base = ev.score[0]/8;
-    base += (ev.score[1]||0)/14*0.06;
-    if(ev.score[0]<=1) base += detectDraws([...p.holeCards, ...G.community])*0.16;
-    const opp = actionable().length + G.players.filter(pl=>pl.allIn && !pl.folded && !pl.busted).length - 1;
-    base *= (1 - 0.025*Math.max(0,opp-1));
-    strength = Math.max(0,Math.min(1,base));
-  }
-  const persona = p.persona;
-  const toCall = G.currentBet - p.bet;
-  const isBluffRoll = Math.random() < persona.bluffFreq;
-  const effective = Math.min(1, strength + (isBluffRoll ? 0.28+Math.random()*0.22 : 0));
-
-  const potAfterCall = G.pot + toCall;
-  const potOdds = toCall>0 ? toCall/potAfterCall : 0;
-
-  let decision;
-  if(toCall<=0){
-    // can check
-    const betThreshold = 0.58 - persona.aggression*0.18;
-    if(effective>betThreshold && Math.random() < (0.35+persona.aggression*0.5)){
-      const sizeFrac = 0.4 + Math.random()*0.5*(0.6+persona.aggression);
-      const amt = Math.round(Math.max(G.bb, (G.pot||G.bb)*sizeFrac));
-      decision = {type:'raise', toAmount: p.bet + Math.min(amt, p.stack)};
-    } else {
-      decision = {type:'check'};
-    }
-  } else {
-    const foldThreshold = potOdds*(1.05-persona.callLoose) ;
-    if(effective < foldThreshold*0.7 && toCall > p.stack*0.02 && !(toCall<=G.bb*1.5 && Math.random()<persona.callLoose+0.15)){
-      decision = {type:'fold'};
-    } else if(effective>0.72 || (Math.random()<persona.aggression*0.45 && effective>0.42)){
-      const sizeFrac = 0.55 + Math.random()*0.65*(0.6+persona.aggression);
-      const raiseAdd = Math.max(G.minRaise, Math.round((G.pot+toCall)*sizeFrac));
-      const toAmount = G.currentBet + raiseAdd;
-      decision = {type:'raise', toAmount: Math.min(toAmount, p.bet+p.stack)};
-    } else {
-      decision = {type:'call'};
-    }
-  }
-  // convert to allin if it uses full stack
-  if(decision.type==='raise' && decision.toAmount >= p.bet + p.stack){
-    decision = {type:'allin', toAmount: p.bet+p.stack};
-  }
-  if(decision.type==='call' && toCall >= p.stack){
-    decision = {type:'allin', toAmount: p.bet+p.stack};
-  }
-  return decision;
 }
 
 function waitForUserAction(){
@@ -1423,11 +1340,8 @@ async function bettingRound(stage){
     let action;
     if(p.isUser){
       action = await waitForUserAction();
-    } else if(p.isRemoteHuman){
-      action = await waitForRemoteAction(p);
     } else {
-      await delay(3600+Math.random()*4200);
-      action = aiDecide(p);
+      action = await waitForRemoteAction(p);
     }
     applyAction(p, action);
     render();
@@ -1780,8 +1694,8 @@ document.getElementById('btnNetLogin').addEventListener('click', async ()=>{
 async function renderLobbySeats(seatRows){
   const list = document.getElementById('lobbySeatList');
   list.innerHTML = seatRows.map(s=>{
-    if(s.player_id || s.is_bot){
-      return `<div class="row"><span>صندلی ${s.seat_no+1}</span><b>${s.display_name || (s.is_bot?'بات':'؟')}</b></div>`;
+    if(s.player_id){
+      return `<div class="row"><span>صندلی ${s.seat_no+1}</span><b>${s.display_name || '؟'}</b></div>`;
     }
     return `<div class="row empty"><span>صندلی ${s.seat_no+1}</span><span>خالی</span></div>`;
   }).join('');
@@ -1792,33 +1706,38 @@ async function fetchSeats(){
   return data || [];
 }
 
+// فقط صندلی‌هایی که واقعاً یک آدم واقعی گرفتشون رو برمی‌گردونه — هیچ باتی اینجا نیست
+async function fetchJoinedSeats(){
+  const seats = await fetchSeats();
+  return seats.filter(s=>s.player_id);
+}
+
+// موقعیت یک بازیکن واقعی داخل لیست فشرده‌ی صندلی‌های واقعاً گرفته‌شده (همون ایندکسی که در G.players استفاده می‌شه)
+async function computeCompactSeatIndex(userId){
+  const joined = await fetchJoinedSeats();
+  return joined.findIndex(s=>s.player_id===userId);
+}
+
 async function claimSeatIfPossible(userId, displayName){
   const seats = await fetchSeats();
   const mine = seats.find(s=>s.player_id===userId);
   if(mine) return mine.seat_no;
-  const empty = seats.filter(s=>!s.player_id && !s.is_bot).sort((a,b)=>a.seat_no-b.seat_no)[0];
+  const empty = seats.filter(s=>!s.player_id).sort((a,b)=>a.seat_no-b.seat_no)[0];
   if(!empty) return -1; // میز پر است
   const { error } = await sb.from('poker_seats').update({ player_id:userId, display_name:displayName }).eq('room_id', ROOM.id).eq('seat_no', empty.seat_no);
   if(error) return -1;
   return empty.seat_no;
 }
 
-function buildBotSeatData(seatRow, poolIdx){
-  const persona = BOT_NAME_POOL[poolIdx % BOT_NAME_POOL.length];
-  return { ...seatRow, is_bot:true, display_name:persona.name, _ava: AVA_POOL[poolIdx % AVA_POOL.length], _persona: persona };
-}
-
 async function adminStartGame(){
   document.getElementById('lobbyErr').textContent='';
-  const seats = await fetchSeats();
-  const toFill = seats.filter(s=>!s.player_id);
-  for(const s of toFill){
-    const botData = buildBotSeatData(s, s.seat_no);
-    await sb.from('poker_seats').update({ is_bot:true, display_name: botData.display_name }).eq('room_id', ROOM.id).eq('seat_no', s.seat_no);
+  const joined = await fetchJoinedSeats();
+  if(joined.length<2){
+    document.getElementById('lobbyErr').textContent = 'برای شروع بازی حداقل به ۲ بازیکن واقعی نیاز است — منتظر بمانید تا نفرات بیشتری به میز ملحق شوند. صندلی‌های خالی دیگر با بات پر نمی‌شوند.';
+    return;
   }
   await sb.from('poker_rooms').update({ status:'active' }).eq('id', ROOM.id);
-  const finalSeats = await fetchSeats();
-  CURRENT_SEATS = finalSeats.map(s=> s.is_bot ? buildBotSeatData(s, s.seat_no) : s);
+  CURRENT_SEATS = joined;
   hideLobby();
   G = newGameState(CURRENT_SEATS);
   setupUserButtons();
@@ -1887,14 +1806,13 @@ async function bootRoom(user){
     MY_SEAT = 0;
     if(room.status==='waiting'){
       document.getElementById('lobbyTitle').textContent = 'اتاق شما آماده‌ست';
-      document.getElementById('lobbySub').textContent = 'منتظر دوستات باش یا همین الان بازی رو شروع کن — صندلی‌های خالی خودکار با بات پر می‌شن.';
+      document.getElementById('lobbySub').textContent = 'منتظر دوستات باش تا وارد میز بشن، بعد بازی رو شروع کن — حداقل ۲ نفر واقعی لازمه (بدون بات).';
       document.getElementById('btnStartGame').style.display='block';
       showLobby();
       await waitForGameStart();
     } else {
-      // بازی از قبل شروع شده (مثلاً رفرش صفحه) — دوباره صحنه رو با بازیکن‌های ثبت‌شده می‌سازیم
-      const seats = await fetchSeats();
-      CURRENT_SEATS = seats.map(s=> s.is_bot ? buildBotSeatData(s, s.seat_no) : s);
+      // بازی از قبل شروع شده (مثلاً رفرش صفحه) — دوباره صحنه رو با بازیکن‌های واقعیِ ثبت‌شده می‌سازیم
+      CURRENT_SEATS = await fetchJoinedSeats();
       G = newGameState(CURRENT_SEATS);
       setupUserButtons();
       subscribeAdminActions();
@@ -1906,16 +1824,14 @@ async function bootRoom(user){
     document.getElementById('btnNewHand').style.display='none';
     document.getElementById('btnRestart').style.display='none';
     if(room.status!=='waiting'){
-      const seats = await fetchSeats();
-      const mine = seats.find(s=>s.player_id===user.id);
-      if(!mine){ fatal('این میز از قبل شروع شده و صندلی خالی‌ای نمونده.'); return; }
-      MY_SEAT = mine.seat_no;
+      MY_SEAT = await computeCompactSeatIndex(user.id);
+      if(MY_SEAT===-1){ fatal('این میز از قبل شروع شده و صندلی خالی‌ای نمونده.'); return; }
     } else {
       document.getElementById('lobbyTitle').textContent = 'منتظر شروع بازی...';
       document.getElementById('lobbySub').textContent = 'وقتی ادمین بازی رو شروع کنه، خودکار وارد میز می‌شی.';
       showLobby();
-      MY_SEAT = await claimSeatIfPossible(user.id, myName);
-      if(MY_SEAT===-1){ fatal('این میز پر است — همه‌ی ۶ صندلی گرفته شده.'); return; }
+      const claimedRawSeat = await claimSeatIfPossible(user.id, myName);
+      if(claimedRawSeat===-1){ fatal('این میز پر است — همه‌ی صندلی‌ها گرفته شده.'); return; }
       await waitForGameStart();
       // منتظر می‌مونیم تا وضعیت اتاق active بشه
       await new Promise(resolve=>{
@@ -1924,6 +1840,7 @@ async function bootRoom(user){
           if(r && r.status==='active'){ clearInterval(check); resolve(); }
         }, 1500);
       });
+      MY_SEAT = await computeCompactSeatIndex(user.id);
     }
     hideLobby();
     setupUserButtons();
