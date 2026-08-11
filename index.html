@@ -421,7 +421,7 @@ footer .logo{justify-content:center; margin-bottom:10px;}
     <div class="section-head">
       <span class="section-tag">بازی‌های دیگر</span>
       <h2 class="section-title">وقتی خسته شدی از پرونده‌ها، بشین سر میز</h2>
-      <p class="section-desc">میز پوکر خصوصی DarkFile — یه بازی مهمون به مهمون، فقط با لینک دعوت.</p>
+      <p class="section-desc">میز پوکر خصوصی DarkFile، و حالا بازیِ بلوفِ «دروغ‌گو» — با دوستات، رو در رو.</p>
     </div>
     <div class="case-grid">
       <div class="case-card" data-case-id="poker-game" style="cursor:default;">
@@ -430,6 +430,14 @@ footer .logo{justify-content:center; margin-bottom:10px;}
         <p>یک میز پوکر ۶ نفره‌ی خصوصی بساز، لینکش رو برای دوستات بفرست، و اگه ظرفیت پر نشد بقیه‌ی صندلی‌ها خودکار با بات پر می‌شه. بلایند رو خودت تعیین می‌کنی.</p>
         <div class="case-meta"><span><b class="num">6</b> صندلی</span><span>بلایند دلخواه</span><span>لینک‌محور</span></div>
         <a href="poker-lobby.html" class="btn btn-blood btn-sm" style="width:100%; display:flex;">برو به میز پوکر</a>
+      </div>
+
+      <div class="case-card" data-case-id="liarsbar-game" style="cursor:default;">
+        <div class="case-ribbon">بازی جدید</div>
+        <h3>🔫 دروغ‌گو — Liar's Bar</h3>
+        <p>بلوف بزن، دروغِ بقیه رو لو بده، یا شانستو به اسلحه بسپار. تا ۸ نفر، لینک‌محور، فقط ادمین می‌تونه میز رو باز کنه و بازی رو استارت بزنه.</p>
+        <div class="case-meta"><span><b class="num">8</b> صندلی</span><span>بلوف با کارت</span><span>لینک‌محور</span></div>
+        <a href="liarsbar.html" class="btn btn-blood btn-sm" style="width:100%; display:flex;">برو به میزِ دروغ‌گو</a>
       </div>
     </div>
   </div>
@@ -730,8 +738,6 @@ async function ensureProfile(user){
   const { data: existing } = await sb.from('profiles').select().eq('id', user.id).maybeSingle();
   if(existing) return existing;
   const pending = popPendingProfile();
-  // اگر اطلاعات ثبت‌نامِ در انتظار پیدا نشد (مثلاً localStorage پاک شده بود)
-  // به‌جای برگرداندن null و باقی ماندن حساب در حالت خراب، یک پروفایل پیش‌فرض از روی ایمیل می‌سازیم
   const fallbackName = (user.email || 'کارآگاه').split('@')[0];
   const first_name = pending?.first_name || fallbackName;
   const last_name = pending?.last_name || 'ناشناس';
@@ -866,14 +872,13 @@ document.getElementById('idCardPhotoInput').addEventListener('change', async (e)
     const compressed = await compressImage(file, { maxDim: 640, quality: 0.8 });
     uploadBtn.textContent = 'در حال آپلود...';
 
-    // مسیر همیشه ثابت و jpg است، چون خروجی فشرده‌سازی همیشه jpeg است
     const path = `${currentProfile.id}/avatar.jpg`;
 
     const { error: uploadError } = await sb.storage.from('avatars').upload(path, compressed, { upsert: true, cacheControl: '3600', contentType: 'image/jpeg' });
     if(uploadError) throw uploadError;
 
     const { data: pub } = sb.storage.from('avatars').getPublicUrl(path);
-    const publicUrl = `${pub.publicUrl}?t=${Date.now()}`; // cache-bust
+    const publicUrl = `${pub.publicUrl}?t=${Date.now()}`;
 
     const { error: dbError } = await sb.from('profiles').update({ avatar_url: publicUrl }).eq('id', currentProfile.id);
     if(dbError) throw dbError;
@@ -892,7 +897,6 @@ document.getElementById('idCardPhotoInput').addEventListener('change', async (e)
   }
 });
 
-// ========== حذف عکس پروفایل (هم از Storage و هم از دیتابیس) ==========
 async function deleteAvatarPhoto(){
   if(!currentProfile || !currentProfile.avatar_url) return;
   if(!confirm('آیا مطمئنید می‌خواهید عکس پروفایل‌تان حذف شود؟ این کار قابل بازگشت نیست.')) return;
@@ -906,7 +910,6 @@ async function deleteAvatarPhoto(){
   deleteBtn.textContent = 'در حال حذف...';
 
   try{
-    // تلاش برای حذف فایل با پسوندهای مختلف (برای سازگاری با آپلودهای قدیمی‌تر)
     const paths = ['jpg','jpeg','png','webp'].map(ext => `${currentProfile.id}/avatar.${ext}`);
     const { error: removeError } = await sb.storage.from('avatars').remove(paths);
     if(removeError) console.warn('هشدار در حذف از Storage:', removeError);
